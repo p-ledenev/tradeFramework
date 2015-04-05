@@ -7,8 +7,8 @@ import java.util.List;
  */
 public class ExperienceTerminalExecutor implements ITerminalExecutor {
 
-    @Override
     public void execute(List<Order> orders) {
-        //TODO
+        for(Order order : orders)
+            order.executed();
     }
 }

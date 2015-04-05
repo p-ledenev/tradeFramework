@@ -10,9 +10,21 @@ import lombok.Data;
 public class Machine {
 
     protected Portfolio portfolio;
-    protected MachineState state;
+    protected Slice state;
+
+    protected int depth;
+    protected double currentMoney;
+    protected Position position;
 
     public String getSecurity() {
         return portfolio.getSecurity();
+    }
+
+    public void add(Position position) {
+
+
+        currentMoney += position.computeAmount();
+        this.position = position;
+        position.date = null;
     }
 }

@@ -13,10 +13,14 @@ public abstract class Order {
     protected String account;
     protected String ticket;
     protected String market;
-    protected OrderDirection direction;
+    protected Position position;
+    protected boolean isExecuted;
 
-    protected int volume;
-    protected double value;
+    protected Machine machine;
 
     public abstract void applyToMachine();
+
+    public  void executed() {
+        isExecuted = true;
+    }
 }

@@ -13,12 +13,12 @@ public class MachineStatesCollector {
 
     protected Machine machine;
     @Getter
-    protected List<MachineState> states;
+    protected List<Slice> states;
 
     public MachineStatesCollector(Machine machine) {
         this.machine = machine;
 
-        states = new ArrayList<MachineState>();
+        states = new ArrayList<Slice>();
     }
 
     public void addStateIfChanged() {
@@ -29,7 +29,7 @@ public class MachineStatesCollector {
         states.add(machine.getState());
     }
 
-    protected MachineState getLastMachineState() {
+    protected Slice getLastMachineState() {
         if (states.size() == 0)
             return null;
 
@@ -45,5 +45,17 @@ public class MachineStatesCollector {
     }
 
     public String printState(int index) {
+        if (states.size() <= index)
+            return ";;";
+
+        return states.get(index).printCSV();
+    }
+
+    public String printMachineHead() {
+        return machine.getDepth() + ";date;money";
+    }
+
+    public int getStatesSize() {
+        return states.size();
     }
 }
