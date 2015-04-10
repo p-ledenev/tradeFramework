@@ -7,8 +7,33 @@ import java.util.List;
  */
 public class ExperienceTerminalExecutor implements ITerminalExecutor {
 
-    public void execute(List<Order> orders) {
-        for(Order order : orders)
+    private List<Candle> candles;
+
+    public ExperienceTerminalExecutor(List<Candle> candles) {
+        this.candles = candles;
+    }
+
+    public void execute(List<Order> orders) throws Throwable {
+
+        for (Order order : orders) {
+            Candle candle = order.getLastCandle();
+            Candle next = findCandleAfter(candle);
+
+            order.setPositionDate(candle.getDate());
+            order.setPositionValue(next.getValue());
             order.executed();
+        }
+    }
+
+    private Candle findCandleAfter(Candle candle) throws CandleNotFoundFailure {
+        int index = candles.indexOf(candle);
+
+        if (index < 0)
+            throw new CandleNotFoundFailure(candle.print());
+
+        if (index != candles.size() - 1)
+            index++;
+
+        return candles.get(index);
     }
 }

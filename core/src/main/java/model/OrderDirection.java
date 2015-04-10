@@ -1,13 +1,24 @@
 package model;
 
+import lombok.Getter;
+
 /**
  * Created by ledenev.p on 31.03.2015.
  */
-public abstract class OrderDirection {
 
-    public abstract String name();
+public enum OrderDirection {
 
-    public abstract int sign();
+    buy("B", -1), sell("S", 1), none("N", 0);
+
+    @Getter
+    private String name;
+    @Getter
+    private int sign;
+
+    private OrderDirection(String name, int sign) {
+        this.name = name;
+        this.sign = sign;
+    }
 
     public boolean isEqual(OrderDirection direction) {
         return name().equals(direction.name());

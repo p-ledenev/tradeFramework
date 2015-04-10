@@ -1,7 +1,8 @@
 package model;
 
-import lombok.*;
+import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,12 +12,21 @@ import java.util.List;
 @Data
 public class Portfolio {
 
-    protected List<Machine> machines;
-    protected String security;
-    protected String title;
+    private List<Machine> machines;
+    private String security;
+    private String title;
 
-    public Order processCandles(List<Candle> candles) {
-        //TODO
+    public List<Order> processCandles(List<Candle> candles) {
+
+        List<Order> orders = new ArrayList<Order>();
+        for (Machine machine : machines)
+            orders.add(machine.processCandles(candles));
+
+        return orders;
+    }
+
+    public String printStrategy() {
+        // TODO
         return null;
     }
 }

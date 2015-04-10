@@ -5,6 +5,10 @@ package model;
  */
 public class EmptyOrder extends Order {
 
+    public EmptyOrder(Machine machine) {
+        super(machine);
+    }
+
     @Override
     public void applyToMachine() {
     }

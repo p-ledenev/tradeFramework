@@ -5,7 +5,7 @@ package commissionStrategies;
  */
 public interface ICommissionStrategy {
 
-    public abstract double computeOpenPositionCommission(double value, int volume, boolean intraday);
+    public abstract double computeOpenPositionCommission(double value, int volume);
 
     public abstract double computeClosePositionCommission(double value, int volume, boolean intraday);
 }

@@ -11,7 +11,7 @@ public class Log {
 	private static Logger logger;
 
 	public static void configureLogger(String configName) {
-		PropertyConfigurator.configure(formatMessage(configName));
+		PropertyConfigurator.configure(configName);
 		logger = Logger.getLogger(Log.class);
 
 		logger.info("Hello!!!");
@@ -38,31 +38,31 @@ public class Log {
 
 
 	public static void trace(String message) {
-		getLogger().trace(formatMessage(message));
+		getLogger().trace(message);
 	}
 
 	public static void debug(String message) {
-		getLogger().debug(formatMessage(message));
+		getLogger().debug(message);
 	}
 
 	public static void info(String message) {
-		getLogger().info(formatMessage(message));
+		getLogger().info(message);
 	}
 
 	public static void error(String message, Throwable exc) {
-		getLogger().error(formatMessage(message), exc);
+		getLogger().error(message, exc);
 	}
 
 	public static void error(String message) {
-		getLogger().error(formatMessage(message));
+		getLogger().error(message);
 	}
 
 	public static void fatal(String message) {
-		getLogger().fatal(formatMessage(message));
+		getLogger().fatal(message);
 	}
 
 	public static void fatal(String message, Throwable exc) {
-		getLogger().fatal(formatMessage(message), exc);
+		getLogger().fatal(message, exc);
 	}
 
 	public static boolean isDebugEnabled() {
@@ -71,10 +71,6 @@ public class Log {
 
 	public static boolean isTraceEnabled() {
 		return getLogger().isTraceEnabled();
-	}
-
-	protected static String formatMessage(String message) {
-		return Format.stringByMaskingCards(message);
 	}
 
 	public static void printJavaRuntimeInfo() {

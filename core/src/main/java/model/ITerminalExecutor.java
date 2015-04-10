@@ -7,5 +7,5 @@ import java.util.List;
  */
 public interface ITerminalExecutor {
 
-    public void execute(List<Order> orders);
+    public void execute(List<Order> orders) throws Throwable;
 }

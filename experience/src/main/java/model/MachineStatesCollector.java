@@ -13,12 +13,12 @@ public class MachineStatesCollector {
 
     protected Machine machine;
     @Getter
-    protected List<Slice> states;
+    protected List<State> states;
 
     public MachineStatesCollector(Machine machine) {
         this.machine = machine;
 
-        states = new ArrayList<Slice>();
+        states = new ArrayList<State>();
     }
 
     public void addStateIfChanged() {
@@ -29,7 +29,7 @@ public class MachineStatesCollector {
         states.add(machine.getState());
     }
 
-    protected Slice getLastMachineState() {
+    protected State getLastMachineState() {
         if (states.size() == 0)
             return null;
 

@@ -11,38 +11,32 @@ import org.joda.time.DateTime;
 @Data
 public class Position {
 
-    protected DateTime date;
-    protected OrderDirection direction;
-    protected int volume;
-    protected double value;
+    private DateTime date;
+    private OrderDirection direction;
+    private int volume;
+    private double value;
 
     protected ICommissionStrategy commissionStrategy;
 
-    public Position(int volume, double value, OrderDirection direction, DateTime date) {
+    public static Position closing() {
+        return new Position(0, OrderDirection.none);
+    }
+
+    public static Position opening(OrderDirection direction, int volume) {
+        return new Position(volume, direction);
+    }
+
+    private Position(int volume, OrderDirection direction) {
         this.volume = volume;
-        this.value = value;
         this.direction = direction;
-        this.date = date;
     }
 
-    public double computeAmount() {
-        return direction.sign() * value * volume;
+    private double computeAmount(int volume) {
+        return direction.getSign() * value * volume;
     }
 
-    public void increase(Position position) {
-        value = (value * volume + position.getVolume() * position.getValue()) / (volume + position.getVolume());
-        volume += position.getVolume();
-        date = position.getDate();
-    }
-
-    public void decrease(Position position) {
-        volume -= position.getVolume();
-    }
-
-    public void change(Position position) {
-        date = position.getDate();
-        value = position.getValue();
-        volume = position.getVolume() - volume;
+    public double computeProfit(Position position) {
+        return position.computeAmount(volume) + computeAmount(volume);
     }
 
     public boolean hasSameDirection(Position position) {
@@ -53,19 +47,11 @@ public class Position {
         return date.toLocalDate().equals(position.getDate().toLocalDate());
     }
 
-    public boolean hasNotLessVolumeThan(Position position) {
-        return volume >= position.getVolume();
+    public double computeClosingCommission(Position newPosition) {
+        return commissionStrategy.computeClosePositionCommission(newPosition.getValue(), volume, hasSameDay(newPosition));
     }
 
-    public double computeIncreasePositionCommission(Position position) {
-        return commissionStrategy.computeOpenPositionCommission(position.getValue(), position.getVolume(), hasSameDay(position));
-    }
-
-    public double computeDecreasePositionCommission(Position position) {
-        return commissionStrategy.computeClosePositionCommission(position.getValue(), position.getVolume(), hasSameDay(position));
-    }
-
-    public double computeChangePositionCommission(Position position) {
-        return commissionStrategy.computeOpenPositionCommission(position.getValue(), position.getVolume() - volume, hasSameDay(position));
+    public double computeOpeningCommission() {
+        return commissionStrategy.computeOpenPositionCommission(value, volume);
     }
 }

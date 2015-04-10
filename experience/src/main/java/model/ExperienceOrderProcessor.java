@@ -9,12 +9,12 @@ import java.util.List;
 public class ExperienceOrderProcessor {
 
     protected List<Candle> candles;
-    protected OrderProcessor processor;
+    protected CandleProcessor candleProcessor;
     protected List<MachineStatesCollector> collectors;
 
     public ExperienceOrderProcessor(Portfolio portfolio, ITerminalExecutor executor, List<Candle> candles) {
 
-        processor = new OrderProcessor(portfolio, executor);
+        candleProcessor = new CandleProcessor(portfolio, executor);
         collectors = new ArrayList<MachineStatesCollector>();
         for (Machine machine : portfolio.getMachines())
             collectors.add(new MachineStatesCollector(machine));
@@ -25,10 +25,10 @@ public class ExperienceOrderProcessor {
     public void trade() throws Throwable {
 
         for (Candle candle : candles) {
-            processor.processNext(candle);
+            candleProcessor.processNext(candle);
 
-            for(MachineStatesCollector collector : collectors)
-                collector.addStateIfChanged();
+            for(MachineStatesCollector statesCollector : collectors)
+                statesCollector.addStateIfChanged();
         }
     }
 }
