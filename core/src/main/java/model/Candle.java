@@ -31,4 +31,16 @@ public class Candle {
 
         return "date: " + formatter.print(date) + "; value: " + value;
     }
+
+    public double computeVariance(double value) {
+        return Math.abs(this.value - value) / value * 100;
+    }
+
+    public boolean greatThan(double value) {
+        return this.value > value;
+    }
+
+    public boolean lessThan(double value) {
+        return this.value < value;
+    }
 }

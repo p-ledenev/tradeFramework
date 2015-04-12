@@ -1,15 +1,17 @@
 package model;
 
+import exceptions.CandleNotFoundFailure;
+
 import java.util.List;
 
 /**
  * Created by ledenev.p on 02.04.2015.
  */
-public class ExperienceTerminalExecutor implements ITerminalExecutor {
+public class ExperienceOrdersExecutor implements IOrdersExecutor {
 
     private List<Candle> candles;
 
-    public ExperienceTerminalExecutor(List<Candle> candles) {
+    public ExperienceOrdersExecutor(List<Candle> candles) {
         this.candles = candles;
     }
 

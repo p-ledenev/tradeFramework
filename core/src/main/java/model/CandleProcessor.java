@@ -10,15 +10,15 @@ import java.util.List;
 public class CandleProcessor {
 
     protected List<Portfolio> portfolios;
-    protected ITerminalExecutor executor;
+    protected IOrdersExecutor orderExecutor;
 
-    protected CandleProcessor(List<Portfolio> portfolios, ITerminalExecutor executor) {
+    protected CandleProcessor(List<Portfolio> portfolios, IOrdersExecutor orderExecutor) {
         this.portfolios = portfolios;
-        this.executor = executor;
+        this.orderExecutor = orderExecutor;
     }
 
-    protected CandleProcessor(Portfolio portfolio, ITerminalExecutor executor) {
-       this(new ArrayList<Portfolio>(), executor);
+    protected CandleProcessor(Portfolio portfolio, IOrdersExecutor orderExecutor) {
+       this(new ArrayList<Portfolio>(), orderExecutor);
 
         portfolios.add(portfolio);
     }
@@ -29,7 +29,7 @@ public class CandleProcessor {
         for (Portfolio portfolio : portfolios)
             orders.addAll(portfolio.processCandles(Arrays.asList(candles)));
 
-        executor.execute(orders);
+        orderExecutor.execute(orders);
 
         for (Order order : orders)
             order.applyToMachine();

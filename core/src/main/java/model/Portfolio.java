@@ -26,7 +26,6 @@ public class Portfolio {
     }
 
     public String printStrategy() {
-        // TODO
-        return null;
+        return machines.get(0).getDecisionStrategyName();
     }
 }

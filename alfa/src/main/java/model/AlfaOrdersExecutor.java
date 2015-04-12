@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Created by ledenev.p on 01.04.2015.
  */
-public class AlfaTerminalExecutor implements ITerminalExecutor {
+public class AlfaOrdersExecutor implements IOrdersExecutor {
 
     @Override
     public void execute(List<Order> orders) {

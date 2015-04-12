@@ -45,6 +45,10 @@ public class Machine {
         return new ExecutableOrder(newPosition, this);
     }
 
+    public String getDecisionStrategyName() {
+        return decisionStrategy.getName();
+    }
+
     public State getState() {
         return new State(position.getDate(), currentMoney);
     }
@@ -52,4 +56,6 @@ public class Machine {
     public Candle getLastCandle() {
         return decisionStrategy.getLastCandle();
     }
+
+
 }

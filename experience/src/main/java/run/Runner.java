@@ -14,15 +14,15 @@ public class Runner {
     public static void main(String[] args) throws Throwable {
 
         List<InitialSettings> settingsList = readSettings();
-        ITerminalExecutor executor = new ExperienceTerminalExecutor();
 
         List<Candle> candles = DataSourceFactory.createDataSource().readCandlesFrom("file\\path");
+        IOrdersExecutor executor = new ExperienceOrdersExecutor(candles);
 
         for (InitialSettings settings : settingsList) {
             Portfolio portfolio = settings.initPortfolio();
 
-            ExperienceOrderProcessor processor = new ExperienceOrderProcessor(portfolio, executor, candles);
-            processor.trade();
+            Trader trader = new Trader(portfolio, executor, candles);
+            trader.trade();
         }
     }
 
