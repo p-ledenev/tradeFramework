@@ -1,15 +1,6 @@
 package tools;
 
-import org.apache.commons.codec.binary.Hex;
 import org.joda.time.DateTime;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.regex.Pattern;
 
 public class Format {
 
@@ -19,4 +10,10 @@ public class Format {
 
         return (date.getMillis() - year.getMillis()) / (1000 * 60);
     }
+
+    public static <T> T[] takeFromEnd(T[] array, int depth) {
+        return java.util.Arrays.copyOfRange(array, array.length - depth, array.length);
+    }
+
+
 }

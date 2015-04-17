@@ -10,7 +10,7 @@ public class ScalpingCommissionStrategy extends ConstantCommissionStrategy {
     }
 
     @Override
-    public double computeOpenPositionCommission(double value, int volume, boolean intraday) {
+    public double computeOpenPositionCommission(double value, int volume) {
         return commission * volume;
     }
 
