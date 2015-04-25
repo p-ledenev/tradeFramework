@@ -15,7 +15,7 @@ public class TwoDepthAverageConstructor implements IAverageConstructor {
 
     @Override
     public double average(IAveragingSupport[] values) {
-        IAveragingSupport[] halfValues = Format.takeFromEnd(values, values.length / 2);
+        IAveragingSupport[] halfValues = Format.copyFromEnd(values, values.length / 2);
 
         double fast = averageConstructor.average(halfValues);
         double slow = averageConstructor.average(values);

@@ -11,7 +11,7 @@ public class Format {
         return (date.getMillis() - year.getMillis()) / (1000 * 60);
     }
 
-    public static <T> T[] takeFromEnd(T[] array, int depth) {
+    public static <T> T[] copyFromEnd(T[] array, int depth) {
         return java.util.Arrays.copyOfRange(array, array.length - depth, array.length);
     }
 

@@ -20,16 +20,6 @@ public class LinearApproximationConstructor implements IApproximationConstructor
         return new Approximation(round(regressionParameters));
     }
 
-    private double[] extractYValues(IApproximationSupport[] values) {
-        double[] y = new double[values.length];
-
-        int i = 0;
-        for (IApproximationSupport value : values)
-            y[i++] = value.getValueForApproximation();
-
-        return y;
-    }
-
     private double[] createOLSDataFrom(IApproximationSupport[] values) {
         double[] data = new double[2 * values.length];
 
