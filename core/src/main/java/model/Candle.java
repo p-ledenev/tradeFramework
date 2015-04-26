@@ -1,5 +1,7 @@
 package model;
 
+import approximationConstructors.IApproximationSupport;
+import averageConstructors.IAveragingSupport;
 import lombok.Data;
 import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
@@ -11,7 +13,7 @@ import org.joda.time.format.DateTimeFormatter;
  */
 
 @Data
-public class Candle {
+public class Candle implements IAveragingSupport, IApproximationSupport {
 
     protected DateTime date;
     protected double value;
@@ -42,5 +44,15 @@ public class Candle {
 
     public boolean lessThan(double value) {
         return this.value < value;
+    }
+
+    @Override
+    public double getValueForApproximation() {
+        return value;
+    }
+
+    @Override
+    public double getValueForAveraging() {
+        return value;
     }
 }

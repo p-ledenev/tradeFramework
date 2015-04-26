@@ -37,7 +37,7 @@ public class Machine {
     }
 
     public Order processCandles(List<Candle> candles) {
-        Position newPosition = decisionStrategy.computeNewPositionFor(candles, position.getVolume());
+        Position newPosition = decisionStrategy.computeNewPositionFor(candles, depth, position.getVolume());
 
         if (position.hasSameDirection(newPosition))
             return new EmptyOrder(this);

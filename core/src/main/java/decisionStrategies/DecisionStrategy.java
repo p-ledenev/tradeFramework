@@ -1,6 +1,7 @@
 package decisionStrategies;
 
 import exceptions.NoDecisionStrategyFoundFailure;
+import lombok.Getter;
 import lombok.Setter;
 import model.Candle;
 import model.OrderDirection;
@@ -18,7 +19,9 @@ import java.util.Set;
  */
 public abstract class DecisionStrategy {
 
-    private List<Candle> candles;
+    @Getter
+    @Setter
+    protected List<Candle> candles;
     @Setter
     private ITakeProfitStrategy profitStrategy;
     @Setter
@@ -58,12 +61,12 @@ public abstract class DecisionStrategy {
         this.siftStrategy = siftStrategy;
     }
 
-    public Position computeNewPositionFor(List<Candle> newCandles, int volume) {
+    public Position computeNewPositionFor(List<Candle> newCandles, int depth, int volume) {
 
         List<Candle> sifted = siftStrategy.sift(getLastCandle(), newCandles);
         candles.addAll(sifted);
 
-        OrderDirection direction = computeOrderDirection();
+        OrderDirection direction = computeOrderDirection(depth);
 
         if (profitStrategy.shouldTakeProfit())
             return Position.closing();
@@ -75,7 +78,7 @@ public abstract class DecisionStrategy {
         return candles.get(candles.size() - 1);
     }
 
-    protected abstract OrderDirection computeOrderDirection();
+    protected abstract OrderDirection computeOrderDirection(int depth);
 
     public String getName() {
         Strategy annotation = this.getClass().getAnnotation(Strategy.class);

@@ -5,7 +5,7 @@ import tools.Format;
 /**
  * Created by ledenev.p on 16.04.2015.
  */
-public class TwoDepthAverageConstructor implements IAverageConstructor {
+public class TwoDepthAverageConstructor extends AverageConstructor {
 
     private IAverageConstructor averageConstructor;
 
@@ -14,7 +14,8 @@ public class TwoDepthAverageConstructor implements IAverageConstructor {
     }
 
     @Override
-    public double average(IAveragingSupport[] values) {
+    protected double nativeAverage(IAveragingSupport[] values) {
+
         IAveragingSupport[] halfValues = Format.copyFromEnd(values, values.length / 2);
 
         double fast = averageConstructor.average(halfValues);

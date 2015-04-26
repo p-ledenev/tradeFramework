@@ -3,7 +3,7 @@ package averageConstructors;
 /**
  * Created by ledenev.p on 16.04.2015.
  */
-public class ExponentialAverageConstructor implements IAverageConstructor {
+public class ExponentialAverageConstructor extends AverageConstructor {
 
     protected double L;
 
@@ -19,7 +19,7 @@ public class ExponentialAverageConstructor implements IAverageConstructor {
      * fast L*F - (L-1)*MA average
      */
     @Override
-    public double average(IAveragingSupport[] values) {
+    protected double nativeAverage(IAveragingSupport[] values) {
 
         double series = 0;
         int depth = values.length;
