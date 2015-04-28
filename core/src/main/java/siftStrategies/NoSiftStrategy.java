@@ -9,8 +9,8 @@ import java.util.List;
  */
 public class NoSiftStrategy extends SiftCandlesStrategy {
 
-    public NoSiftStrategy(double sieveParam) {
-        super(sieveParam);
+    public NoSiftStrategy() {
+        super(0);
     }
 
     @Override

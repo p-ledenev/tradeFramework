@@ -18,9 +18,7 @@ import java.util.Set;
  * Created by ledenev.p on 09.04.2015.
  */
 public abstract class DecisionStrategy {
-
     @Getter
-    @Setter
     protected List<Candle> candles;
     @Setter
     private ITakeProfitStrategy profitStrategy;
@@ -75,6 +73,10 @@ public abstract class DecisionStrategy {
     }
 
     public Candle getLastCandle() {
+
+        if (candles.size() == 0)
+            return Candle.empty();
+
         return candles.get(candles.size() - 1);
     }
 

@@ -18,6 +18,10 @@ public class Candle implements IAveragingSupport, IApproximationSupport {
     protected DateTime date;
     protected double value;
 
+    public static Candle empty() {
+        return new Candle(DateTime.now(), -100);
+    }
+
     public Candle(DateTime date, double value) {
         this.date = date;
         this.value = value;

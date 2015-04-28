@@ -6,6 +6,7 @@ import averageConstructors.IAveragingSupport;
 import lombok.Data;
 import model.Candle;
 import model.OrderDirection;
+import tools.Format;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,12 +34,21 @@ public class AveragingDecisionStrategy extends DecisionStrategy {
         addDerivatives(depth);
 
         double averageDerivative = getLastAverageDerivative();
+
+        if (averageDerivative > 0)
+            return OrderDirection.buy;
+
+        if (averageDerivative < 0)
+            return OrderDirection.sell;
+
+        return OrderDirection.none;
     }
 
     private void addDerivatives(int depth) {
         IAverageConstructor constructor = AverageConstructorFactory.createConstructor();
 
-        for (int i = derivatives.size(); i < candles.size(); i++) {
+        int start = (derivatives.size() + 2 > depth - 1) ? derivatives.size() + 2 : depth - 1;
+        for (int i = start; i < candles.size(); i++) {
 
             double averageValue = constructor.average(createArrayForAverageBy(i, depth));
             double derivativeValue = (averageValue - getLastAverageValue()) / averageValue;
@@ -46,7 +56,9 @@ public class AveragingDecisionStrategy extends DecisionStrategy {
             averageValues.add(averageValue);
             derivatives.add(new Derivative(derivativeValue));
 
-            double averageDerivative = constructor.average(derivativesAsArray());
+            double averageDerivative = 0;
+            if (derivatives.size() >= depth)
+                averageDerivative = constructor.average(Format.copyFromEnd(derivativesAsArray(), depth));
 
             averageDerivatives.add(averageDerivative);
         }
@@ -58,9 +70,6 @@ public class AveragingDecisionStrategy extends DecisionStrategy {
 
     private IAveragingSupport[] createArrayForAverageBy(int start, int depth) {
 
-        if (depth > start)
-            return new Candle[0];
-
         Candle[] array = new Candle[depth];
 
         for (int i = 0; i < depth; i++)
@@ -70,6 +79,10 @@ public class AveragingDecisionStrategy extends DecisionStrategy {
     }
 
     private double getLastAverageValue() {
+
+        if (averageValues.size() == 0)
+            return 0;
+
         return averageValues.get(averageValues.size() - 1);
     }
 
