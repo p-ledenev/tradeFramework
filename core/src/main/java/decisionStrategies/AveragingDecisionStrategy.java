@@ -4,7 +4,6 @@ import averageConstructors.AverageConstructorFactory;
 import averageConstructors.IAverageConstructor;
 import averageConstructors.IAveragingSupport;
 import lombok.Data;
-import model.Candle;
 import model.OrderDirection;
 import tools.Format;
 
@@ -16,16 +15,21 @@ import java.util.List;
  */
 
 @Data
+@Strategy(name = "AveragingStrategy")
 public class AveragingDecisionStrategy extends DecisionStrategy {
 
     private List<Double> averageValues;
     private List<Derivative> derivatives;
     private List<Double> averageDerivatives;
 
+    private IAverageConstructor constructor;
+
     public AveragingDecisionStrategy() {
         averageValues = new ArrayList<Double>();
         derivatives = new ArrayList<Derivative>();
         averageDerivatives = new ArrayList<Double>();
+
+        constructor = AverageConstructorFactory.createConstructor();
     }
 
     @Override
@@ -45,12 +49,11 @@ public class AveragingDecisionStrategy extends DecisionStrategy {
     }
 
     private void addDerivatives(int depth) {
-        IAverageConstructor constructor = AverageConstructorFactory.createConstructor();
 
         int start = (derivatives.size() + 2 > depth - 1) ? derivatives.size() + 2 : depth - 1;
         for (int i = start; i < candles.size(); i++) {
 
-            double averageValue = constructor.average(createArrayForAverageBy(i, depth));
+            double averageValue = constructor.average(createCandleArrayBy(i, depth));
             double derivativeValue = (averageValue - getLastAverageValue()) / averageValue;
 
             averageValues.add(averageValue);
@@ -68,16 +71,6 @@ public class AveragingDecisionStrategy extends DecisionStrategy {
         return derivatives.toArray(new Derivative[derivatives.size()]);
     }
 
-    private IAveragingSupport[] createArrayForAverageBy(int start, int depth) {
-
-        Candle[] array = new Candle[depth];
-
-        for (int i = 0; i < depth; i++)
-            array[i] = candles.get(start - depth + i + 1);
-
-        return array;
-    }
-
     private double getLastAverageValue() {
 
         if (averageValues.size() == 0)
@@ -89,4 +82,6 @@ public class AveragingDecisionStrategy extends DecisionStrategy {
     private double getLastAverageDerivative() {
         return averageDerivatives.get(averageDerivatives.size() - 1);
     }
+
+
 }

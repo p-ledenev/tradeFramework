@@ -1,7 +1,5 @@
 package averaging.testing;
 
-import approximation.testing.ApproximationSupportStub;
-import approximationConstructors.Approximation;
 import averageConstructors.MovingAverageConstructor;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +26,7 @@ public class MovingAverageTest {
         double[] y = {4, 8, 9, 12};
         AveragingSupportStub[] values = new AveragingSupportStub[4];
 
-        for(int i=0; i<values.length; i++)
+        for (int i = 0; i < values.length; i++)
             values[i] = new AveragingSupportStub(y[i]);
 
         double result = constructor.average(values);

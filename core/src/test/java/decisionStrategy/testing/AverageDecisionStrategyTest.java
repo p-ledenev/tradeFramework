@@ -1,17 +1,13 @@
-package averaging.testing;
+package decisionStrategy.testing;
 
+import averageConstructors.ExponentialAverageConstructor;
 import decisionStrategies.AveragingDecisionStrategy;
 import model.Candle;
 import model.OrderDirection;
 import model.Position;
 import org.hamcrest.CoreMatchers;
 import org.joda.time.DateTime;
-import org.junit.Before;
 import org.junit.Test;
-import siftStrategies.NoSiftStrategy;
-import siftStrategies.SiftCandlesStrategy;
-import takeProfitStrategies.ITakeProfitStrategy;
-import takeProfitStrategies.NoTakeProfitStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,57 +19,34 @@ import static org.junit.Assert.assertThat;
 /**
  * Created by ledenev.p on 28.04.2015.
  */
-public class AverageDecisionStrategyTest {
-
-    AveragingDecisionStrategy decisionStrategy;
-    List<Candle> candles;
-    Position position;
-
-    int depth;
-    int volume;
-
-    @Before
-    public void setUp() {
-
-        double[] candleValues = {1, 1.5, 2.1, 4, 3.5, 2.5, 2.9, 3.1, 3.5, 3.7, 4.5, 5};
-        DateTime date = DateTime.now();
-
-        depth = 3;
-        volume = 10;
-
-        candles = new ArrayList<Candle>();
-        for (double value : candleValues)
-            candles.add(new Candle(date.plusDays(1), value));
-
-        decisionStrategy = new AveragingDecisionStrategy();
-
-        SiftCandlesStrategy siftStrategy = new NoSiftStrategy();
-        decisionStrategy.setSiftStrategy(siftStrategy);
-
-        ITakeProfitStrategy profitStrategy = new NoTakeProfitStrategy();
-        decisionStrategy.setProfitStrategy(profitStrategy);
-
-        position = decisionStrategy.computeNewPositionFor(candles, depth, volume);
-    }
+public class AverageDecisionStrategyTest extends DecisionStrategyTestCase<AveragingDecisionStrategy> {
 
     @Test
     public void shouldComputeOrderDirection() {
+        Position position = decisionStrategy.computeNewPositionFor(candles, depth, volume);
+
         assertThat(position.getDirection(), is(equalTo(OrderDirection.buy)));
         assertThat(position.getVolume(), is(equalTo(volume)));
     }
 
     @Test
     public void shouldComputeDerivative() {
+        decisionStrategy.computeNewPositionFor(candles, depth, volume);
+
         assertThat(getLastDerivative(), is(equalTo(computeLastDerivative())));
     }
 
     @Test
     public void shouldComputeAverageDerivative() {
+        decisionStrategy.computeNewPositionFor(candles, depth, volume);
+
         assertThat(getLastAverageDerivative(), is(equalTo(0.1343)));
     }
 
     @Test
     public void examineArraysLength() {
+        decisionStrategy.computeNewPositionFor(candles, depth, volume);
+
         assertThat(decisionStrategy.getCandles().size(), is(equalTo(candles.size())));
         assertThat(decisionStrategy.getAverageValues().size(), is(equalTo(candles.size() - depth + 1)));
         assertThat(decisionStrategy.getDerivatives().size(), is(CoreMatchers.equalTo(candles.size() - depth + 1)));
@@ -82,6 +55,7 @@ public class AverageDecisionStrategyTest {
 
     @Test
     public void shouldAddOneNewCandles() {
+        decisionStrategy.computeNewPositionFor(candles, depth, volume);
 
         List<Candle> newCandles = new ArrayList<Candle>();
         newCandles.add(new Candle(DateTime.now(), 5.5));
@@ -95,6 +69,7 @@ public class AverageDecisionStrategyTest {
 
     @Test
     public void shouldAddTwoNewCandles() {
+        decisionStrategy.computeNewPositionFor(candles, depth, volume);
 
         List<Candle> newCandles = new ArrayList<Candle>();
         newCandles.add(new Candle(DateTime.now(), 5.5));
@@ -107,6 +82,28 @@ public class AverageDecisionStrategyTest {
         assertThat(getLastAverageDerivative(), is(equalTo(-0.0457)));
     }
 
+    @Test
+    public void shouldReturnNoneDirectionForMinCandlesLength() {
+
+        List<Candle> newCandles = new ArrayList<Candle>();
+        newCandles.add(new Candle(DateTime.now(), 5.5));
+        newCandles.add(new Candle(DateTime.now(), 4.5));
+        newCandles.add(new Candle(DateTime.now(), 6.0));
+
+        decisionStrategy.setCandles(new ArrayList<Candle>());
+
+        Position position = decisionStrategy.computeNewPositionFor(newCandles, depth, volume);
+
+        assertThat(position.getDirection(), is(equalTo(OrderDirection.none)));
+    }
+
+    @Override
+    protected AveragingDecisionStrategy createStrategy() {
+        AveragingDecisionStrategy decisionStrategy = new AveragingDecisionStrategy();
+        decisionStrategy.setConstructor(new ExponentialAverageConstructor());
+
+        return decisionStrategy;
+    }
 
     private double getLastDerivative() {
         return decisionStrategy.getDerivatives().get(decisionStrategy.getDerivatives().size() - 1).getValue();

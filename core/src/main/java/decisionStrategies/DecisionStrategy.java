@@ -1,8 +1,7 @@
 package decisionStrategies;
 
 import exceptions.NoDecisionStrategyFoundFailure;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import model.Candle;
 import model.OrderDirection;
 import model.Position;
@@ -17,12 +16,11 @@ import java.util.Set;
 /**
  * Created by ledenev.p on 09.04.2015.
  */
+@Data
 public abstract class DecisionStrategy {
-    @Getter
+
     protected List<Candle> candles;
-    @Setter
     private ITakeProfitStrategy profitStrategy;
-    @Setter
     private SiftCandlesStrategy siftStrategy;
 
     public static DecisionStrategy createFor(String name, ITakeProfitStrategy profitStrategy, SiftCandlesStrategy siftStrategy)
@@ -36,7 +34,7 @@ public abstract class DecisionStrategy {
         for (Class strategyClass : strategyClasses) {
             String strategyName = ((Strategy) strategyClass.getAnnotation(Strategy.class)).name();
 
-            if (strategyClass.equals(DecisionStrategy.class) && strategyName.equals(name)) {
+            if (DecisionStrategy.class.isAssignableFrom(strategyClass) && strategyName.equals(name)) {
                 DecisionStrategy strategy = (DecisionStrategy) strategyClass.newInstance();
                 strategy.setProfitStrategy(profitStrategy);
                 strategy.setSiftStrategy(siftStrategy);
@@ -64,10 +62,13 @@ public abstract class DecisionStrategy {
         List<Candle> sifted = siftStrategy.sift(getLastCandle(), newCandles);
         candles.addAll(sifted);
 
-        OrderDirection direction = computeOrderDirection(depth);
+        if (candles.size() < depth)
+            return Position.closing();
 
         if (profitStrategy.shouldTakeProfit())
             return Position.closing();
+
+        OrderDirection direction = computeOrderDirection(depth);
 
         return Position.opening(direction, volume);
     }
@@ -86,5 +87,15 @@ public abstract class DecisionStrategy {
         Strategy annotation = this.getClass().getAnnotation(Strategy.class);
 
         return annotation.name();
+    }
+
+    protected Candle[] createCandleArrayBy(int start, int depth) {
+
+        Candle[] array = new Candle[depth];
+
+        for (int i = 0; i < depth; i++)
+            array[i] = candles.get(start - depth + i + 1);
+
+        return array;
     }
 }
