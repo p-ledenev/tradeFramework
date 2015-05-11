@@ -31,12 +31,8 @@ public class Position {
         this.direction = direction;
     }
 
-    private double computeAmount(int volume) {
-        return direction.getSign() * value * volume;
-    }
-
-    public double computeProfit(Position position) {
-        return position.computeAmount(volume) + computeAmount(volume);
+    public double computeProfit(double value) {
+        return direction.getSign() * volume * (value - this.value);
     }
 
     public boolean hasSameDirection(Position position) {

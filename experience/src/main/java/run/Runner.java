@@ -2,6 +2,7 @@ package run;
 
 import factories.DataSourceFactory;
 import model.*;
+import resultWriters.TradeResultsWriter;
 import settings.InitialSettings;
 
 import java.util.List;
@@ -23,6 +24,9 @@ public class Runner {
 
             Trader trader = new Trader(portfolio, executor, candles);
             trader.trade();
+
+            TradeResultsWriter resultsWriter = new TradeResultsWriter(trader.getMachineCollectors(), trader.getPortfolioCollector());
+            resultsWriter.write();
         }
     }
 

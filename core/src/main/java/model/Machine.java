@@ -3,6 +3,7 @@ package model;
 import decisionStrategies.DecisionStrategy;
 import exceptions.PositionAlreadySetFailure;
 import lombok.Data;
+import org.joda.time.DateTime;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ import java.util.List;
  */
 
 @Data
-public class Machine {
+public class Machine implements IStateSupport {
 
     private Portfolio portfolio;
 
@@ -27,7 +28,7 @@ public class Machine {
 
         currentMoney -= position.computeClosingCommission(newPosition);
         currentMoney -= newPosition.computeOpeningCommission();
-        currentMoney += position.computeProfit(newPosition);
+        currentMoney += position.computeProfit(newPosition.getValue());
 
         position = newPosition;
     }
@@ -57,5 +58,7 @@ public class Machine {
         return decisionStrategy.getLastCandle();
     }
 
-
+    public DateTime getPositionDate() {
+        return position.getDate();
+    }
 }

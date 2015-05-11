@@ -8,7 +8,7 @@ import lombok.Getter;
 
 public enum OrderDirection {
 
-    buy("B", -1), sell("S", 1), none("N", 0);
+    buy("B", 1), sell("S", -1), none("N", 0);
 
     @Getter
     private String name;

@@ -1,5 +1,7 @@
 package model;
 
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,16 +10,21 @@ import java.util.List;
  */
 public class Trader {
 
-    protected List<Candle> candles;
-    protected CandleProcessor candleProcessor;
-    protected List<MachineStatesCollector> collectors;
+    private List<Candle> candles;
+    private CandleProcessor candleProcessor;
+    @Getter
+    private List<MachineStatesCollector> machineCollectors;
+    @Getter
+    private PortfolioStateCollector portfolioCollector;
 
     public Trader(Portfolio portfolio, IOrdersExecutor orderExecutor, List<Candle> candles) {
 
         candleProcessor = new CandleProcessor(portfolio, orderExecutor);
-        collectors = new ArrayList<MachineStatesCollector>();
+        portfolioCollector = new PortfolioStateCollector(portfolio);
+
+        machineCollectors = new ArrayList<MachineStatesCollector>();
         for (Machine machine : portfolio.getMachines())
-            collectors.add(new MachineStatesCollector(machine));
+            machineCollectors.add(new MachineStatesCollector(machine));
 
         this.candles = candles;
     }
@@ -27,8 +34,10 @@ public class Trader {
         for (Candle candle : candles) {
             candleProcessor.processNext(candle);
 
-            for(MachineStatesCollector statesCollector : collectors)
+            for (MachineStatesCollector statesCollector : machineCollectors)
                 statesCollector.addStateIfChanged();
+
+            portfolioCollector.addStateIfChanged();
         }
     }
 }

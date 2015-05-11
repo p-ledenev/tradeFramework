@@ -1,6 +1,7 @@
 package model;
 
 import lombok.Data;
+import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
  */
 
 @Data
-public class Portfolio {
+public class Portfolio implements IStateSupport {
 
     private List<Machine> machines;
     private String security;
@@ -27,5 +28,28 @@ public class Portfolio {
 
     public String printStrategy() {
         return machines.get(0).getDecisionStrategyName();
+    }
+
+    @Override
+    public State getState() {
+        return new State(getLatestTime(), computeCurrentMoney());
+    }
+
+    private double computeCurrentMoney() {
+        double currentMoney = 0;
+        for (Machine machine : machines)
+            currentMoney += machine.getCurrentMoney();
+
+        return currentMoney;
+    }
+
+    private DateTime getLatestTime() {
+        DateTime date = machines.get(0).getPositionDate();
+
+        for (Machine machine : machines)
+            if (date.isBefore(machine.getPositionDate()))
+                date = machine.getPositionDate();
+
+        return date;
     }
 }
