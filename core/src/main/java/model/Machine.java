@@ -61,4 +61,8 @@ public class Machine implements IStateSupport {
     public DateTime getPositionDate() {
         return position.getDate();
     }
+
+    public List<Candle> getCandles() {
+        return decisionStrategy.getCandles();
+    }
 }

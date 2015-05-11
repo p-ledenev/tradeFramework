@@ -13,9 +13,7 @@ import java.util.List;
  */
 
 @Data
-public abstract class ResultWriter {
-
-    public static String resultPath = "results";
+public abstract class ResultWriter implements IResultWriter {
 
     protected List<MachineStatesCollector> machineCollectors;
     protected PortfolioStateCollector portfolioCollector;
@@ -45,7 +43,7 @@ public abstract class ResultWriter {
         String title = getPortfolio().getTitle();
         int year = machineCollectors.get(0).getYear();
 
-        return new PrintWriter(resultPath + "\\" + fileName + "_" + security + "_" + year + "_" + title + ".csv", "utf-8");
+        return new PrintWriter(TradeResultsWriter.resultPath + "\\" + fileName + "_" + security + "_" + year + "_" + title + ".csv", "utf-8");
     }
 
     private Portfolio getPortfolio() {
