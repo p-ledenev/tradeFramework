@@ -1,7 +1,7 @@
 package resultWriters;
 
-import model.MachineStatesCollector;
-import model.PortfolioStateCollector;
+import model.MachineMoneyStatesCollector;
+import model.Portfolio;
 
 import java.io.PrintWriter;
 import java.util.List;
@@ -11,32 +11,46 @@ import java.util.List;
  */
 public class MachinesDataWriter extends ResultWriter {
 
-    public MachinesDataWriter(List<MachineStatesCollector> machineCollectors, String fileName) {
-        super(machineCollectors, null, fileName);
+    private List<MachineMoneyStatesCollector> statesCollectors;
+
+    public MachinesDataWriter(List<MachineMoneyStatesCollector> statesCollectors, String fileName) {
+        super(fileName);
+
+        this.statesCollectors = statesCollectors;
     }
 
     @Override
     public void writeTo(PrintWriter writer) {
 
         String head = "";
-        for (MachineStatesCollector collector : machineCollectors)
+        for (MachineMoneyStatesCollector collector : statesCollectors)
             head += collector.printHead() + "; ;";
         writer.write(head);
 
         int maxCapacity = getCollectorsMaxCapacity();
         for (int i = 0; i < maxCapacity; i++) {
             String info = "";
-            for (MachineStatesCollector collector : machineCollectors)
+            for (MachineMoneyStatesCollector collector : statesCollectors)
                 info += collector.printState(i) + "; ;";
 
             writer.write(info);
         }
     }
 
+    @Override
+    protected Portfolio getPortfolio() {
+        return statesCollectors.get(0).getPortfolio();
+    }
+
+    @Override
+    protected int getYear() {
+        return statesCollectors.get(0).getYear();
+    }
+
     private int getCollectorsMaxCapacity() {
 
         int maxCapacity = 0;
-        for (MachineStatesCollector collector : machineCollectors)
+        for (MachineMoneyStatesCollector collector : statesCollectors)
             if (collector.getStatesSize() > maxCapacity)
                 maxCapacity = collector.getStatesSize();
 

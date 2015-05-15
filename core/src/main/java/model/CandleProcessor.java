@@ -23,7 +23,7 @@ public class CandleProcessor {
         portfolios.add(portfolio);
     }
 
-    protected List<Order> processNext(Candle... candles) throws Throwable {
+    public List<Order> processNext(Candle... candles) throws Throwable {
 
         List<Order> orders = new ArrayList<Order>();
         for (Portfolio portfolio : portfolios)

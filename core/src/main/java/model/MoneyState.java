@@ -11,12 +11,12 @@ import tools.Format;
  */
 
 @Data
-public class State {
+public class MoneyState {
 
     protected DateTime date;
     protected double money;
 
-    public State(DateTime date, double money) {
+    public MoneyState(DateTime date, double money) {
         this.date = date;
         this.money = money;
     }
@@ -27,7 +27,7 @@ public class State {
         return Format.indexFor(date) + ";" + formatter.print(date) + ";" + money;
     }
 
-    public boolean equals(State state) {
+    public boolean equals(MoneyState state) {
 
         if (state == null)
             return false;

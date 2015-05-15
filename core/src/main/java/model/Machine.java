@@ -12,7 +12,7 @@ import java.util.List;
  */
 
 @Data
-public class Machine implements IStateSupport {
+public class Machine implements IMoneyStateSupport {
 
     private Portfolio portfolio;
 
@@ -50,8 +50,8 @@ public class Machine implements IStateSupport {
         return decisionStrategy.getName();
     }
 
-    public State getState() {
-        return new State(position.getDate(), currentMoney);
+    public MoneyState getCurrentState() {
+        return new MoneyState(position.getDate(), currentMoney);
     }
 
     public Candle getLastCandle() {

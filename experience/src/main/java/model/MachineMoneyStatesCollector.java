@@ -1,17 +1,12 @@
 package model;
 
-import lombok.Getter;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by ledenev.p on 02.04.2015.
  */
 
-public class MachineStatesCollector extends StatesCollector<Machine> {
+public class MachineMoneyStatesCollector extends MoneyStatesCollector<Machine> {
 
-    public MachineStatesCollector(Machine machine) {
+    public MachineMoneyStatesCollector(Machine machine) {
         super(machine);
     }
 

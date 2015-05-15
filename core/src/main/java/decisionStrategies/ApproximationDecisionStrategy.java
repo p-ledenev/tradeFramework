@@ -11,10 +11,11 @@ import model.OrderDirection;
  */
 
 @Data
-@Strategy(name ="ApproximationStrategy")
+@Strategy(name = "ApproximationStrategy")
 public class ApproximationDecisionStrategy extends DecisionStrategy {
 
     private IApproximationConstructor constructor;
+    private Approximation ap;
 
     public ApproximationDecisionStrategy() {
         constructor = new LinearApproximationConstructor();
@@ -23,7 +24,7 @@ public class ApproximationDecisionStrategy extends DecisionStrategy {
     @Override
     protected OrderDirection computeOrderDirection(int depth) {
 
-        Approximation ap = constructor.approximate(createCandleArrayBy(candles.size() - 1, depth));
+        ap = constructor.approximate(createCandleArrayBy(candles.size() - 1, depth));
 
         double highestDegreeParam = ap.getHighestDegreeParameter();
 
@@ -34,5 +35,21 @@ public class ApproximationDecisionStrategy extends DecisionStrategy {
             return OrderDirection.sell;
 
         return OrderDirection.none;
+    }
+
+    @Override
+    public String[] getStateParamsHeader() {
+        return new String[]{
+                "k", "kx+b", "approximatedValue"
+        };
+    }
+
+    @Override
+    protected String[] collectCurrentStateParams() {
+        return new String[]{
+                Double.toString(ap.getHighestDegreeParameter()),
+                ap.printPowerFunction(),
+                Double.toString(ap.computeApproximatedValue())
+        };
     }
 }

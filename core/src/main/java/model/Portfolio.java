@@ -11,7 +11,7 @@ import java.util.List;
  */
 
 @Data
-public class Portfolio implements IStateSupport {
+public class Portfolio implements IMoneyStateSupport {
 
     private List<Machine> machines;
     private String security;
@@ -31,8 +31,8 @@ public class Portfolio implements IStateSupport {
     }
 
     @Override
-    public State getState() {
-        return new State(getLatestTime(), computeCurrentMoney());
+    public MoneyState getCurrentState() {
+        return new MoneyState(getLatestTime(), computeCurrentMoney());
     }
 
     private double computeCurrentMoney() {
@@ -51,5 +51,9 @@ public class Portfolio implements IStateSupport {
                 date = machine.getPositionDate();
 
         return date;
+    }
+
+    public int countMachines() {
+        return machines.size();
     }
 }

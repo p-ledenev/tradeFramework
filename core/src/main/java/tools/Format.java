@@ -1,6 +1,8 @@
 package tools;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 public class Format {
 
@@ -15,5 +17,8 @@ public class Format {
         return java.util.Arrays.copyOfRange(array, array.length - depth, array.length);
     }
 
-
+    public static String asString(DateTime date) {
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm:ss");
+        return formatter.print(date);
+    }
 }

@@ -1,24 +1,37 @@
 package resultWriters;
 
-import model.MachineStatesCollector;
-import model.PortfolioStateCollector;
+import model.Portfolio;
+import model.PortfolioMoneyStatesCollector;
 
 import java.io.PrintWriter;
-import java.util.List;
 
 /**
  * Created by DiKey on 11.05.2015.
  */
 public class PortfolioDataWriter extends ResultWriter {
 
-    public PortfolioDataWriter(PortfolioStateCollector portfolioCollector, String fileName) {
-        super(null, portfolioCollector, fileName);
+    private PortfolioMoneyStatesCollector statesCollector;
+
+    public PortfolioDataWriter(PortfolioMoneyStatesCollector statesCollector, String fileName) {
+        super(fileName);
+
+        this.statesCollector = statesCollector;
     }
 
     @Override
     public void writeTo(PrintWriter writer) {
 
-        writer.write(portfolioCollector.printHead());
-        portfolioCollector.writeStatesTo(writer);
+        writer.write(statesCollector.printHead());
+        statesCollector.writeStatesTo(writer);
+    }
+
+    @Override
+    protected Portfolio getPortfolio() {
+        return statesCollector.getEntity();
+    }
+
+    @Override
+    protected int getYear() {
+        return statesCollector.getYear();
     }
 }

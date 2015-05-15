@@ -1,30 +1,21 @@
 package resultWriters;
 
-import lombok.Data;
-import model.MachineStatesCollector;
+import lombok.*;
 import model.Portfolio;
-import model.PortfolioStateCollector;
 
 import java.io.PrintWriter;
-import java.util.List;
 
 /**
  * Created by DiKey on 11.05.2015.
  */
 
 @Data
-public abstract class ResultWriter implements IResultWriter {
+@AllArgsConstructor
+public abstract class ResultWriter {
 
-    protected List<MachineStatesCollector> machineCollectors;
-    protected PortfolioStateCollector portfolioCollector;
+    public static String resultPath = "results";
+
     private String fileName;
-
-
-    public ResultWriter(List<MachineStatesCollector> machineCollectors, PortfolioStateCollector portfolioCollector, String fileName) {
-        this.machineCollectors = machineCollectors;
-        this.portfolioCollector = portfolioCollector;
-        this.fileName = fileName;
-    }
 
     public void write() throws Throwable {
 
@@ -35,18 +26,18 @@ public abstract class ResultWriter implements IResultWriter {
         writer.close();
     }
 
-    public abstract void writeTo(PrintWriter writer);
+    protected abstract void writeTo(PrintWriter writer);
 
     private PrintWriter createPrintWriterFor(String fileName) throws Throwable {
 
         String security = getPortfolio().getSecurity();
         String title = getPortfolio().getTitle();
-        int year = machineCollectors.get(0).getYear();
+        int year = getYear();
 
-        return new PrintWriter(TradeResultsWriter.resultPath + "\\" + fileName + "_" + security + "_" + year + "_" + title + ".csv", "utf-8");
+        return new PrintWriter(resultPath + "\\" + fileName + "_" + security + "_" + year + "_" + title + ".csv", "utf-8");
     }
 
-    private Portfolio getPortfolio() {
-        return machineCollectors.get(0).getPortfolio();
-    }
+    protected abstract Portfolio getPortfolio();
+
+    protected abstract int getYear();
 }

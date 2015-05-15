@@ -1,6 +1,5 @@
 package model.testing;
 
-import javafx.geometry.Pos;
 import model.OrderDirection;
 import model.Position;
 import org.junit.Before;

@@ -48,6 +48,22 @@ public class AveragingDecisionStrategy extends DecisionStrategy {
         return OrderDirection.none;
     }
 
+    @Override
+    public String[] getStateParamsHeader() {
+        return new String[]{
+                "average", "derivative", "averageDerivative"
+        };
+    }
+
+    @Override
+    protected String[] collectCurrentStateParams() {
+        return new String[]{
+                Double.toString(getLastAverageValue()),
+                Double.toString(getLastDerivativeValue()),
+                Double.toString(getLastAverageDerivative())
+        };
+    }
+
     private void addDerivatives(int depth) {
 
         int start = (derivatives.size() + 2 > depth - 1) ? derivatives.size() + 2 : depth - 1;
@@ -74,7 +90,7 @@ public class AveragingDecisionStrategy extends DecisionStrategy {
     private double getLastAverageValue() {
 
         if (averageValues.size() == 0)
-            return 0;
+            return 0.;
 
         return averageValues.get(averageValues.size() - 1);
     }
@@ -83,5 +99,11 @@ public class AveragingDecisionStrategy extends DecisionStrategy {
         return averageDerivatives.get(averageDerivatives.size() - 1);
     }
 
+    private double getLastDerivativeValue() {
 
+        if (derivatives.size() == 0)
+            return 0.;
+
+        return derivatives.get(derivatives.size() - 1).getValue();
+    }
 }

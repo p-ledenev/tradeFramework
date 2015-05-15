@@ -1,7 +1,6 @@
 package model;
 
 import lombok.Getter;
-import tools.Format;
 import tools.Round;
 
 import java.io.PrintWriter;
@@ -11,28 +10,28 @@ import java.util.List;
 /**
  * Created by DiKey on 11.05.2015.
  */
-public abstract class StatesCollector<TEntity extends IStateSupport> {
+public abstract class MoneyStatesCollector<TEntity extends IMoneyStateSupport> {
 
     @Getter
     protected TEntity entity;
     @Getter
-    protected List<State> states;
+    protected List<MoneyState> states;
 
-    public StatesCollector(TEntity entity) {
+    public MoneyStatesCollector(TEntity entity) {
         this.entity = entity;
 
-        states = new ArrayList<State>();
+        states = new ArrayList<MoneyState>();
     }
 
     public void addStateIfChanged() {
 
-        if (entity.getState().equals(getLastState()))
+        if (entity.getCurrentState().equals(getLastState()))
             return;
 
-        states.add(entity.getState());
+        states.add(entity.getCurrentState());
     }
 
-    protected State getLastState() {
+    protected MoneyState getLastState() {
         if (states.size() == 0)
             return null;
 
@@ -45,14 +44,14 @@ public abstract class StatesCollector<TEntity extends IStateSupport> {
 
     public String printState(int index) {
         if (states.size() <= index)
-            return ";;;";
+            return ";;";
 
-        return ";" + states.get(index).printCSV();
+        return states.get(index).printCSV();
     }
 
     public void writeStatesTo(PrintWriter writer) {
-        for (State state : states)
-            writer.write(";" + state.printCSV());
+        for (MoneyState state : states)
+            writer.write(state.printCSV());
     }
 
     public int getStatesSize() {
@@ -83,7 +82,7 @@ public abstract class StatesCollector<TEntity extends IStateSupport> {
     public double computeMaxRelativeMoney() {
 
         double maxes = 0;
-        for (State state : states)
+        for (MoneyState state : states)
             if (state.getMoney() > maxes)
                 maxes = state.getMoney();
 
@@ -96,7 +95,6 @@ public abstract class StatesCollector<TEntity extends IStateSupport> {
 
         return computeRelativeMoneyFor(getLastState().getMoney());
     }
-
 
     protected double computeRelativeMoneyFor(double value) {
         if (states.size() <= 0)

@@ -98,4 +98,12 @@ public abstract class DecisionStrategy {
 
         return array;
     }
+
+    public StrategyState getCurrentState() {
+        return new StrategyState(getLastCandle(), collectCurrentStateParams());
+    }
+
+    public abstract String[] getStateParamsHeader();
+
+    protected abstract String[] collectCurrentStateParams();
 }

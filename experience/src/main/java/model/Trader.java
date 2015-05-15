@@ -1,32 +1,25 @@
 package model;
 
-import lombok.Getter;
+import resultWriters.PortfolioDataWriter;
+import resultWriters.ResultWriter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by ledenev.p on 02.04.2015.
+ * Created by ledenev.p on 12.05.2015.
  */
-public class Trader {
+public abstract class Trader {
 
-    private List<Candle> candles;
-    private CandleProcessor candleProcessor;
-    @Getter
-    private List<MachineStatesCollector> machineCollectors;
-    @Getter
-    private PortfolioStateCollector portfolioCollector;
+    protected List<Candle> candles;
+    protected CandleProcessor candleProcessor;
+    PortfolioMoneyStatesCollector portfolioCollector;
 
     public Trader(Portfolio portfolio, IOrdersExecutor orderExecutor, List<Candle> candles) {
-
-        candleProcessor = new CandleProcessor(portfolio, orderExecutor);
-        portfolioCollector = new PortfolioStateCollector(portfolio);
-
-        machineCollectors = new ArrayList<MachineStatesCollector>();
-        for (Machine machine : portfolio.getMachines())
-            machineCollectors.add(new MachineStatesCollector(machine));
-
         this.candles = candles;
+        candleProcessor = new CandleProcessor(portfolio, orderExecutor);
+
+        portfolioCollector = new PortfolioMoneyStatesCollector(portfolio);
     }
 
     public void trade() throws Throwable {
@@ -34,10 +27,23 @@ public class Trader {
         for (Candle candle : candles) {
             candleProcessor.processNext(candle);
 
-            for (MachineStatesCollector statesCollector : machineCollectors)
-                statesCollector.addStateIfChanged();
-
             portfolioCollector.addStateIfChanged();
+
+            collectMachinesTradeData();
         }
     }
+
+    public List<ResultWriter> getResultsWriters() {
+        List<ResultWriter> writers = new ArrayList<ResultWriter>();
+
+        writers.add(new PortfolioDataWriter(portfolioCollector, "averageMoney"));
+        writers.addAll(collectResultWriters());
+
+        return writers;
+    }
+
+    protected abstract List<ResultWriter> collectResultWriters();
+
+    protected abstract void collectMachinesTradeData();
+
 }

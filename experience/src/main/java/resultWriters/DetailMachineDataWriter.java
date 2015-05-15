@@ -1,51 +1,73 @@
 package resultWriters;
 
-import model.*;
+import lombok.Data;
+import model.MachinePositionsCollector;
+import model.Portfolio;
+import model.Position;
+import model.StrategyStatesCollector;
+import tools.Format;
 
 import java.io.PrintWriter;
-import java.util.List;
 
 /**
  * Created by DiKey on 11.05.2015.
  */
-public class DetailMachineDataWriter implements IResultWriter {
 
-    private
-    private String fileName;
+@Data
+public class DetailMachineDataWriter extends ResultWriter {
 
-    public void write() throws Throwable {
+    private MachinePositionsCollector positionsCollector;
+    private StrategyStatesCollector statesCollector;
 
-        PrintWriter writer = createPrintWriterFor(fileName);
+    public DetailMachineDataWriter(MachinePositionsCollector positionsCollector, StrategyStatesCollector statesCollector, String fileName) {
+        super(fileName);
 
-        writeTo(writer);
-
-        writer.close();
+        this.positionsCollector = positionsCollector;
+        this.statesCollector = statesCollector;
     }
 
-    public abstract void writeTo(PrintWriter writer);
+    @Override
+    protected void writeTo(PrintWriter writer) {
 
-    private PrintWriter createPrintWriterFor(String fileName) throws Throwable {
+        writer.write(printHeaders());
 
-        String security = getPortfolio().getSecurity();
-        String title = getPortfolio().getTitle();
-        int year = machineCollectors.get(0).getYear();
-
-        return new PrintWriter(TradeResultsWriter.resultPath + "\\" + fileName + "_" + security + "_" + year + "_" + title + ".csv", "utf-8");
+        for (int i = 0; i < statesCollector.collectionSize(); i++)
+            writer.write(statesCollector.get(i).printCSV() + "; ;" + printPosition(i));
     }
 
-    private Portfolio getPortfolio() {
-        return machineCollectors.get(0).getPortfolio();
+    private String printPosition(int i) {
+
+        if (!positionsCollector.hasPosition(i))
+            return "";
+
+        Position position = positionsCollector.get(i);
+
+        String response = Format.indexFor(position.getDate()) + ";" + Format.asString(position.getDate()) + ";";
+
+        if (position.isBuy())
+            response += position.getValue() + ";;";
+
+        if (position.isSell())
+            response += ";" + position.getValue() + ";";
+
+        if (position.isNone())
+            response += ";;" + position.getValue();
+
+        return response;
+    }
+
+    @Override
+    protected Portfolio getPortfolio() {
+        return positionsCollector.getPortfolio();
+    }
+
+
+    @Override
+    protected int getYear() {
+        return positionsCollector.getYear();
     }
 
     private String printHeaders() {
-        return "dateIndex|date|candleValue| |dateIndex|date|openBuy|openSell|closeBuy|closeSell|";
-    }
-
-    private List<Candle> getCandles() {
-        return machineCollectors.get(0).getEntity().getCandles();
-    }
-
-    private List<State> getMachineStates() {
-        return
+        return statesCollector.printHeader() + "; ;dateIndex;date;openBuy;openSell;close;";
     }
 }

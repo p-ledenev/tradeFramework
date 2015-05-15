@@ -5,8 +5,7 @@ import averageConstructors.IAveragingSupport;
 import lombok.Data;
 import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import tools.Format;
 
 /**
  * Created by ledenev.p on 31.03.2015.
@@ -33,9 +32,7 @@ public class Candle implements IAveragingSupport, IApproximationSupport {
     }
 
     public String print() {
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm:ss");
-
-        return "date: " + formatter.print(date) + "; value: " + value;
+        return "date: " + Format.asString(date) + "; value: " + value;
     }
 
     public double computeVariance(double value) {
@@ -58,5 +55,9 @@ public class Candle implements IAveragingSupport, IApproximationSupport {
     @Override
     public double getValueForAveraging() {
         return value;
+    }
+
+    public String printCSV() {
+        return Format.indexFor(date) + ";" + Format.asString(date) + ";" + value;
     }
 }

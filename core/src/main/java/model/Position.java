@@ -50,4 +50,27 @@ public class Position {
     public double computeOpeningCommission() {
         return commissionStrategy.computeOpenPositionCommission(value, volume);
     }
+
+    public int getYear() {
+        return date.getYear();
+    }
+
+    public boolean isBuy() {
+        return direction.isEqual(OrderDirection.buy);
+    }
+
+    public boolean isSell() {
+        return direction.isEqual(OrderDirection.sell);
+    }
+
+    public boolean isNone() {
+        return direction.isEqual(OrderDirection.none);
+    }
+
+    public boolean equals(Position position) {
+        if (position == null)
+            return false;
+
+        return direction.equals(position.getDirection()) && volume == position.getVolume() && value == position.getValue();
+    }
 }
