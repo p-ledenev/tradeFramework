@@ -1,5 +1,9 @@
 package siftStrategies;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import model.Candle;
 
 import java.util.ArrayList;
@@ -8,11 +12,10 @@ import java.util.List;
 /**
  * Created by DiKey on 12.04.2015.
  */
-public class MinMaxSiftStrategy extends SiftCandlesStrategy {
+@AllArgsConstructor
+public class MinMaxSiftStrategy implements ISiftCandlesStrategy {
 
-    public MinMaxSiftStrategy(double sieveParam) {
-        super(sieveParam);
-    }
+    protected double sieveParam;
 
     @Override
     public List<Candle> sift(Candle base, List<Candle> newCandles) {

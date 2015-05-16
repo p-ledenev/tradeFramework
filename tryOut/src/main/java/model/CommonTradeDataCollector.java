@@ -11,18 +11,16 @@ import java.util.List;
 /**
  * Created by ledenev.p on 02.04.2015.
  */
-public class CommonTrader extends Trader {
+public class CommonTradeDataCollector extends TradeDataCollector {
     @Getter
     private List<MachineMoneyStatesCollector> machineCollectors;
 
-    public CommonTrader(Portfolio portfolio, IOrdersExecutor orderExecutor, List<Candle> candles) {
-        super(portfolio, orderExecutor, candles);
+    public CommonTradeDataCollector(Portfolio portfolio) {
+        super(portfolio);
 
         machineCollectors = new ArrayList<MachineMoneyStatesCollector>();
         for (Machine machine : portfolio.getMachines())
             machineCollectors.add(new MachineMoneyStatesCollector(machine));
-
-        this.candles = candles;
     }
 
     @Override

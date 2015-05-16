@@ -17,6 +17,17 @@ public class Portfolio implements IMoneyStateSupport {
     private String security;
     private String title;
 
+    public Portfolio(String title, String security) {
+        this.title = title;
+        this.security = security;
+
+        machines = new ArrayList<Machine>();
+    }
+
+    public void addMachine(Machine machine) {
+        machines.add(machine);
+    }
+
     public List<Order> processCandles(List<Candle> candles) {
 
         List<Order> orders = new ArrayList<Order>();

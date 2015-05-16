@@ -3,9 +3,9 @@ package runner;
 /**
  * Created by ledenev.p on 15.05.2015.
  */
-public interface ICollectTradeData {
+public interface ITradeDataCollector {
 
     void collect();
 
-    IResultWriter getResultWriter();
+    ITradeDataWriter getResultWriter();
 }

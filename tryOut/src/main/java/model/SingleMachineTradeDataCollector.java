@@ -9,13 +9,13 @@ import java.util.List;
 /**
  * Created by ledenev.p on 12.05.2015.
  */
-public class SingleMachineTrader extends Trader {
+public class SingleMachineTradeDataCollector extends TradeDataCollector {
 
     private MachinePositionsCollector positionsCollector;
     private StrategyStatesCollector statesCollector;
 
-    public SingleMachineTrader(Portfolio portfolio, IOrdersExecutor orderExecutor, List<Candle> candles) {
-        super(portfolio, orderExecutor, candles);
+    public SingleMachineTradeDataCollector(Portfolio portfolio) {
+        super(portfolio);
 
         Machine machine = portfolio.getMachines().get(0);
 

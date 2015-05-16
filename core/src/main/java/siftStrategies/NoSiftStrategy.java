@@ -7,11 +7,7 @@ import java.util.List;
 /**
  * Created by DiKey on 12.04.2015.
  */
-public class NoSiftStrategy extends SiftCandlesStrategy {
-
-    public NoSiftStrategy() {
-        super(0);
-    }
+public class NoSiftStrategy implements ISiftCandlesStrategy {
 
     @Override
     public List<Candle> sift(Candle base, List<Candle> newCandles) {

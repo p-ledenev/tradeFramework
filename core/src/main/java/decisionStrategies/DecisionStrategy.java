@@ -6,7 +6,7 @@ import model.Candle;
 import model.OrderDirection;
 import model.Position;
 import org.reflections.Reflections;
-import siftStrategies.SiftCandlesStrategy;
+import siftStrategies.ISiftCandlesStrategy;
 import takeProfitStrategies.ITakeProfitStrategy;
 
 import java.util.ArrayList;
@@ -21,9 +21,9 @@ public abstract class DecisionStrategy {
 
     protected List<Candle> candles;
     private ITakeProfitStrategy profitStrategy;
-    private SiftCandlesStrategy siftStrategy;
+    private ISiftCandlesStrategy siftStrategy;
 
-    public static DecisionStrategy createFor(String name, ITakeProfitStrategy profitStrategy, SiftCandlesStrategy siftStrategy)
+    public static DecisionStrategy createFor(String name, ITakeProfitStrategy profitStrategy, ISiftCandlesStrategy siftStrategy)
             throws Throwable {
         Reflections reflections = new Reflections("decisionStrategies");
         Set<Class<?>> strategyClasses = reflections.getTypesAnnotatedWith(Strategy.class);
@@ -50,7 +50,7 @@ public abstract class DecisionStrategy {
         candles = new ArrayList<Candle>();
     }
 
-    public DecisionStrategy(ITakeProfitStrategy profitStrategy, SiftCandlesStrategy siftStrategy) {
+    public DecisionStrategy(ITakeProfitStrategy profitStrategy, ISiftCandlesStrategy siftStrategy) {
         this();
 
         this.profitStrategy = profitStrategy;

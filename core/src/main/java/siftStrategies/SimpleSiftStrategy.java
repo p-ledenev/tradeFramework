@@ -1,5 +1,6 @@
 package siftStrategies;
 
+import lombok.AllArgsConstructor;
 import model.Candle;
 
 import java.util.ArrayList;
@@ -8,11 +9,11 @@ import java.util.List;
 /**
  * Created by DiKey on 12.04.2015.
  */
-public class SimpleSiftStrategy extends SiftCandlesStrategy {
 
-    public SimpleSiftStrategy(double sieveParam) {
-        super(sieveParam);
-    }
+@AllArgsConstructor
+public class SimpleSiftStrategy implements ISiftCandlesStrategy {
+
+    protected double sieveParam;
 
     @Override
     public List<Candle> sift(Candle base, List<Candle> newCandles) {

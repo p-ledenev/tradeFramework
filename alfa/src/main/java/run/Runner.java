@@ -13,7 +13,9 @@ public class Runner {
     public static void main(String[] args) throws Throwable {
 
         List<Portfolio> portfolios = PortfolioInitializer.initialize();
-            }
+
+
+    }
 
 
 }

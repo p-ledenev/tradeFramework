@@ -17,7 +17,7 @@ public class LinearApproximationConstructor implements IApproximationConstructor
         regression.newSampleData(data, values.length, 1);
         double[] regressionParameters = regression.estimateRegressionParameters();
 
-        return new Approximation(round(regressionParameters));
+        return new Approximation(round(regressionParameters), values.length);
     }
 
     private double[] createOLSDataFrom(IApproximationSupport[] values) {

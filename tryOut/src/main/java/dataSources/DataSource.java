@@ -9,5 +9,7 @@ import java.util.List;
  */
 public abstract class DataSource {
 
+    public static String sourcePath = "sources";
+
     public abstract List<Candle> readCandlesFrom(String fileName);
 }

@@ -42,7 +42,7 @@ public class StrategyStatesCollector {
 
     public String printHeader() {
 
-        String response = "date;dateIndex;value;";
+        String response = "dateIndex;date;value;";
         for (String param : strategy.getStateParamsHeader())
             response += param + ";";
 

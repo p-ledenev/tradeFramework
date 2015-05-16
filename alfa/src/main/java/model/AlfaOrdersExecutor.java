@@ -7,7 +7,6 @@ import java.util.List;
  */
 public class AlfaOrdersExecutor implements IOrdersExecutor {
 
-    @Override
     public void execute(List<Order> orders) {
         // TODO real market execution
     }

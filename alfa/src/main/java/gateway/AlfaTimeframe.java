@@ -9,7 +9,7 @@ public enum AlfaTimeframe {
 
     int code;
 
-    AlfaTimeframe(int code) {
+    private AlfaTimeframe(int code) {
         this.code = code;
     }
 }

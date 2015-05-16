@@ -1,4 +1,4 @@
-package run;
+package model;
 
 import model.Candle;
 import runner.ICandlesIterator;

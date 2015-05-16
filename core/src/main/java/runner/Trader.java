@@ -2,7 +2,7 @@ package runner;
 
 import lombok.AllArgsConstructor;
 import model.Candle;
-import model.CandleProcessor;
+import model.ICandlesProcessor;
 
 /**
  * Created by ledenev.p on 15.05.2015.
@@ -12,22 +12,22 @@ import model.CandleProcessor;
 public class Trader {
 
     private ICandlesIterator candlesIterator;
-    private CandleProcessor candleProcessor;
-    private ICollectTradeData dataCollector;
+    private ICandlesProcessor candlesProcessor;
+    private ITradeDataCollector dataCollector;
 
     public void trade() throws Throwable {
 
         while (candlesIterator.hasNextCandles()) {
             Candle[] candles = candlesIterator.getNextCandles();
 
-            candleProcessor.processNext(candles);
+            candlesProcessor.processNext(candles);
             dataCollector.collect();
 
-            IResultWriter writer = dataCollector.getResultWriter();
+            ITradeDataWriter writer = dataCollector.getResultWriter();
             writer.writeNewData();
         }
 
-        IResultWriter writer = dataCollector.getResultWriter();
+        ITradeDataWriter writer = dataCollector.getResultWriter();
         writer.writeAllData();
     }
 }

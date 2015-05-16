@@ -2,7 +2,9 @@ package model;
 
 import decisionStrategies.DecisionStrategy;
 import exceptions.PositionAlreadySetFailure;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.joda.time.DateTime;
 
 import java.util.List;
@@ -12,6 +14,8 @@ import java.util.List;
  */
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Machine implements IMoneyStateSupport {
 
     private Portfolio portfolio;

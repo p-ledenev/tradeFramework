@@ -44,7 +44,7 @@ public class Approximation {
             return value;
 
         for (int i = regressionParameters.length - 1; i >= 0; i--)
-            value += regressionParameters[i] * Math.pow(xValue, i);
+            value += regressionParameters[i] * Math.pow(xValue - 1, i);
 
         return Round.toMoneyAmount(value);
     }

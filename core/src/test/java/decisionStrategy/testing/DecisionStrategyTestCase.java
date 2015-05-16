@@ -6,7 +6,7 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import siftStrategies.NoSiftStrategy;
-import siftStrategies.SiftCandlesStrategy;
+import siftStrategies.ISiftCandlesStrategy;
 import takeProfitStrategies.ITakeProfitStrategy;
 import takeProfitStrategies.NoTakeProfitStrategy;
 
@@ -39,7 +39,7 @@ public abstract class DecisionStrategyTestCase<TStrategy extends DecisionStrateg
 
         decisionStrategy = createStrategy();
 
-        SiftCandlesStrategy siftStrategy = new NoSiftStrategy();
+        ISiftCandlesStrategy siftStrategy = new NoSiftStrategy();
         decisionStrategy.setSiftStrategy(siftStrategy);
 
         ITakeProfitStrategy profitStrategy = new NoTakeProfitStrategy();
