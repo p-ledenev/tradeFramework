@@ -1,6 +1,6 @@
 package run;
 
-import dataSources.DataSource;
+import dataSources.IDataSource;
 import dataSources.DataSourceFactory;
 import model.*;
 import runner.ICandlesIterator;
@@ -28,9 +28,9 @@ public class Runner {
                 Portfolio portfolio = settings.initPortfolio();
 
                 List<Candle> candles = DataSourceFactory.createDataSource().readCandlesFrom(
-                        DataSource.sourcePath + "\\" + year + "\\" + settings.getSecurity() + "_" + settings.getTimeFrame() + ".txt");
+                        IDataSource.sourcePath + "/" + year + "/" + settings.getSecurity() + "_" + settings.getTimeFrame() + ".txt");
 
-                IOrdersExecutor ordersExecutor = new ExperienceOrdersExecutor(candles);
+                IOrdersExecutor ordersExecutor = new TryOutOrdersExecutor(candles);
 
                 ICandlesIterator candlesIterator = new CandlesIterator(candles);
                 ICandlesProcessor candlesProcessor = new CandlesProcessor(portfolio, ordersExecutor);
@@ -46,7 +46,7 @@ public class Runner {
     private static List<InitialSettings> readSettings() throws Throwable {
         List<InitialSettings> settings = new ArrayList<InitialSettings>();
 
-        BufferedReader reader = new BufferedReader(new FileReader(new File(InitialSettings.settingPath + "\\settings.txt")));
+        BufferedReader reader = new BufferedReader(new FileReader(new File(InitialSettings.settingPath + "/settings.txt")));
 
         String line;
         while ((line = reader.readLine()) != null)

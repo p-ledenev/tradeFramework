@@ -1,5 +1,6 @@
 package model;
 
+import commissionStrategies.ICommissionStrategy;
 import decisionStrategies.DecisionStrategy;
 import exceptions.PositionAlreadySetFailure;
 import lombok.AllArgsConstructor;
@@ -24,14 +25,15 @@ public class Machine implements IMoneyStateSupport {
     private double currentMoney;
     private Position position;
     DecisionStrategy decisionStrategy;
+    private ICommissionStrategy commissionStrategy;
 
     public void apply(Position newPosition) throws PositionAlreadySetFailure {
 
         if (position.hasSameDirection(newPosition))
             throw new PositionAlreadySetFailure("for machine " + print());
 
-        currentMoney -= position.computeClosingCommission(newPosition);
-        currentMoney -= newPosition.computeOpeningCommission();
+        currentMoney -= computeClosingCommission(newPosition);
+        currentMoney -= computeOpeningCommission(newPosition);
         currentMoney += position.computeProfit(newPosition.getValue());
 
         position = newPosition;
@@ -48,6 +50,14 @@ public class Machine implements IMoneyStateSupport {
             return new EmptyOrder(this);
 
         return new ExecutableOrder(newPosition, this);
+    }
+
+    public double computeClosingCommission(Position newPosition) {
+        return commissionStrategy.computeClosePositionCommission(position, newPosition);
+    }
+
+    public double computeOpeningCommission(Position newPosition) {
+        return commissionStrategy.computeOpenPositionCommission(newPosition);
     }
 
     public String getDecisionStrategyName() {

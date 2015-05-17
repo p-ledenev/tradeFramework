@@ -1,11 +1,13 @@
 package commissionStrategies;
 
+import model.Position;
+
 /**
  * Created by DiKey on 04.04.2015.
  */
 public interface ICommissionStrategy {
 
-    public abstract double computeOpenPositionCommission(double value, int volume);
+    double computeOpenPositionCommission(Position position);
 
-    public abstract double computeClosePositionCommission(double value, int volume, boolean intraday);
+    double computeClosePositionCommission(Position position, Position newPosition);
 }

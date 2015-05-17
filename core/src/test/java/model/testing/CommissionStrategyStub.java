@@ -1,6 +1,7 @@
 package model.testing;
 
 import commissionStrategies.ICommissionStrategy;
+import model.Position;
 
 /**
  * Created by DiKey on 11.05.2015.
@@ -14,12 +15,12 @@ public class CommissionStrategyStub implements ICommissionStrategy {
     }
 
     @Override
-    public double computeOpenPositionCommission(double value, int volume) {
-        return commission * volume;
+    public double computeOpenPositionCommission(Position position) {
+        return commission*position.getVolume();
     }
 
     @Override
-    public double computeClosePositionCommission(double value, int volume, boolean intraday) {
-        return commission * volume;
+    public double computeClosePositionCommission(Position position, Position newPosition) {
+        return commission*position.getVolume();
     }
 }

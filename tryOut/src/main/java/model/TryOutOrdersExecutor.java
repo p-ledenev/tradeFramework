@@ -7,11 +7,11 @@ import java.util.List;
 /**
  * Created by ledenev.p on 02.04.2015.
  */
-public class ExperienceOrdersExecutor implements IOrdersExecutor {
+public class TryOutOrdersExecutor implements IOrdersExecutor {
 
     private List<Candle> candles;
 
-    public ExperienceOrdersExecutor(List<Candle> candles) {
+    public TryOutOrdersExecutor(List<Candle> candles) {
         this.candles = candles;
     }
 

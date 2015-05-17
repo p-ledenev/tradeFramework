@@ -1,5 +1,7 @@
 package commissionStrategies;
 
+import model.Position;
+
 /**
  * Created by DiKey on 04.04.2015.
  */
@@ -10,15 +12,15 @@ public class ScalpingCommissionStrategy extends ConstantCommissionStrategy {
     }
 
     @Override
-    public double computeOpenPositionCommission(double value, int volume) {
-        return commission * volume;
+    public double computeOpenPositionCommission(Position position) {
+        return commission * position.getVolume();
     }
 
     @Override
-    public double computeClosePositionCommission(double value, int volume, boolean intraday) {
-        if (intraday)
+    public double computeClosePositionCommission(Position position, Position newPosition) {
+        if (position.hasSameDay(newPosition))
             return 0;
 
-        return commission * volume;
+        return commission * position.getVolume();
     }
 }

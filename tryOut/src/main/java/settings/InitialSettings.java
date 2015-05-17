@@ -1,5 +1,7 @@
 package settings;
 
+import commissionStrategies.ICommissionStrategy;
+import commissionStrategies.ScalpingCommissionStrategy;
 import decisionStrategies.DecisionStrategy;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,7 +25,7 @@ import java.util.List;
 @NoArgsConstructor
 public class InitialSettings {
 
-    public static String settingPath = "settings";
+    public static String settingPath = "F:/Teddy/Alfa/java/v1.0/tradeFramework/tryOut/data";
 
     private String security;
     private String timeFrame;
@@ -31,6 +33,7 @@ public class InitialSettings {
     private List<Integer> depths;
     private List<String> years;
     private String strategyName;
+    private double commission;
 
     public static InitialSettings createFrom(String line) {
 
@@ -38,15 +41,16 @@ public class InitialSettings {
 
         InitialSettings settings = new InitialSettings();
 
-        settings.setStrategyName(data[0]);
-        settings.setSecurity(data[1]);
-        settings.setTimeFrame(data[2]);
-        settings.setSieveParam(Double.parseDouble(data[3]));
+        settings.setStrategyName(data[2]);
+        settings.setSecurity(data[0]);
+        settings.setTimeFrame(data[1]);
+        settings.setSieveParam(Double.parseDouble(data[4]));
+        settings.setCommission(Double.parseDouble(data[3]));
 
-        settings.setYears(Arrays.asList(data[4].split(";")));
+        settings.setYears(Arrays.asList(data[5].split(";")));
 
         List<Integer> depths = new ArrayList<Integer>();
-        String[] strDepths = data[5].split(";");
+        String[] strDepths = data[6].split(";");
         for (String depth : strDepths)
             depths.add(Integer.parseInt(depth));
 
@@ -63,8 +67,9 @@ public class InitialSettings {
             ISiftCandlesStrategy siftStrategy = SiftCandlesStrategyFactory.createSiftStrategy(sieveParam);
 
             DecisionStrategy decisionStrategy = DecisionStrategy.createFor(strategyName, profitStrategy, siftStrategy);
+            ICommissionStrategy commissionStrategy = new ScalpingCommissionStrategy(commission);
 
-            Machine machine = new Machine(portfolio, depth, 1000000, Position.closing(), decisionStrategy);
+            Machine machine = new Machine(portfolio, depth, 1000000, Position.closing(), decisionStrategy, commissionStrategy);
             portfolio.addMachine(machine);
         }
 

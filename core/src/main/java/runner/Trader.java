@@ -3,6 +3,7 @@ package runner;
 import lombok.AllArgsConstructor;
 import model.Candle;
 import model.ICandlesProcessor;
+import tools.Log;
 
 /**
  * Created by ledenev.p on 15.05.2015.
@@ -25,6 +26,8 @@ public class Trader {
 
             ITradeDataWriter writer = dataCollector.getResultWriter();
             writer.writeNewData();
+
+            Log.info("Processing candle " + candles[0].print());
         }
 
         ITradeDataWriter writer = dataCollector.getResultWriter();

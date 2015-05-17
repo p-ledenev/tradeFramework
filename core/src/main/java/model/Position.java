@@ -16,8 +16,6 @@ public class Position {
     private int volume;
     private double value;
 
-    protected ICommissionStrategy commissionStrategy;
-
     public static Position closing() {
         return new Position(0, OrderDirection.none);
     }
@@ -29,6 +27,7 @@ public class Position {
     private Position(int volume, OrderDirection direction) {
         this.volume = volume;
         this.direction = direction;
+        date = new DateTime(0);
     }
 
     public double computeProfit(double value) {
@@ -41,14 +40,6 @@ public class Position {
 
     public boolean hasSameDay(Position position) {
         return date.toLocalDate().equals(position.getDate().toLocalDate());
-    }
-
-    public double computeClosingCommission(Position newPosition) {
-        return commissionStrategy.computeClosePositionCommission(newPosition.getValue(), volume, hasSameDay(newPosition));
-    }
-
-    public double computeOpeningCommission() {
-        return commissionStrategy.computeOpenPositionCommission(value, volume);
     }
 
     public int getYear() {

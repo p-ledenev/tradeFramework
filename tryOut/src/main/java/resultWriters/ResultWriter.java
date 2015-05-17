@@ -2,6 +2,7 @@ package resultWriters;
 
 import lombok.*;
 import model.Portfolio;
+import settings.InitialSettings;
 
 import java.io.PrintWriter;
 
@@ -13,7 +14,7 @@ import java.io.PrintWriter;
 @AllArgsConstructor
 public abstract class ResultWriter {
 
-    public static String resultPath = "results";
+    public static String resultPath = InitialSettings.settingPath + "/results";
 
     private String fileName;
 
@@ -34,7 +35,7 @@ public abstract class ResultWriter {
         String title = getPortfolio().getTitle();
         int year = getYear();
 
-        return new PrintWriter(resultPath + "\\" + fileName + "_" + security + "_" + year + "_" + title + ".csv", "utf-8");
+        return new PrintWriter(resultPath + "/" + fileName + "_" + security + "_" + year + "_" + title + ".csv", "utf-8");
     }
 
     protected abstract Portfolio getPortfolio();

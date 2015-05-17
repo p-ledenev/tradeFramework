@@ -42,12 +42,12 @@ public class MachineTest {
 
         Position position = Position.opening(OrderDirection.sell, volume);
         position.setValue(value);
-        position.setCommissionStrategy(new CommissionStrategyStub(commission));
         position.setDate(date);
 
         machine = new Machine();
         machine.setPosition(position);
         machine.setCurrentMoney(money);
+        machine.setCommissionStrategy(new CommissionStrategyStub(commission));
     }
 
     @Test
@@ -58,7 +58,6 @@ public class MachineTest {
         Position newPosition = Position.closing();
         newPosition.setValue(newValue);
         newPosition.setDate(date);
-        newPosition.setCommissionStrategy(new CommissionStrategyStub(commission));
 
         machine.apply(newPosition);
 
@@ -74,7 +73,6 @@ public class MachineTest {
         Position newPosition = Position.opening(OrderDirection.buy, newVolume);
         newPosition.setValue(newValue);
         newPosition.setDate(date);
-        newPosition.setCommissionStrategy(new CommissionStrategyStub(commission));
 
         machine.apply(newPosition);
 

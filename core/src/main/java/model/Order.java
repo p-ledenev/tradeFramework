@@ -16,12 +16,8 @@ public abstract class Order {
 
     protected Machine machine;
 
-    public Order(Machine machine) {
-        this.machine = machine;
-    }
-
     public Order(Position position, Machine machine) {
-        this(machine);
+        this.machine = machine;
         this.position = position;
     }
 
