@@ -41,6 +41,7 @@ public class MachinePositionsCollector {
     }
 
     public void addPositionIfChanged() {
+
         if (machine.getPosition().equals(getLastPosition()))
             return;
 

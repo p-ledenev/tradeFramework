@@ -29,10 +29,10 @@ public class DetailMachineDataWriter extends ResultWriter {
     @Override
     protected void writeTo(PrintWriter writer) {
 
-        writer.write(printHeaders());
+        writer.write(printHeaders() + "\n");
 
         for (int i = 0; i < statesCollector.collectionSize(); i++)
-            writer.write(statesCollector.get(i).printCSV() + "; ;" + printPosition(i));
+            writer.write(statesCollector.get(i).printCSV() + "; ;" + printPosition(i) + "\n");
     }
 
     private String printPosition(int i) {

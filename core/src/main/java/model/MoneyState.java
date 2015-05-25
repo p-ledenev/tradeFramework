@@ -2,9 +2,8 @@ package model;
 
 import lombok.Data;
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import tools.Format;
+import tools.Round;
 
 /**
  * Created by ledenev.p on 02.04.2015.
@@ -22,9 +21,11 @@ public class MoneyState {
     }
 
     public String printCSV() {
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm:ss");
+        return Format.indexFor(date) + ";" + Format.asString(date) + ";" + Round.toThree(money);
+    }
 
-        return Format.indexFor(date) + ";" + formatter.print(date) + ";" + money;
+    public String printCSVPercent(double amount) {
+        return Format.indexFor(date) + ";" + Format.asString(date) + ";" + getMoneyPercent(amount);
     }
 
     public boolean equals(MoneyState state) {
@@ -33,6 +34,10 @@ public class MoneyState {
             return false;
 
         return state.hasEqualMoney(money);
+    }
+
+    public double getMoneyPercent(double amount) {
+        return Round.toMoneyAmount(money / amount * 100);
     }
 
     public boolean hasEqualMoney(double money) {

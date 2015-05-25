@@ -5,6 +5,7 @@ import lombok.Data;
 import model.Candle;
 import model.OrderDirection;
 import model.Position;
+import org.joda.time.DateTime;
 import org.reflections.Reflections;
 import siftStrategies.ISiftCandlesStrategy;
 import takeProfitStrategies.ITakeProfitStrategy;
@@ -63,14 +64,18 @@ public abstract class DecisionStrategy {
         candles.addAll(sifted);
 
         if (candles.size() < depth)
-            return Position.closing();
+            return Position.closing(getLastCandleDate());
 
         if (profitStrategy.shouldTakeProfit())
-            return Position.closing();
+            return Position.closing(getLastCandleDate());
 
         OrderDirection direction = computeOrderDirection(depth);
 
-        return Position.opening(direction, volume);
+        return Position.opening(direction, volume, getLastCandleDate());
+    }
+
+    public DateTime getLastCandleDate() {
+        return getLastCandle().getDate();
     }
 
     public Candle getLastCandle() {

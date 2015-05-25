@@ -27,7 +27,7 @@ public class Runner {
 
                 Portfolio portfolio = settings.initPortfolio();
 
-                List<Candle> candles = DataSourceFactory.createDataSource().readCandlesFrom(
+                List<TryOutCandle> candles = DataSourceFactory.createDataSource().readCandlesFrom(
                         IDataSource.sourcePath + "/" + year + "/" + settings.getSecurity() + "_" + settings.getTimeFrame() + ".txt");
 
                 IOrdersExecutor ordersExecutor = new TryOutOrdersExecutor(candles);

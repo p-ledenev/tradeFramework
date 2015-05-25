@@ -13,4 +13,8 @@ public class PortfolioMoneyStatesCollector extends MoneyStatesCollector<Portfoli
     protected String getTitle() {
         return "average";
     }
+
+    public int getLot() {
+        return entity.getLot();
+    }
 }

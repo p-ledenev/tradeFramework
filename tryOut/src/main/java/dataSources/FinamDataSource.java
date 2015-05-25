@@ -1,6 +1,6 @@
 package dataSources;
 
-import model.Candle;
+import model.TryOutCandle;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -16,9 +16,9 @@ import java.util.List;
  */
 public class FinamDataSource implements IDataSource {
 
-    public List<Candle> readCandlesFrom(String fileName) throws Throwable {
+    public List<TryOutCandle> readCandlesFrom(String fileName) throws Throwable {
 
-        List<Candle> candles = new ArrayList<Candle>();
+        List<TryOutCandle> candles = new ArrayList<TryOutCandle>();
         BufferedReader reader = new BufferedReader(new FileReader(new File(fileName)));
 
         String line;
@@ -32,16 +32,28 @@ public class FinamDataSource implements IDataSource {
 
         reader.close();
 
+        setNextValuesTo(candles);
+
         return candles;
     }
 
-    protected Candle createCandle(String[] data) {
+    private TryOutCandle createCandle(String[] data) {
 
         DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yy HH:mm:ss");
         DateTime date = DateTime.parse(data[0] + " " + data[1], formatter);
 
         double value = Double.parseDouble(data[5]);
 
-        return new Candle(date, value);
+        return new TryOutCandle(date, value);
+    }
+
+    private void setNextValuesTo(List<TryOutCandle> candles) {
+
+        for (int i = 0; i < candles.size(); i++) {
+            TryOutCandle candle = candles.get(i);
+            double nextValue = (i < candles.size() - 1) ? candles.get(i + 1).getValue() : candle.getValue();
+
+            candle.setNextValue(nextValue);
+        }
     }
 }

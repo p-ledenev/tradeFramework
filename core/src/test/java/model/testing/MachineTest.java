@@ -1,6 +1,5 @@
 package model.testing;
 
-import commissionStrategies.ScalpingCommissionStrategy;
 import exceptions.PositionAlreadySetFailure;
 import model.Machine;
 import model.OrderDirection;
@@ -9,8 +8,6 @@ import model.Position;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Date;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -28,7 +25,6 @@ public class MachineTest {
     private int volume;
     private double value;
     private double commission;
-    private double money;
     DateTime date;
 
     @Before
@@ -37,16 +33,14 @@ public class MachineTest {
         value = 100.5;
         volume = 10;
         commission = 1.5;
-        money = 1000;
         date = DateTime.now();
 
-        Position position = Position.opening(OrderDirection.sell, volume);
+        Position position = Position.opening(OrderDirection.sell, volume, new DateTime());
         position.setValue(value);
         position.setDate(date);
 
         machine = new Machine();
         machine.setPosition(position);
-        machine.setCurrentMoney(money);
         machine.setCommissionStrategy(new CommissionStrategyStub(commission));
     }
 
@@ -55,13 +49,13 @@ public class MachineTest {
 
         double newValue = 100.3;
 
-        Position newPosition = Position.closing();
+        Position newPosition = Position.closing(new DateTime());
         newPosition.setValue(newValue);
         newPosition.setDate(date);
 
         machine.apply(newPosition);
 
-        assertThat(machine.getCurrentMoney(), is(equalTo(money + ((-1) * (newValue - value) - commission) * volume)));
+        assertThat(machine.getCurrentMoney(), is(equalTo(((-1) * (newValue - value) - commission) * volume)));
     }
 
     @Test
@@ -70,19 +64,19 @@ public class MachineTest {
         double newValue = 100.3;
         int newVolume = 20;
 
-        Position newPosition = Position.opening(OrderDirection.buy, newVolume);
+        Position newPosition = Position.opening(OrderDirection.buy, newVolume, new DateTime());
         newPosition.setValue(newValue);
         newPosition.setDate(date);
 
         machine.apply(newPosition);
 
-        assertThat(machine.getCurrentMoney(), is(equalTo(money + (-1) * (newValue - value) * volume - commission * (volume + newVolume))));
+        assertThat(machine.getCurrentMoney(), is(equalTo((-1) * (newValue - value) * volume - commission * (volume + newVolume))));
     }
 
     @Test
     public void applyForSameDirection() throws Throwable {
 
-        Position newPosition = Position.opening(OrderDirection.sell, 1);
+        Position newPosition = Position.opening(OrderDirection.sell, 1, new DateTime());
 
         Portfolio portfolio = mock(Portfolio.class);
         machine.setPortfolio(portfolio);

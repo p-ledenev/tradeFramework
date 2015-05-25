@@ -81,6 +81,8 @@ public class AveragingDecisionStrategy extends DecisionStrategy {
 
             averageDerivatives.add(averageDerivative);
         }
+
+        int k = 0;
     }
 
     private IAveragingSupport[] derivativesAsArray() {

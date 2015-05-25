@@ -1,7 +1,5 @@
 package model;
 
-import exceptions.CandleNotFoundFailure;
-
 import java.util.List;
 
 /**
@@ -9,33 +7,19 @@ import java.util.List;
  */
 public class TryOutOrdersExecutor implements IOrdersExecutor {
 
-    private List<Candle> candles;
+    private List<TryOutCandle> candles;
 
-    public TryOutOrdersExecutor(List<Candle> candles) {
+    public TryOutOrdersExecutor(List<TryOutCandle> candles) {
         this.candles = candles;
     }
 
     public void execute(List<Order> orders) throws Throwable {
 
         for (Order order : orders) {
-            Candle candle = order.getLastCandle();
-            Candle next = findCandleAfter(candle);
+            TryOutCandle next = (TryOutCandle) order.getLastCandle();
+            order.setPositionValue(next.getNextValue());
 
-            order.setPositionDate(candle.getDate());
-            order.setPositionValue(next.getValue());
             order.executed();
         }
-    }
-
-    private Candle findCandleAfter(Candle candle) throws CandleNotFoundFailure {
-        int index = candles.indexOf(candle);
-
-        if (index < 0)
-            throw new CandleNotFoundFailure(candle.print());
-
-        if (index != candles.size() - 1)
-            index++;
-
-        return candles.get(index);
     }
 }

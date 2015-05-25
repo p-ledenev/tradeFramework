@@ -3,12 +3,10 @@ package settings;
 import commissionStrategies.ICommissionStrategy;
 import commissionStrategies.ScalpingCommissionStrategy;
 import decisionStrategies.DecisionStrategy;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import model.Machine;
 import model.Portfolio;
-import model.Position;
 import siftStrategies.ISiftCandlesStrategy;
 import siftStrategies.SiftCandlesStrategyFactory;
 import takeProfitStrategies.ITakeProfitStrategy;
@@ -21,11 +19,13 @@ import java.util.List;
 /**
  * Created by ledenev.p on 02.04.2015.
  */
+
 @Data
 @NoArgsConstructor
 public class InitialSettings {
 
-    public static String settingPath = "F:/Teddy/Alfa/java/v1.0/tradeFramework/tryOut/data";
+    //public static String settingPath = "F:/Teddy/Alfa/java/v1.0/tradeFramework/tryOut/data";
+    public static String settingPath = "d:/Projects/Alfa/java/v1.0/tradeFramework/tryOut/data";
 
     private String security;
     private String timeFrame;
@@ -69,7 +69,7 @@ public class InitialSettings {
             DecisionStrategy decisionStrategy = DecisionStrategy.createFor(strategyName, profitStrategy, siftStrategy);
             ICommissionStrategy commissionStrategy = new ScalpingCommissionStrategy(commission);
 
-            Machine machine = new Machine(portfolio, depth, 1000000, Position.closing(), decisionStrategy, commissionStrategy);
+            Machine machine = new Machine(portfolio, decisionStrategy, commissionStrategy, depth);
             portfolio.addMachine(machine);
         }
 

@@ -1,6 +1,6 @@
 package dataSources;
 
-import model.Candle;
+import model.TryOutCandle;
 import settings.InitialSettings;
 
 import java.util.List;
@@ -12,5 +12,5 @@ public interface IDataSource {
 
     String sourcePath = InitialSettings.settingPath + "/sources";
 
-    List<Candle> readCandlesFrom(String fileName) throws Throwable;
+    List<TryOutCandle> readCandlesFrom(String fileName) throws Throwable;
 }

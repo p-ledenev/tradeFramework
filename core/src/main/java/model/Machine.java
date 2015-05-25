@@ -3,9 +3,9 @@ package model;
 import commissionStrategies.ICommissionStrategy;
 import decisionStrategies.DecisionStrategy;
 import exceptions.PositionAlreadySetFailure;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.joda.time.DateTime;
 
 import java.util.List;
@@ -14,18 +14,31 @@ import java.util.List;
  * Created by ledenev.p on 01.04.2015.
  */
 
-@Data
-@AllArgsConstructor
+@Getter
 @NoArgsConstructor
 public class Machine implements IMoneyStateSupport {
 
+    @Setter
     private Portfolio portfolio;
+    @Setter
+    private Position position;
 
     private int depth;
     private double currentMoney;
-    private Position position;
-    DecisionStrategy decisionStrategy;
+
+    private DecisionStrategy decisionStrategy;
+    @Setter
     private ICommissionStrategy commissionStrategy;
+
+    public Machine(Portfolio portfolio, DecisionStrategy decisionStrategy, ICommissionStrategy commissionStrategy, int depth) {
+        this.portfolio = portfolio;
+        this.decisionStrategy = decisionStrategy;
+        this.commissionStrategy = commissionStrategy;
+        this.depth = depth;
+
+        position = Position.begining();
+        currentMoney = 0;
+    }
 
     public void apply(Position newPosition) throws PositionAlreadySetFailure {
 
@@ -44,12 +57,20 @@ public class Machine implements IMoneyStateSupport {
     }
 
     public Order processCandles(List<Candle> candles) {
-        Position newPosition = decisionStrategy.computeNewPositionFor(candles, depth, position.getVolume());
+
+        Position newPosition = decisionStrategy.computeNewPositionFor(candles, depth, computeVolume());
 
         if (position.hasSameDirection(newPosition))
             return new EmptyOrder(this);
 
         return new ExecutableOrder(newPosition, this);
+    }
+
+    private int computeVolume() {
+        if (!position.isNone())
+            return position.getVolume();
+
+        return portfolio.getLot();
     }
 
     public double computeClosingCommission(Position newPosition) {
@@ -72,11 +93,11 @@ public class Machine implements IMoneyStateSupport {
         return decisionStrategy.getLastCandle();
     }
 
-    public DateTime getPositionDate() {
-        return position.getDate();
+    public DateTime getLastCandleDate() {
+        return decisionStrategy.getLastCandleDate();
     }
 
-    public List<Candle> getCandles() {
-        return decisionStrategy.getCandles();
+    public DateTime getPositionDate() {
+        return position.getDate();
     }
 }

@@ -1,6 +1,7 @@
 package model;
 
 import lombok.Getter;
+import lombok.Setter;
 import tools.Round;
 
 import java.io.PrintWriter;
@@ -10,17 +11,22 @@ import java.util.List;
 /**
  * Created by DiKey on 11.05.2015.
  */
+@Getter
 public abstract class MoneyStatesCollector<TEntity extends IMoneyStateSupport> {
 
-    @Getter
     protected TEntity entity;
-    @Getter
     protected List<MoneyState> states;
+    @Setter
+    protected double initialMoneyAmount;
 
     public MoneyStatesCollector(TEntity entity) {
         this.entity = entity;
 
         states = new ArrayList<MoneyState>();
+    }
+
+    public boolean isEmpty() {
+        return states.size() <= 0;
     }
 
     public void addStateIfChanged() {
@@ -46,12 +52,12 @@ public abstract class MoneyStatesCollector<TEntity extends IMoneyStateSupport> {
         if (states.size() <= index)
             return ";;";
 
-        return states.get(index).printCSV();
+        return states.get(index).printCSVPercent(initialMoneyAmount);
     }
 
     public void writeStatesTo(PrintWriter writer) {
         for (MoneyState state : states)
-            writer.write(state.printCSV());
+            writer.write(state.printCSVPercent(initialMoneyAmount) + "\n");
     }
 
     public int getStatesSize() {
@@ -59,49 +65,40 @@ public abstract class MoneyStatesCollector<TEntity extends IMoneyStateSupport> {
     }
 
     public String printHead() {
-        return getTitle() + ";date;money";
+        return getTitle() + ";date;moneyPercent";
     }
 
     protected abstract String getTitle();
 
-    public double computeMaxLosses() {
+    public double computeMaxLossesPercent() {
 
         double losses = 0;
         for (int i = 0; i < states.size(); i++) {
             for (int j = i; j < states.size(); j++) {
 
-                double current = (states.get(i).getMoney() - states.get(j).getMoney()) / states.get(i).getMoney();
+                double current = (states.get(i).getMoney() - states.get(j).getMoney()) / initialMoneyAmount;
                 if (current > losses)
                     losses = current;
             }
         }
 
-        return Round.toThree(losses);
+        return Round.toMoneyAmount(losses * 100);
     }
 
-    public double computeMaxRelativeMoney() {
+    public double computeMaxMoneyPercent() {
 
         double maxes = 0;
         for (MoneyState state : states)
-            if (state.getMoney() > maxes)
-                maxes = state.getMoney();
+            if (state.getMoneyPercent(initialMoneyAmount) > maxes)
+                maxes = state.getMoneyPercent(initialMoneyAmount);
 
-        return computeRelativeMoneyFor(maxes);
+        return maxes;
     }
 
-    public double computeEndPeriodRelativeMoney() {
+    public double computeEndPeriodMoneyPercent() {
         if (states.size() <= 0)
             return 0;
 
-        return computeRelativeMoneyFor(getLastState().getMoney());
-    }
-
-    protected double computeRelativeMoneyFor(double value) {
-        if (states.size() <= 0)
-            return 0;
-
-        double beginMoneyValue = states.get(0).getMoney();
-
-        return 100 + Round.toMoneyAmount((value - beginMoneyValue) / beginMoneyValue * 100);
+        return getLastState().getMoneyPercent(initialMoneyAmount);
     }
 }

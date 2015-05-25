@@ -34,8 +34,13 @@ public class CommonTradeDataCollector extends TradeDataCollector {
     }
 
     @Override
-    protected void collectMachinesTradeData() {
-        for (MachineMoneyStatesCollector statesCollector : machineCollectors)
+    protected void collectMachinesTradeData(List<Order> orders) {
+        for (MachineMoneyStatesCollector statesCollector : machineCollectors) {
+
+            if (statesCollector.isEmpty())
+                statesCollector.setInitialMoneyAmount(computeInitialAmount(orders.get(0)));
+
             statesCollector.addStateIfChanged();
+        }
     }
 }

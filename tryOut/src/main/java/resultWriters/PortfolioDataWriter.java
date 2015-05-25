@@ -21,7 +21,7 @@ public class PortfolioDataWriter extends ResultWriter {
     @Override
     public void writeTo(PrintWriter writer) {
 
-        writer.write(statesCollector.printHead());
+        writer.write(statesCollector.printHead() + "\n");
         statesCollector.writeStatesTo(writer);
     }
 

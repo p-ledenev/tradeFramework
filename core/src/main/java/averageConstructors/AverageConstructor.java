@@ -1,8 +1,5 @@
 package averageConstructors;
 
-import tools.Format;
-import tools.Round;
-
 /**
  * Created by DiKey on 25.04.2015.
  */
@@ -14,7 +11,7 @@ public abstract class AverageConstructor implements IAverageConstructor {
         if (values == null || values.length == 0)
             return 0;
 
-        return Round.toSignificant(nativeAverage(values));
+        return nativeAverage(values);
     }
 
     protected abstract double nativeAverage(IAveragingSupport[] values);

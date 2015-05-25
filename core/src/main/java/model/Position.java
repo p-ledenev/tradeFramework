@@ -1,6 +1,5 @@
 package model;
 
-import commissionStrategies.ICommissionStrategy;
 import lombok.Data;
 import org.joda.time.DateTime;
 
@@ -16,18 +15,22 @@ public class Position {
     private int volume;
     private double value;
 
-    public static Position closing() {
-        return new Position(0, OrderDirection.none);
+    public static Position begining() {
+        return new Position(OrderDirection.none, 0, new DateTime(0));
     }
 
-    public static Position opening(OrderDirection direction, int volume) {
-        return new Position(volume, direction);
+    public static Position closing(DateTime date) {
+        return new Position(OrderDirection.none, 0, date);
     }
 
-    private Position(int volume, OrderDirection direction) {
+    public static Position opening(OrderDirection direction, int volume, DateTime date) {
+        return new Position(direction, volume, date);
+    }
+
+    private Position(OrderDirection direction, int volume, DateTime date) {
         this.volume = volume;
         this.direction = direction;
-        date = new DateTime(0);
+        this.date = new DateTime(date);
     }
 
     public double computeProfit(double value) {
@@ -63,5 +66,9 @@ public class Position {
             return false;
 
         return direction.equals(position.getDirection()) && volume == position.getVolume() && value == position.getValue();
+    }
+
+    public boolean isBegining() {
+        return date.equals(new DateTime(0)) && OrderDirection.none.equals(direction);
     }
 }

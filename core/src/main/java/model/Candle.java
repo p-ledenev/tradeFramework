@@ -39,7 +39,7 @@ public class Candle implements IAveragingSupport, IApproximationSupport {
         return Math.abs(this.value - value) / value * 100;
     }
 
-    public boolean greatThan(double value) {
+    public boolean greaterThan(double value) {
         return this.value > value;
     }
 
@@ -59,5 +59,13 @@ public class Candle implements IAveragingSupport, IApproximationSupport {
 
     public String printCSV() {
         return Format.indexFor(date) + ";" + Format.asString(date) + ";" + value;
+    }
+
+    public boolean hasSameDay(Candle candle) {
+        return getDateDay() == candle.getDateDay();
+    }
+
+    public int getDateDay() {
+        return date.getDayOfYear();
     }
 }

@@ -33,7 +33,7 @@ public class SingleMachineTradeDataCollector extends TradeDataCollector {
     }
 
     @Override
-    protected void collectMachinesTradeData() {
+    protected void collectMachinesTradeData(List<Order> orders) {
         positionsCollector.addPositionIfChanged();
     }
 }

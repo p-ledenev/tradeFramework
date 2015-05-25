@@ -20,14 +20,19 @@ public abstract class TradeDataCollector implements ITradeDataCollector {
         portfolioCollector = new PortfolioMoneyStatesCollector(portfolio);
     }
 
-    public void collect() {
+    public void collect(List<Order> orders) {
+
+        if (portfolioCollector.isEmpty())
+            portfolioCollector.setInitialMoneyAmount(computeInitialAmount(orders.get(0)));
+
         portfolioCollector.addStateIfChanged();
-        collectMachinesTradeData();
+
+        collectMachinesTradeData(orders);
     }
 
     protected abstract List<ResultWriter> collectResultWriters();
 
-    protected abstract void collectMachinesTradeData();
+    protected abstract void collectMachinesTradeData(List<Order> orders);
 
     public ITradeDataWriter getResultWriter() {
         List<ResultWriter> resultWriters = new ArrayList<ResultWriter>();
@@ -36,5 +41,9 @@ public abstract class TradeDataCollector implements ITradeDataCollector {
         resultWriters.addAll(collectResultWriters());
 
         return new TradeDataWriter(resultWriters);
+    }
+
+    protected double computeInitialAmount(Order order) {
+        return order.getPositionValue() * portfolioCollector.getLot();
     }
 }

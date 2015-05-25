@@ -7,5 +7,5 @@ import java.util.List;
  */
 public interface IOrdersExecutor {
 
-    public void execute(List<Order> orders) throws Throwable;
+    void execute(List<Order> orders) throws Throwable;
 }

@@ -16,12 +16,18 @@ public class Portfolio implements IMoneyStateSupport {
     private List<Machine> machines;
     private String security;
     private String title;
+    private int lot;
 
-    public Portfolio(String title, String security) {
+    public Portfolio(String title, String security, int lot) {
         this.title = title;
         this.security = security;
+        this.lot = lot;
 
         machines = new ArrayList<Machine>();
+    }
+
+    public Portfolio(String title, String security) {
+        this(title, security, 100);
     }
 
     public void addMachine(Machine machine) {
@@ -51,7 +57,7 @@ public class Portfolio implements IMoneyStateSupport {
         for (Machine machine : machines)
             currentMoney += machine.getCurrentMoney();
 
-        return currentMoney;
+        return currentMoney / machines.size();
     }
 
     private DateTime getLatestTime() {

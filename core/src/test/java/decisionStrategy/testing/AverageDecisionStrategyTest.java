@@ -40,7 +40,7 @@ public class AverageDecisionStrategyTest extends DecisionStrategyTestCase<Averag
     public void shouldComputeAverageDerivative() {
         decisionStrategy.computeNewPositionFor(candles, depth, volume);
 
-        assertThat(getLastAverageDerivative(), is(equalTo(0.1343)));
+        assertThat(getLastAverageDerivative(), is(equalTo(0.1343080830363829)));
     }
 
     @Test
@@ -64,7 +64,7 @@ public class AverageDecisionStrategyTest extends DecisionStrategyTestCase<Averag
 
         assertThat(decisionStrategy.getDerivatives().size(), is(CoreMatchers.equalTo(candles.size() + 1 - depth + 1)));
         assertThat(getLastDerivative(), is(equalTo(computeLastDerivative())));
-        assertThat(getLastAverageDerivative(), is(equalTo(0.0841)));
+        assertThat(getLastAverageDerivative(), is(equalTo(0.08408860803423382)));
     }
 
     @Test
@@ -79,7 +79,7 @@ public class AverageDecisionStrategyTest extends DecisionStrategyTestCase<Averag
 
         assertThat(decisionStrategy.getDerivatives().size(), is(CoreMatchers.equalTo(candles.size() + 2 - depth + 1)));
         assertThat(getLastDerivative(), is(equalTo(computeLastDerivative())));
-        assertThat(getLastAverageDerivative(), is(equalTo(-0.0457)));
+        assertThat(getLastAverageDerivative(), is(equalTo(-0.04567186553941528)));
     }
 
     @Test

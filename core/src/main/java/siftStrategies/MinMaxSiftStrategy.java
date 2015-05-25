@@ -1,9 +1,6 @@
 package siftStrategies;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import model.Candle;
 
 import java.util.ArrayList;
@@ -27,7 +24,7 @@ public class MinMaxSiftStrategy implements ISiftCandlesStrategy {
 
         for (Candle candle : newCandles) {
 
-            if (candle.greatThan(maxValue)) maxValue = candle.getValue();
+            if (candle.greaterThan(maxValue)) maxValue = candle.getValue();
             if (candle.lessThan(minValue)) minValue = candle.getValue();
 
             if (candle.computeVariance(maxValue) < sieveParam && candle.computeVariance(minValue) < sieveParam)

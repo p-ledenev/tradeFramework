@@ -25,7 +25,7 @@ public class MachinesDataWriter extends ResultWriter {
         String head = "";
         for (MachineMoneyStatesCollector collector : statesCollectors)
             head += collector.printHead() + "; ;";
-        writer.write(head);
+        writer.write(head + "\n");
 
         int maxCapacity = getCollectorsMaxCapacity();
         for (int i = 0; i < maxCapacity; i++) {
@@ -33,7 +33,7 @@ public class MachinesDataWriter extends ResultWriter {
             for (MachineMoneyStatesCollector collector : statesCollectors)
                 info += collector.printState(i) + "; ;";
 
-            writer.write(info);
+            writer.write(info + "\n");
         }
     }
 

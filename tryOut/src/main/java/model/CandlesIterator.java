@@ -1,6 +1,5 @@
 package model;
 
-import model.Candle;
 import runner.ICandlesIterator;
 
 import java.util.List;
@@ -10,10 +9,10 @@ import java.util.List;
  */
 public class CandlesIterator implements ICandlesIterator {
 
-    private List<Candle> candles;
+    private List<TryOutCandle> candles;
     private int currentIndex;
 
-    public CandlesIterator(List<Candle> candles) {
+    public CandlesIterator(List<TryOutCandle> candles) {
         this.candles = candles;
         currentIndex = 0;
     }

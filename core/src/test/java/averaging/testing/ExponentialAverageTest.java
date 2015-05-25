@@ -31,7 +31,7 @@ public class ExponentialAverageTest {
 
         double result = constructor.average(values);
 
-        assertThat(result, is(equalTo(11.9583)));
+        assertThat(result, is(equalTo(11.95833333333333)));
     }
 
     @Test
@@ -45,7 +45,7 @@ public class ExponentialAverageTest {
 
         double result = constructor.average(values);
 
-        assertThat(result, is(equalTo(5.0333)));
+        assertThat(result, is(equalTo(5.033333333333332)));
     }
 
     @Test
@@ -63,6 +63,6 @@ public class ExponentialAverageTest {
 
         double result = constructor.average(values);
 
-        assertThat(result, is(equalTo(0.1343)));
+        assertThat(result, is(equalTo(0.13430977855555554)));
     }
 }

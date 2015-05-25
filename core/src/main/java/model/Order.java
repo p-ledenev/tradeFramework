@@ -1,7 +1,7 @@
 package model;
 
 import exceptions.PositionAlreadySetFailure;
-import lombok.*;
+import lombok.Data;
 import org.joda.time.DateTime;
 
 /**
@@ -11,10 +11,10 @@ import org.joda.time.DateTime;
 @Data
 public abstract class Order {
 
+    protected Machine machine;
     protected Position position;
     protected boolean isExecuted;
 
-    protected Machine machine;
 
     public Order(Position position, Machine machine) {
         this.machine = machine;
@@ -39,4 +39,7 @@ public abstract class Order {
         position.setDate(date);
     }
 
+    public double getPositionValue() {
+        return position.getValue();
+    }
 }
