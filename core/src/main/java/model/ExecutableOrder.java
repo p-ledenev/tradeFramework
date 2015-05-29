@@ -13,6 +13,8 @@ public class ExecutableOrder extends Order {
 
     @Override
     public void applyToMachine() throws PositionAlreadySetFailure {
-        machine.apply(position);
+
+        if (isExecuted)
+            machine.apply(position);
     }
 }

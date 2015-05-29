@@ -1,6 +1,5 @@
 package siftStrategies;
 
-import lombok.AllArgsConstructor;
 import model.Candle;
 
 import java.util.ArrayList;
@@ -9,18 +8,23 @@ import java.util.List;
 /**
  * Created by DiKey on 12.04.2015.
  */
-@AllArgsConstructor
+
 public class MinMaxSiftStrategy implements ISiftCandlesStrategy {
 
-    protected double sieveParam;
+    private double sieveParam;
+    private double minValue;
+    private double maxValue;
+
+    public MinMaxSiftStrategy(double sieveParam) {
+        this.sieveParam =sieveParam;
+        minValue = Double.MAX_VALUE;
+        maxValue = Double.MIN_VALUE;
+    }
 
     @Override
-    public List<Candle> sift(Candle base, List<Candle> newCandles) {
+    public List<Candle> sift(List<Candle> newCandles) {
 
         List<Candle> sifted = new ArrayList<Candle>();
-
-        double maxValue = base.getValue();
-        double minValue = base.getValue();
 
         for (Candle candle : newCandles) {
 

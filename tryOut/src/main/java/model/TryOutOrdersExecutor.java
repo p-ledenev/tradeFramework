@@ -8,17 +8,23 @@ import java.util.List;
 public class TryOutOrdersExecutor implements IOrdersExecutor {
 
     private List<TryOutCandle> candles;
+    private int tradeYear;
 
-    public TryOutOrdersExecutor(List<TryOutCandle> candles) {
+    public TryOutOrdersExecutor(List<TryOutCandle> candles, int tradeYear) {
         this.candles = candles;
+        this.tradeYear = tradeYear;
     }
 
     public void execute(List<Order> orders) throws Throwable {
 
         for (Order order : orders) {
-            TryOutCandle next = (TryOutCandle) order.getLastCandle();
-            order.setPositionValue(next.getNextValue());
 
+            Candle next = order.getLastCandle();
+            if (!next.hasYearAs(tradeYear))
+                continue;
+
+
+            order.setPositionValue(((TryOutCandle)next).getNextValue());
             order.executed();
         }
     }

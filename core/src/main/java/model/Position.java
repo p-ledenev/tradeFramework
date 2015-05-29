@@ -1,40 +1,45 @@
 package model;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.joda.time.DateTime;
 
 /**
  * Created by DiKey on 04.04.2015.
  */
 
-@Data
 public class Position {
 
-    private DateTime date;
+    private Candle candle;
+
+    @Getter
+    @Setter
     private OrderDirection direction;
+
+    @Getter
+    @Setter
     private int volume;
-    private double value;
 
     public static Position begining() {
-        return new Position(OrderDirection.none, 0, new DateTime(0));
+        return new Position(OrderDirection.none, 0, Candle.empty());
     }
 
-    public static Position closing(DateTime date) {
-        return new Position(OrderDirection.none, 0, date);
+    public static Position closing(Candle candle) {
+        return new Position(OrderDirection.none, 0, candle);
     }
 
-    public static Position opening(OrderDirection direction, int volume, DateTime date) {
-        return new Position(direction, volume, date);
+    public static Position opening(OrderDirection direction, int volume, Candle candle) {
+        return new Position(direction, volume, candle);
     }
 
-    private Position(OrderDirection direction, int volume, DateTime date) {
+    private Position(OrderDirection direction, int volume, Candle candle) {
         this.volume = volume;
         this.direction = direction;
-        this.date = new DateTime(date);
+        this.candle = candle.clone();
     }
 
     public double computeProfit(double value) {
-        return direction.getSign() * volume * (value - this.value);
+        return direction.getSign() * volume * (value - getValue());
     }
 
     public boolean hasSameDirection(Position position) {
@@ -42,11 +47,19 @@ public class Position {
     }
 
     public boolean hasSameDay(Position position) {
-        return date.toLocalDate().equals(position.getDate().toLocalDate());
+        return candle.getDate().toLocalDate().equals(position.getDate().toLocalDate());
+    }
+
+    public DateTime getDate() {
+        return candle.getDate();
+    }
+
+    public double getValue() {
+        return candle.getValue();
     }
 
     public int getYear() {
-        return date.getYear();
+        return getDate().getYear();
     }
 
     public boolean isBuy() {
@@ -65,10 +78,18 @@ public class Position {
         if (position == null)
             return false;
 
-        return direction.equals(position.getDirection()) && volume == position.getVolume() && value == position.getValue();
+        return direction.equals(position.getDirection()) && volume == position.getVolume() && getValue() == position.getValue();
     }
 
-    public boolean isBegining() {
-        return date.equals(new DateTime(0)) && OrderDirection.none.equals(direction);
+    public void setValue(double value) {
+        candle.setValue(value);
+    }
+
+    public void setDate(DateTime date) {
+        candle.setDate(date);
+    }
+
+    public String printCSV() {
+        return candle.printTitleCSV();
     }
 }

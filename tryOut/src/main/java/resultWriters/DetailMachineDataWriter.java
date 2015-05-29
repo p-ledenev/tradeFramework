@@ -5,7 +5,6 @@ import model.MachinePositionsCollector;
 import model.Portfolio;
 import model.Position;
 import model.StrategyStatesCollector;
-import tools.Format;
 
 import java.io.PrintWriter;
 
@@ -42,7 +41,7 @@ public class DetailMachineDataWriter extends ResultWriter {
 
         Position position = positionsCollector.get(i);
 
-        String response = Format.indexFor(position.getDate()) + ";" + Format.asString(position.getDate()) + ";";
+        String response = position.printCSV() + ";";
 
         if (position.isBuy())
             response += position.getValue() + ";;";
@@ -68,6 +67,6 @@ public class DetailMachineDataWriter extends ResultWriter {
     }
 
     private String printHeaders() {
-        return statesCollector.printHeader() + "; ;dateIndex;date;openBuy;openSell;close;";
+        return statesCollector.printHeader() + ";dateIndex;date;openBuy;openSell;close;";
     }
 }

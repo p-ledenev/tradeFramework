@@ -1,5 +1,6 @@
 package model.testing;
 
+import model.Candle;
 import model.OrderDirection;
 import model.Position;
 import org.joda.time.DateTime;
@@ -25,7 +26,7 @@ public class PositionTest {
         value = 100.5;
         volume = 10;
 
-        position = Position.opening(OrderDirection.sell, volume, new DateTime());
+        position = Position.opening(OrderDirection.sell, volume, Candle.empty(new DateTime()));
         position.setValue(value);
     }
 
@@ -34,7 +35,7 @@ public class PositionTest {
 
         double newValue = 100.4;
 
-        Position newPosition = Position.closing(new DateTime());
+        Position newPosition = Position.closing(Candle.empty(new DateTime()));
         newPosition.setValue(newValue);
 
         double profit = position.computeProfit(newPosition.getValue());
@@ -47,7 +48,7 @@ public class PositionTest {
 
         double newValue = 100.4;
 
-        Position newPosition = Position.opening(OrderDirection.buy, 10, new DateTime());
+        Position newPosition = Position.opening(OrderDirection.buy, 10, Candle.empty(new DateTime()));
         newPosition.setValue(newValue);
 
         double profit = position.computeProfit(newPosition.getValue());

@@ -1,10 +1,7 @@
 package model.testing;
 
 import exceptions.PositionAlreadySetFailure;
-import model.Machine;
-import model.OrderDirection;
-import model.Portfolio;
-import model.Position;
+import model.*;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +32,7 @@ public class MachineTest {
         commission = 1.5;
         date = DateTime.now();
 
-        Position position = Position.opening(OrderDirection.sell, volume, new DateTime());
+        Position position = Position.opening(OrderDirection.sell, volume, Candle.empty(new DateTime()));
         position.setValue(value);
         position.setDate(date);
 
@@ -49,7 +46,7 @@ public class MachineTest {
 
         double newValue = 100.3;
 
-        Position newPosition = Position.closing(new DateTime());
+        Position newPosition = Position.closing(Candle.empty(new DateTime()));
         newPosition.setValue(newValue);
         newPosition.setDate(date);
 
@@ -64,7 +61,7 @@ public class MachineTest {
         double newValue = 100.3;
         int newVolume = 20;
 
-        Position newPosition = Position.opening(OrderDirection.buy, newVolume, new DateTime());
+        Position newPosition = Position.opening(OrderDirection.buy, newVolume, Candle.empty(new DateTime()));
         newPosition.setValue(newValue);
         newPosition.setDate(date);
 
@@ -76,7 +73,7 @@ public class MachineTest {
     @Test
     public void applyForSameDirection() throws Throwable {
 
-        Position newPosition = Position.opening(OrderDirection.sell, 1, new DateTime());
+        Position newPosition = Position.opening(OrderDirection.sell, 1, Candle.empty(new DateTime()));
 
         Portfolio portfolio = mock(Portfolio.class);
         machine.setPortfolio(portfolio);

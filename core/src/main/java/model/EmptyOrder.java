@@ -6,7 +6,7 @@ package model;
 public class EmptyOrder extends Order {
 
     public EmptyOrder(Machine machine) {
-        super(Position.closing(machine.getLastCandleDate()), machine);
+        super(Position.closing(machine.getLastCandle()), machine);
     }
 
     @Override

@@ -25,12 +25,17 @@ public class StrategyStatesCollector {
         states.add(state);
     }
 
+    public void addCurrentStateIfChanged() {
+        if (!strategy.getCurrentState().equals(getLastState()))
+            add(strategy.getCurrentState());
+    }
+
     public StrategyState getLastState() {
         return get(states.size() - 1);
     }
 
     public StrategyState get(int i) {
-        if (states.size() <= i)
+        if (states.size() <= i || i < 0)
             return null;
 
         return states.get(i);

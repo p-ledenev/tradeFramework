@@ -34,7 +34,7 @@ public class MachinePositionsCollector {
     }
 
     public Position get(int i) {
-        if (positions.size() <= i)
+        if (positions.size() <= i || i < 0)
             return null;
 
         return positions.get(i);

@@ -15,7 +15,6 @@ public abstract class Order {
     protected Position position;
     protected boolean isExecuted;
 
-
     public Order(Position position, Machine machine) {
         this.machine = machine;
         this.position = position;

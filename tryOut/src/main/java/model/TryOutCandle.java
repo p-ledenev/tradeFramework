@@ -2,6 +2,7 @@ package model;
 
 import lombok.Data;
 import org.joda.time.DateTime;
+import tools.Format;
 
 /**
  * Created by ledenev.p on 21.05.2015.
@@ -11,14 +12,14 @@ import org.joda.time.DateTime;
 public class TryOutCandle extends Candle {
 
     private double nextValue;
+    private int index;
 
     public TryOutCandle(DateTime date, double value) {
         super(date, value);
     }
 
-    public TryOutCandle(Candle candle, double nextValue) {
-        this(candle.getDate(), candle.getValue());
-
-        this.nextValue = nextValue;
+    @Override
+    public String printTitleCSV() {
+        return index + ";" + Format.asString(date);
     }
 }

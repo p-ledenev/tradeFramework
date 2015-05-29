@@ -6,6 +6,7 @@ import averageConstructors.IAveragingSupport;
 import lombok.Data;
 import model.OrderDirection;
 import tools.Format;
+import tools.Round;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,9 +59,9 @@ public class AveragingDecisionStrategy extends DecisionStrategy {
     @Override
     protected String[] collectCurrentStateParams() {
         return new String[]{
-                Double.toString(getLastAverageValue()),
-                Double.toString(getLastDerivativeValue()),
-                Double.toString(getLastAverageDerivative())
+                Double.toString((int) getLastAverageValue()),
+                Double.toString(Round.toSignificant(getLastDerivativeValue() * 10000)),
+                Double.toString(Round.toSignificant(getLastAverageDerivative() * 100000))
         };
     }
 

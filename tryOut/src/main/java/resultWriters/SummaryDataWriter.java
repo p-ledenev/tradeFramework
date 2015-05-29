@@ -37,7 +37,7 @@ public class SummaryDataWriter extends ResultWriter {
     public void writeTo(PrintWriter writer) {
 
         for (MachineMoneyStatesCollector collector : machineCollectors) {
-            addTo(0, collector.getDepth());
+            addTo(0, Integer.toString(collector.getDepth()));
             addTo(1, collector.computeMaxLossesPercent());
             addTo(2, collector.computeMaxMoneyPercent());
             addTo(3, collector.computeEndPeriodMoneyPercent());

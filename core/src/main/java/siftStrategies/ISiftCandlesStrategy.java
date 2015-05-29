@@ -9,5 +9,5 @@ import java.util.List;
  */
 public interface ISiftCandlesStrategy {
 
-    List<Candle> sift(Candle base, List<Candle> newCandles);
+    List<Candle> sift(List<Candle> newCandles);
 }

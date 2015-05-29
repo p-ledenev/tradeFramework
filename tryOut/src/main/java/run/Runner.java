@@ -30,7 +30,7 @@ public class Runner {
                 List<TryOutCandle> candles = DataSourceFactory.createDataSource().readCandlesFrom(
                         IDataSource.sourcePath + "/" + year + "/" + settings.getSecurity() + "_" + settings.getTimeFrame() + ".txt");
 
-                IOrdersExecutor ordersExecutor = new TryOutOrdersExecutor(candles);
+                IOrdersExecutor ordersExecutor = new TryOutOrdersExecutor(candles, Integer.parseInt(year));
 
                 ICandlesIterator candlesIterator = new CandlesIterator(candles);
                 ICandlesProcessor candlesProcessor = new CandlesProcessor(portfolio, ordersExecutor);

@@ -32,7 +32,7 @@ public class FinamDataSource implements IDataSource {
 
         reader.close();
 
-        setNextValuesTo(candles);
+        setAdditionalParamsTo(candles);
 
         return candles;
     }
@@ -47,12 +47,13 @@ public class FinamDataSource implements IDataSource {
         return new TryOutCandle(date, value);
     }
 
-    private void setNextValuesTo(List<TryOutCandle> candles) {
+    private void setAdditionalParamsTo(List<TryOutCandle> candles) {
 
         for (int i = 0; i < candles.size(); i++) {
             TryOutCandle candle = candles.get(i);
             double nextValue = (i < candles.size() - 1) ? candles.get(i + 1).getValue() : candle.getValue();
 
+            candle.setIndex(i);
             candle.setNextValue(nextValue);
         }
     }

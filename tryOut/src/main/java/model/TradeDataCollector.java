@@ -22,6 +22,9 @@ public abstract class TradeDataCollector implements ITradeDataCollector {
 
     public void collect(List<Order> orders) {
 
+        if (!isExecuted(orders))
+             return;
+
         if (portfolioCollector.isEmpty())
             portfolioCollector.setInitialMoneyAmount(computeInitialAmount(orders.get(0)));
 
@@ -46,4 +49,9 @@ public abstract class TradeDataCollector implements ITradeDataCollector {
     protected double computeInitialAmount(Order order) {
         return order.getPositionValue() * portfolioCollector.getLot();
     }
+
+    protected boolean isExecuted(List<Order> orders) {
+        return orders.get(0).isExecuted();
+    }
+
 }

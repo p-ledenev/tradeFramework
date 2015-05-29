@@ -10,7 +10,7 @@ import java.util.List;
  * Created by ledenev.p on 14.05.2015.
  */
 @Data
-public class StrategyState {
+public class StrategyState extends Object {
 
     private Candle candle;
     private List<String> params;
@@ -27,5 +27,12 @@ public class StrategyState {
             response += ";" + param;
 
         return response;
+    }
+
+    public boolean equals(StrategyState state) {
+        if (state == null)
+            return false;
+
+        return candle.equals(state.getCandle());
     }
 }

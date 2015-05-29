@@ -93,10 +93,6 @@ public class Machine implements IMoneyStateSupport {
         return decisionStrategy.getLastCandle();
     }
 
-    public DateTime getLastCandleDate() {
-        return decisionStrategy.getLastCandleDate();
-    }
-
     public DateTime getPositionDate() {
         return position.getDate();
     }
