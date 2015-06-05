@@ -41,4 +41,12 @@ public abstract class Order {
     public double getPositionValue() {
         return position.getValue();
     }
+
+    public String getPortfolioTitle() {
+        return machine.getPortfolio().getTitle();
+    }
+
+    public String print() {
+         return machine.getPortfolioTitle() + " " + machine.getDepth() + " " + position.getDirection() + " " + position.getValue();
+    }
 }

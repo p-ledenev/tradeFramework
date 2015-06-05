@@ -10,10 +10,15 @@ import java.util.List;
  */
 public class PortfolioInitializer {
 
+    public static String dataPath = "d:/Projects/Alfa/java/v1.0/tradeFramework/terminal/settings";
+
     public static List<Portfolio> initialize() {
 
         List<Portfolio> portfolios = new ArrayList<Portfolio>();
 
         return portfolios;
+    }
+
+    public static void write(List<Portfolio> portfolios) {
     }
 }

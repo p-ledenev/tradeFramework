@@ -77,16 +77,17 @@ public class AveragingDecisionStrategy extends DecisionStrategy {
             derivatives.add(new Derivative(derivativeValue));
 
             double averageDerivative = 0;
-            if (derivatives.size() >= depth)
-                averageDerivative = constructor.average(Format.copyFromEnd(derivativesAsArray(), depth));
-
+            if (derivatives.size() >= depth) {
+                List<Derivative> derivativesToAverage = Format.copyFromEnd(derivatives, depth);
+                averageDerivative = constructor.average(asArray(derivativesToAverage));
+            }
             averageDerivatives.add(averageDerivative);
         }
 
         int k = 0;
     }
 
-    private IAveragingSupport[] derivativesAsArray() {
+    private IAveragingSupport[] asArray(List<Derivative> derivatives) {
         return derivatives.toArray(new Derivative[derivatives.size()]);
     }
 

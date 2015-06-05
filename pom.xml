@@ -11,7 +11,7 @@
 
 
     <modules>
-        <module>alfa</module>
+        <module>terminal</module>
         <module>core</module>
         <module>tryOut</module>
     </modules>

@@ -3,8 +3,6 @@ package model;
 import resultWriters.PortfolioDataWriter;
 import resultWriters.ResultWriter;
 import resultWriters.TradeDataWriter;
-import runner.ITradeDataWriter;
-import runner.ITradeDataCollector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +10,7 @@ import java.util.List;
 /**
  * Created by ledenev.p on 12.05.2015.
  */
-public abstract class TradeDataCollector implements ITradeDataCollector {
+public abstract class TradeDataCollector {
 
     PortfolioMoneyStatesCollector portfolioCollector;
 
@@ -37,7 +35,7 @@ public abstract class TradeDataCollector implements ITradeDataCollector {
 
     protected abstract void collectMachinesTradeData(List<Order> orders);
 
-    public ITradeDataWriter getResultWriter() {
+    public TradeDataWriter getResultWriter() {
         List<ResultWriter> resultWriters = new ArrayList<ResultWriter>();
 
         resultWriters.add(new PortfolioDataWriter(portfolioCollector, "averageMoney"));

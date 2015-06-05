@@ -96,4 +96,8 @@ public class Machine implements IMoneyStateSupport {
     public DateTime getPositionDate() {
         return position.getDate();
     }
+
+    public String getPortfolioTitle() {
+        return portfolio.getTitle();
+    }
 }

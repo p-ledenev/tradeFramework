@@ -1,13 +1,12 @@
 package model;
 
-import runner.ICandlesIterator;
-
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by ledenev.p on 15.05.2015.
  */
-public class CandlesIterator implements ICandlesIterator {
+public class CandlesIterator {
 
     private List<TryOutCandle> candles;
     private int currentIndex;
@@ -17,8 +16,11 @@ public class CandlesIterator implements ICandlesIterator {
         currentIndex = 0;
     }
 
-    public Candle[] getNextCandles() {
-        return new Candle[]{candles.get(currentIndex++)};
+    public List<Candle> getNextCandles() {
+        List<Candle> nextCandles = new ArrayList<Candle>();
+        nextCandles.add(candles.get(currentIndex++));
+
+        return nextCandles;
     }
 
     public boolean hasNextCandles() {

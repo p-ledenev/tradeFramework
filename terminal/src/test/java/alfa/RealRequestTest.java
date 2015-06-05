@@ -1,4 +1,4 @@
-package gateway;
+package alfa;
 
 import org.junit.*;
 import tools.Log;

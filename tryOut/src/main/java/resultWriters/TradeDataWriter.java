@@ -1,10 +1,6 @@
 package resultWriters;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import runner.ITradeDataWriter;
 
 import java.util.List;
 
@@ -13,15 +9,12 @@ import java.util.List;
  */
 
 @AllArgsConstructor
-public class TradeDataWriter implements ITradeDataWriter {
+public class TradeDataWriter {
 
     private List<ResultWriter> writers;
 
-    public void writeAllData() throws Throwable {
+    public void writeData() throws Throwable {
         for (ResultWriter writer : writers)
             writer.write();
-    }
-
-    public void writeNewData() throws Throwable {
     }
 }

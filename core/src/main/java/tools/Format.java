@@ -5,6 +5,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.Calendar;
+import java.util.List;
 
 public class Format {
 
@@ -20,6 +21,10 @@ public class Format {
 
     public static <T> T[] copyFromEnd(T[] array, int depth) {
         return java.util.Arrays.copyOfRange(array, array.length - depth, array.length);
+    }
+
+    public static <T> List<T> copyFromEnd(List<T> list, int depth) {
+        return list.subList(list.size() - depth, list.size());
     }
 
     public static String asString(DateTime date) {

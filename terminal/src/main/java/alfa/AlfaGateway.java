@@ -1,4 +1,4 @@
-package gateway;
+package alfa;
 
 import com.jacob.activeX.ActiveXComponent;
 import com.jacob.com.LibraryLoader;

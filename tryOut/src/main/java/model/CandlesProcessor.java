@@ -19,6 +19,7 @@ public class CandlesProcessor implements ICandlesProcessor {
     public List<Order> processNext(Candle... candles) throws Throwable {
 
         List<Order> orders = new ArrayList<Order>();
+
         orders.addAll(portfolio.processCandles(Arrays.asList(candles)));
 
         orderExecutor.execute(orders);

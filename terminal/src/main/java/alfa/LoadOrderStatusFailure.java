@@ -1,4 +1,4 @@
-package gateway;
+package alfa;
 
 /**
  * Created by ledenev.p on 30.03.2015.

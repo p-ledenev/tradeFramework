@@ -1,11 +1,8 @@
 package run;
 
-import dataSources.IDataSource;
 import dataSources.DataSourceFactory;
+import dataSources.IDataSource;
 import model.*;
-import runner.ICandlesIterator;
-import runner.ITradeDataCollector;
-import runner.Trader;
 import settings.InitialSettings;
 
 import java.io.BufferedReader;
@@ -25,19 +22,16 @@ public class Runner {
         for (InitialSettings settings : settingsList) {
             for (String year : settings.getYears()) {
 
-                Portfolio portfolio = settings.initPortfolio();
-
                 List<TryOutCandle> candles = DataSourceFactory.createDataSource().readCandlesFrom(
                         IDataSource.sourcePath + "/" + year + "/" + settings.getSecurity() + "_" + settings.getTimeFrame() + ".txt");
 
                 IOrdersExecutor ordersExecutor = new TryOutOrdersExecutor(candles, Integer.parseInt(year));
 
-                ICandlesIterator candlesIterator = new CandlesIterator(candles);
-                ICandlesProcessor candlesProcessor = new CandlesProcessor(portfolio, ordersExecutor);
+                CandlesIterator candlesIterator = new CandlesIterator(candles);
+                Portfolio portfolio = settings.initPortfolio();
+                TradeDataCollector dataCollector = createDataCollector(portfolio);
 
-                ITradeDataCollector dataCollector = createDataCollector(portfolio);
-
-                Trader trader = new Trader(candlesIterator, candlesProcessor, dataCollector);
+                Trader trader = new Trader(candlesIterator, dataCollector, ordersExecutor, portfolio);
                 trader.trade();
             }
         }
@@ -55,9 +49,9 @@ public class Runner {
         return settings;
     }
 
-    private static ITradeDataCollector createDataCollector(Portfolio portfolio) {
+    private static TradeDataCollector createDataCollector(Portfolio portfolio) {
 
-        ITradeDataCollector dataCollector;
+        TradeDataCollector dataCollector;
         if (portfolio.countMachines() == 1)
             dataCollector = new SingleMachineTradeDataCollector(portfolio);
         else

@@ -12,4 +12,9 @@ public class EmptyOrder extends Order {
     @Override
     public void applyToMachine() {
     }
+
+    @Override
+    public String print() {
+        return "";
+    }
 }
