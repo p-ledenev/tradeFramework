@@ -1,23 +1,17 @@
 package model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.joda.time.DateTime;
 
 /**
  * Created by DiKey on 04.04.2015.
  */
 
+@Data
 public class Position {
 
     private Candle candle;
-
-    @Getter
-    @Setter
     private OrderDirection direction;
-
-    @Getter
-    @Setter
     private int volume;
 
     public static Position begining() {

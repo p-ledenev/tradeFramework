@@ -45,7 +45,7 @@ public abstract class TradeDataCollector {
     }
 
     protected double computeInitialAmount(Order order) {
-        return order.getPositionValue() * portfolioCollector.getLot();
+        return order.getValue() * portfolioCollector.getLot();
     }
 
     protected boolean isExecuted(List<Order> orders) {

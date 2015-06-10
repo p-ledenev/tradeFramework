@@ -6,15 +6,29 @@ package model;
 public class EmptyOrder extends Order {
 
     public EmptyOrder(Machine machine) {
-        super(Position.closing(machine.getLastCandle()), machine);
+        super(machine);
     }
 
     @Override
-    public void applyToMachine() {
+    public boolean applyToMachine() {
+        return false;
     }
 
     @Override
-    public String print() {
-        return "";
+    public void setValue(double value) {
+    }
+
+    @Override
+    public double getValue() {
+        return 0;
+    }
+
+    @Override
+    public void print() {
+    }
+
+    @Override
+    public int getVolume() {
+        return 0;
     }
 }

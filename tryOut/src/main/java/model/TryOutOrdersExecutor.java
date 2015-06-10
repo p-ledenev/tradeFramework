@@ -23,8 +23,7 @@ public class TryOutOrdersExecutor implements IOrdersExecutor {
             if (!next.hasYearAs(tradeYear))
                 continue;
 
-
-            order.setPositionValue(((TryOutCandle)next).getNextValue());
+            order.setValue(((TryOutCandle)next).getNextValue());
             order.executed();
         }
     }

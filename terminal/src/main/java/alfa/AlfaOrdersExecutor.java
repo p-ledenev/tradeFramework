@@ -10,6 +10,12 @@ import java.util.List;
  */
 public class AlfaOrdersExecutor implements IOrdersExecutor {
 
+    private AlfaGateway gateway;
+
+    public AlfaOrdersExecutor(AlfaGateway gateway) {
+        this.gateway = gateway;
+    }
+
     public void execute(List<Order> orders) {
         // TODO real market execution
     }

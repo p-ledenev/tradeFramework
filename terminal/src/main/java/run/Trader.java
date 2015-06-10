@@ -22,7 +22,7 @@ public class Trader {
 
     public static LocalTime tradeTo = LocalTime.of(23, 50);
 
-    private CandlesIterator candlesIterator;
+    private ICandlesIterator candlesIterator;
     private IOrdersExecutor executor;
     private List<Portfolio> portfolios;
 
@@ -47,10 +47,13 @@ public class Trader {
 
         executor.execute(orders);
 
+        boolean needSubmitTradeData = false;
         for (Order order : orders)
-            order.applyToMachine();
+            if (order.applyToMachine())
+                needSubmitTradeData = true;
 
-        PortfolioInitializer.write(portfolios);
+        if (needSubmitTradeData)
+            PortfolioInitializer.write(portfolios);
     }
 
     protected void suspendProcessing() throws Throwable {
