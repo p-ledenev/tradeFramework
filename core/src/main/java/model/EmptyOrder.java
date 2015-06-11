@@ -31,4 +31,9 @@ public class EmptyOrder extends Order {
     public int getVolume() {
         return 0;
     }
+
+    @Override
+    public boolean hasOppositeDirection(Order order) {
+        return false;
+    }
 }

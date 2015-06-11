@@ -38,4 +38,14 @@ public abstract class Order {
     public abstract void print();
 
     public abstract int getVolume();
+
+    public boolean hasSameSecurity(Order order) {
+        return getSecurity().equals(order.getSecurity());
+    }
+
+    public String getSecurity() {
+        return machine.getSecurity();
+    }
+
+    public abstract boolean hasOppositeDirection(Order order);
 }

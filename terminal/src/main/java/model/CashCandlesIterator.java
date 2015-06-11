@@ -1,5 +1,7 @@
 package model;
 
+import org.joda.time.DateTime;
+
 import java.util.List;
 
 /**
@@ -13,7 +15,7 @@ public class CashCandlesIterator implements ICandlesIterator {
         this.iterator = iterator;
     }
 
-    public List<Candle> getNextCandlesFor(String security) throws Throwable {
+    public List<Candle> getNextCandlesFor(String security, DateTime dateFrom, DateTime dateTo) throws Throwable {
 
         List<Candle> candles = CandlesCash.getCandles(security);
 
@@ -22,14 +24,10 @@ public class CashCandlesIterator implements ICandlesIterator {
         if (lastCandle.isRelevant())
             return candles;
 
-        candles = iterator.getNextCandlesFor(security);
+        candles = iterator.getNextCandlesFor(security, dateFrom, dateTo);
 
         CandlesCash.addCandles(security, candles);
 
         return candles;
-    }
-
-    public boolean hasNextCandles() {
-        return true;
     }
 }

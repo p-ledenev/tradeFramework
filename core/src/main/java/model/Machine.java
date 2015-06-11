@@ -104,4 +104,8 @@ public class Machine implements IMoneyStateSupport {
     public String getPortfolioTitle() {
         return portfolio.getTitle();
     }
+
+    public String getSecurity() {
+        return portfolio.getSecurity();
+    }
 }

@@ -147,10 +147,10 @@ public class AlfaGateway {
         return Integer.parseInt(volume[0]);
     }
 
-    public List<Candle> loadMarketData(String security, String market, AlfaTimeframe timeframe, Date dateFrom, Date dateTo) throws AlfaGatewayFailure {
+    public List<Candle> loadMarketData(String security, String market, AlfaTimeframe timeframe, DateTime dateFrom, DateTime dateTo) throws AlfaGatewayFailure {
         connect();
 
-        Variant response = connector.invoke("GetArchiveFinInfo", variant(market), variant(security), variant(0),
+        Variant response = connector.invoke("GetArchiveFinInfo", variant(market), variant(security), variant(timeframe.getCode()),
                 variant(dateFrom), variant(dateTo), variant(3), variant(20));
 
         if (!isLastOperationSucceed() || response == null)

@@ -38,7 +38,7 @@ public class Trader {
 
         List<Order> orders = new ArrayList<Order>();
         for (Portfolio portfolio : portfolios) {
-            List<Candle> candles = candlesIterator.getNextCandlesFor(portfolio.getSecurity());
+            List<Candle> candles = getNextCandlesFor(portfolio);
             orders.addAll(portfolio.processCandles(candles));
         }
 
@@ -56,7 +56,12 @@ public class Trader {
             PortfolioInitializer.write(portfolios);
     }
 
-    protected void suspendProcessing() throws Throwable {
+    private List<Candle> getNextCandlesFor(Portfolio portfolio) throws Throwable {
+        // TODO where to put List<Candle> portfolio or strategy?
+        return null;
+    }
+
+    private void suspendProcessing() throws Throwable {
 
         DateTime date = DateTime.now();
 

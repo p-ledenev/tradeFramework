@@ -27,12 +27,17 @@ public class ExecutableOrder extends Order {
 
     @Override
     public void print() {
-        Log.info(machine.getPortfolioTitle() + " " + machine.getDepth() + " " + position.getDirection() + " " + position.getValue());
+        Log.info(toString());
     }
 
     @Override
     public int getVolume() {
         return machine.getPositionVolume() + position.getVolume();
+    }
+
+    @Override
+    public boolean hasOppositeDirection(Order order) {
+        return false;
     }
 
     @Override
@@ -42,5 +47,10 @@ public class ExecutableOrder extends Order {
             machine.apply(position);
 
         return isExecuted;
+    }
+
+    @Override
+    public String toString() {
+        return machine.getPortfolioTitle() + " " + machine.getDepth() + " " + position.getDirection() + " " + getValue() + " " + getVolume();
     }
 }
