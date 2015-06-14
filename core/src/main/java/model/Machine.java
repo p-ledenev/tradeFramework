@@ -56,14 +56,14 @@ public class Machine implements IMoneyStateSupport {
         return "depth; " + portfolio.printStrategy();
     }
 
-    public Order processCandles(List<Candle> candles) {
+    public void addOrderTo(List<Order> orders, List<Candle> candles) {
 
         Position newPosition = decisionStrategy.computeNewPositionFor(candles, depth, computeVolume());
 
         if (position.hasSameDirection(newPosition))
-            return new EmptyOrder(this);
+            return;
 
-        return new ExecutableOrder(newPosition, this);
+        orders.add(new Order(newPosition, this));
     }
 
     private int computeVolume() {
@@ -107,5 +107,9 @@ public class Machine implements IMoneyStateSupport {
 
     public String getSecurity() {
         return portfolio.getSecurity();
+    }
+
+    public OrderDirection getPositionDirection() {
+        return position.getDirection();
     }
 }

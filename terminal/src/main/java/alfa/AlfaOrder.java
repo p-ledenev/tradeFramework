@@ -1,7 +1,7 @@
 package alfa;
 
-import lombok.Data;
 import model.Order;
+import tools.Log;
 
 import java.util.Arrays;
 
@@ -9,19 +9,19 @@ import java.util.Arrays;
  * Created by ledenev.p on 11.06.2015.
  */
 
-@Data
-public class AlfaOrder {
+public class AlfaOrder extends Order{
 
     public static int maxCheckAttempts = 10;
 
-    private Order order;
+    private AlfaGateway gateway;
 
     private AlfaOrderStatus status;
     private int checkAttemptCounter;
     private Integer orderNumber;
 
-    public AlfaOrder(Order order) {
-        this.order = order;
+    public AlfaOrder(Order order, AlfaGateway gateway) {
+        super(order.getNewPosition(), order.getMachine());
+        this.gateway = gateway;
 
         status = AlfaOrderStatus.newest;
         checkAttemptCounter = 0;
@@ -48,7 +48,7 @@ public class AlfaOrder {
             message = "OperateStock: Order No " + orderNumber + " was deleted. This machine continue working";
 
         if (status == AlfaOrderStatus.executionSucceed)
-            message = "OperateStock: " + order.toString() + " succeed";
+            message = "OperateStock: " + toString() + " succeed";
 
         return message;
     }
@@ -61,14 +61,6 @@ public class AlfaOrder {
             return false;
 
         return true;
-    }
-
-    public boolean hasSameSecurity(AlfaOrder alfaOrder) {
-        return order.hasSameSecurity(alfaOrder.getOrder());
-    }
-
-    public boolean hasOppositeDirection(AlfaOrder alfaOrder) {
-        return order.hasOppositeDirection(alfaOrder.getOrder());
     }
 
     public boolean isNewest() {
@@ -91,6 +83,10 @@ public class AlfaOrder {
         return status == AlfaOrderStatus.executionSucceed;
     }
 
+    public boolean isDeleted() {
+        return status == AlfaOrderStatus.deleted;
+    }
+
     public boolean shouldBeDeleted() {
         AlfaOrderStatus[] failedStatuses = {AlfaOrderStatus.executedPartly, AlfaOrderStatus.executionStatusNotObtained};
 
@@ -104,11 +100,49 @@ public class AlfaOrder {
         return (shouldBeDeleted() || AlfaOrderStatus.submissionStatusNotObtained.equals(status));
     }
 
-    public boolean isDeleted() {
-        return status == AlfaOrderStatus.deleted;
-    }
-
     public boolean isMaxCheckAttemtsExeeded() {
         return checkAttemptCounter > maxCheckAttempts;
+    }
+
+    public void submit() {
+        if (status != AlfaOrderStatus.newest)
+            return;
+
+        double lastValue = 0;
+        try {
+            lastValue = gateway.loadLastValueFor(machine.getSecurity());
+        }
+        catch(AlfaGatewayFailure e) {
+            Log.error("Submission failed for order " + toString() + " with message " + e.getMessage());
+            status = AlfaOrderStatus.submissionBlocked;
+
+            return;
+        }
+
+        lastValue = (getDirection().)
+
+        if (getD.isBuy())
+            lastValue += 0.002 * lastValue; // открытие
+
+        if (trade.isSell())
+            trade.value -= 0.002 * trade.value; // закрытие
+
+        // если предыдущий не завершен
+        if (!isParenetExecutionSucceed()) return;
+
+        trade.volume = (trade.volume > 0) ? trade.volume : machine.parent.lot;
+
+        if (trade.volume <= 0)
+        {
+            AlfaDirectGateway.printInfo(DateTime.Now, machine, "CreateOrder: Faild. Not enough money in Portfolio. Order volume less 0.");
+            status = OrderStatus.tenderedBlock;
+
+            return;
+        }
+
+        // подать ордер
+        orderNumber = gateway.createOrder(this);
+
+        status = (orderNumber > 0) ? OrderStatus.tenderedSuccess : OrderStatus.tenderedFail;
     }
 }

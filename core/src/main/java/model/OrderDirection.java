@@ -23,4 +23,14 @@ public enum OrderDirection {
     public boolean isEqual(OrderDirection direction) {
         return name().equals(direction.name());
     }
+
+    public OrderDirection opposite() {
+        if (this.equals(buy))
+            return sell;
+
+        if (this.equals(sell))
+            return buy;
+
+        return none;
+    }
 }

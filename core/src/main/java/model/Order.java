@@ -2,14 +2,16 @@ package model;
 
 import exceptions.PositionAlreadySetFailure;
 import lombok.Data;
+import tools.Log;
 
 /**
- * Created by ledenev.p on 31.03.2015.
+ * Created by DiKey on 04.04.2015.
  */
 
 @Data
-public abstract class Order {
+public class Order {
 
+    protected Position newPosition;
     protected Machine machine;
     protected boolean isExecuted;
 
@@ -17,7 +19,10 @@ public abstract class Order {
         this.machine = machine;
     }
 
-    public abstract boolean applyToMachine() throws PositionAlreadySetFailure;
+    public Order(Position newPosition, Machine machine) {
+        this(machine);
+        this.newPosition = newPosition;
+    }
 
     public void executed() {
         isExecuted = true;
@@ -31,14 +36,6 @@ public abstract class Order {
         return machine.getPortfolio().getTitle();
     }
 
-    public abstract void setValue(double value);
-
-    public abstract double getValue();
-
-    public abstract void print();
-
-    public abstract int getVolume();
-
     public boolean hasSameSecurity(Order order) {
         return getSecurity().equals(order.getSecurity());
     }
@@ -47,5 +44,41 @@ public abstract class Order {
         return machine.getSecurity();
     }
 
-    public abstract boolean hasOppositeDirection(Order order);
+    public void setValue(double value) {
+        newPosition.setValue(value);
+    }
+
+    public double getValue() {
+        return newPosition.getValue();
+    }
+
+    public void print() {
+        Log.info(toString());
+    }
+
+    public int getVolume() {
+        return machine.getPositionVolume() + newPosition.getVolume();
+    }
+
+    public OrderDirection getDirection() {
+        return machine.getPositionDirection().opposite();
+    }
+
+    public boolean hasOppositeDirection(Order order) {
+        return false;
+    }
+
+    public boolean applyToMachine() throws PositionAlreadySetFailure {
+
+        if (isExecuted)
+            machine.apply(newPosition);
+
+        return isExecuted;
+    }
+
+    @Override
+    public String toString() {
+        return machine.getPortfolioTitle() + " " + machine.getDepth() + " " +
+                newPosition.getDirection() + " " + getValue() + " " + getVolume();
+    }
 }

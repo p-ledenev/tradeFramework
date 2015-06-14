@@ -79,10 +79,10 @@ public class AlfaGateway {
             throw new AlfaGatewayFailure(logMessage("DropOrder"));
     }
 
-    public double loadLastValue(String ticket) throws AlfaGatewayFailure {
+    public double loadLastValueFor(String security) throws AlfaGatewayFailure {
         connect();
 
-        String conditions = "p_code in (\"" + ticket + "\")";
+        String conditions = "p_code in (\"" + security + "\")";
         Variant response = connector.invoke("GetLocalDBData", variant("fin_info"), variant("last_price, status"), variant(conditions));
 
         if (!isLastOperationSucceed())
