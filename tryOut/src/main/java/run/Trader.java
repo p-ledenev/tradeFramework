@@ -5,6 +5,7 @@ import model.*;
 import resultWriters.TradeDataWriter;
 import tools.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,7 +24,12 @@ public class Trader {
         Candle lastCandle = null;
         while (candlesIterator.hasNextCandles()) {
             List<Candle> candles = candlesIterator.getNextCandles();
-            List<Order> orders = portfolio.processCandles(candles);
+
+            List<Order> orders = new ArrayList<Order>();
+            portfolio.addOrderTo(orders, candles);
+
+            if (orders.size() <= 0)
+                continue;
 
             orderExecutor.execute(orders);
 

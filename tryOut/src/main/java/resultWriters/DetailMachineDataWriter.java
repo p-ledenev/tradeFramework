@@ -49,7 +49,7 @@ public class DetailMachineDataWriter extends ResultWriter {
         if (position.isSell())
             response += ";" + position.getValue() + ";";
 
-        if (position.isNone())
+        if (position.isNeutral())
             response += ";;" + position.getValue();
 
         return response;

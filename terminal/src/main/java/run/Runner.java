@@ -1,9 +1,8 @@
 package run;
 
-import alfa.AlfaCandlesIterator;
-import alfa.AlfaGateway;
-import alfa.AlfaOrdersExecutor;
+import iterators.CacheCandlesIterator;
 import model.*;
+import settings.AlfaSettings;
 import settings.PortfolioInitializer;
 
 import java.util.List;
@@ -13,27 +12,19 @@ import java.util.List;
  */
 public class Runner {
 
+    public static String dataPath = "d:/Projects/Alfa/java/v1.0/tradeFramework/terminal";
+
     public static void main(String[] args) throws Throwable {
 
         List<Portfolio> portfolios = PortfolioInitializer.initialize();
 
-        AlfaGateway alfaGateway = createAlfaGateway();
+        AlfaGateway gateway = AlfaSettings.createGateway();
 
-        ICandlesIterator alfaIterator = new AlfaCandlesIterator(alfaGateway);
-        IOrdersExecutor ordersExecutor = new AlfaOrdersExecutor(alfaGateway);
+        ICandlesIterator iterator = new CacheCandlesIterator(new AlfaCandlesIterator(gateway));
+        IOrdersExecutor ordersExecutor = new AlfaOrdersExecutor(gateway);
 
-        ICandlesIterator candlesIterator = new CashCandlesIterator(alfaIterator);
+        ICandlesIterator candlesIterator = new CacheCandlesIterator(iterator);
         Trader trader = new Trader(candlesIterator, ordersExecutor, portfolios);
         trader.trade();
     }
-
-    public static AlfaGateway createAlfaGateway() throws Throwable {
-
-        String login = "";
-        String password = "";
-
-        return new AlfaGateway(login, password);
-    }
-
-
 }

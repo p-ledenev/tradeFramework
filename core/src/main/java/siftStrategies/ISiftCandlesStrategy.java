@@ -10,4 +10,6 @@ import java.util.List;
 public interface ISiftCandlesStrategy {
 
     List<Candle> sift(List<Candle> newCandles);
+
+    double estimateRuledOutProportion();
 }

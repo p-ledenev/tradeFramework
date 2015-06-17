@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>terminal</artifactId>
+    <artifactId>alfa</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -38,12 +38,6 @@
         </dependency>
 
         <dependency>
-            <groupId>trade</groupId>
-            <artifactId>alfa</artifactId>
-            <version>1.0</version>
-        </dependency>
-
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.11</version>
@@ -52,7 +46,7 @@
     </dependencies>
 
     <build>
-        <finalName>terminal</finalName>
+        <finalName>alfa</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

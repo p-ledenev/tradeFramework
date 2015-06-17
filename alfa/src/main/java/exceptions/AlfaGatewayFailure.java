@@ -1,4 +1,4 @@
-package alfa;
+package exceptions;
 
 /**
  * Created by ledenev.p on 27.03.2015.

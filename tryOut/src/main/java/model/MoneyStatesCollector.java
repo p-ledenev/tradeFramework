@@ -2,6 +2,7 @@ package model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.joda.time.DateTime;
 import tools.Round;
 
 import java.io.PrintWriter;
@@ -39,7 +40,7 @@ public abstract class MoneyStatesCollector<TEntity extends IMoneyStateSupport> {
 
     protected MoneyState getLastState() {
         if (states.size() == 0)
-            return null;
+            return new MoneyState(new DateTime(0), 0);
 
         return states.get(states.size() - 1);
     }

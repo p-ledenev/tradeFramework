@@ -1,4 +1,4 @@
-package alfa;
+package model;
 
 import lombok.Getter;
 

@@ -3,7 +3,7 @@ package decisionStrategies;
 import exceptions.NoDecisionStrategyFoundFailure;
 import lombok.Data;
 import model.Candle;
-import model.OrderDirection;
+import model.Direction;
 import model.Position;
 import org.reflections.Reflections;
 import siftStrategies.ISiftCandlesStrategy;
@@ -60,15 +60,17 @@ public abstract class DecisionStrategy {
     public Position computeNewPositionFor(List<Candle> newCandles, int depth, int volume) {
 
         List<Candle> sifted = siftStrategy.sift(newCandles);
+        // TODO remove unused candles
         candles.addAll(sifted);
 
+        // TODO warn if size is less than needed
         if (candles.size() < depth)
             return Position.closing(getLastCandle());
 
         if (profitStrategy.shouldTakeProfit())
             return Position.closing(getLastCandle());
 
-        OrderDirection direction = computeOrderDirection(depth);
+        Direction direction = computeOrderDirection(depth);
 
         return Position.opening(direction, volume, getLastCandle());
     }
@@ -81,7 +83,7 @@ public abstract class DecisionStrategy {
         return candles.get(candles.size() - 1);
     }
 
-    protected abstract OrderDirection computeOrderDirection(int depth);
+    protected abstract Direction computeOrderDirection(int depth);
 
     public String getName() {
         Strategy annotation = this.getClass().getAnnotation(Strategy.class);
@@ -99,6 +101,12 @@ public abstract class DecisionStrategy {
         return array;
     }
 
+    public int estimateSufficientCandlesSizeFor(int depth) {
+        double ruledOutProportion = siftStrategy.estimateRuledOutProportion();
+
+        return Double.valueOf(getSufficientCandlesSizeFor(depth) / (1. - ruledOutProportion)).intValue();
+    }
+
     public StrategyState getCurrentState() {
         return new StrategyState(getLastCandle(), collectCurrentStateParams());
     }
@@ -106,4 +114,6 @@ public abstract class DecisionStrategy {
     public abstract String[] getStateParamsHeader();
 
     protected abstract String[] collectCurrentStateParams();
+
+    protected abstract int getSufficientCandlesSizeFor(int depth);
 }

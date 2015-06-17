@@ -1,8 +1,6 @@
-package alfa;
+package model;
 
 import lombok.AllArgsConstructor;
-import model.Candle;
-import model.ICandlesIterator;
 import org.joda.time.DateTime;
 
 import java.util.List;
@@ -15,10 +13,8 @@ import java.util.List;
 public class AlfaCandlesIterator implements ICandlesIterator {
 
     private AlfaGateway gateway;
-    private String market;
-    private AlfaTimeframe timeframe;
 
     public List<Candle> getNextCandlesFor(String security, DateTime dateFrom, DateTime dateTo) throws Throwable {
-        return gateway.loadMarketData(security, market, timeframe, dateFrom, dateTo);
+        return gateway.loadMarketData(security, dateFrom, dateTo);
     }
 }

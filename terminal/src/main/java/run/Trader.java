@@ -1,10 +1,12 @@
 package run;
 
+import iterators.*;
 import lombok.AllArgsConstructor;
 import model.*;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.Period;
+import settings.OrdersLogger;
 import settings.PortfolioInitializer;
 import tools.Format;
 import tools.Log;
@@ -28,18 +30,23 @@ public class Trader {
 
     public void trade() throws Throwable {
 
+        IPortfolioCandlesIterator iterator = new PortfolioCandlesInitializer(candlesIterator);
+        process(iterator);
+        suspendProcessing();
+
+        iterator = new PortfolioCandlesIterator(candlesIterator);
         while (true) {
-            process();
+            process(iterator);
             suspendProcessing();
         }
     }
 
-    private void process() throws Throwable {
+    private void process(IPortfolioCandlesIterator iterator) throws Throwable {
 
         List<Order> orders = new ArrayList<Order>();
         for (Portfolio portfolio : portfolios) {
-            List<Candle> candles = getNextCandlesFor(portfolio);
-            orders.addAll(portfolio.processCandles(candles));
+            List<Candle> candles = iterator.getNextCandlesFor(portfolio);
+            portfolio.addOrderTo(orders, candles);
         }
 
         for (Order order : orders)
@@ -52,13 +59,10 @@ public class Trader {
             if (order.applyToMachine())
                 needSubmitTradeData = true;
 
+        OrdersLogger.log(orders);
+
         if (needSubmitTradeData)
             PortfolioInitializer.write(portfolios);
-    }
-
-    private List<Candle> getNextCandlesFor(Portfolio portfolio) throws Throwable {
-        // TODO where to put List<Candle> portfolio or strategy?
-        return null;
     }
 
     private void suspendProcessing() throws Throwable {

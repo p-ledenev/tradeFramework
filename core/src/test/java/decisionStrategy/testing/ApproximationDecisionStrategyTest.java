@@ -3,7 +3,7 @@ package decisionStrategy.testing;
 import approximationConstructors.LinearApproximationConstructor;
 import decisionStrategies.ApproximationDecisionStrategy;
 import model.Candle;
-import model.OrderDirection;
+import model.Direction;
 import model.Position;
 import org.joda.time.DateTime;
 import org.junit.Test;
@@ -24,7 +24,7 @@ public class ApproximationDecisionStrategyTest extends DecisionStrategyTestCase<
     public void shouldComputeOrderDirection() {
         Position position = decisionStrategy.computeNewPositionFor(candles, depth, volume);
 
-        assertThat(position.getDirection(), is(equalTo(OrderDirection.buy)));
+        assertThat(position.getDirection(), is(equalTo(Direction.buy)));
         assertThat(position.getVolume(), is(equalTo(volume)));
     }
 
@@ -37,7 +37,7 @@ public class ApproximationDecisionStrategyTest extends DecisionStrategyTestCase<
 
         Position position = decisionStrategy.computeNewPositionFor(newCandles, depth, volume);
 
-        assertThat(position.getDirection(), is(equalTo(OrderDirection.buy)));
+        assertThat(position.getDirection(), is(equalTo(Direction.buy)));
     }
 
     @Test
@@ -50,7 +50,7 @@ public class ApproximationDecisionStrategyTest extends DecisionStrategyTestCase<
 
         Position position = decisionStrategy.computeNewPositionFor(newCandles, depth, volume);
 
-        assertThat(position.getDirection(), is(equalTo(OrderDirection.buy)));
+        assertThat(position.getDirection(), is(equalTo(Direction.buy)));
     }
 
     @Test
@@ -65,7 +65,7 @@ public class ApproximationDecisionStrategyTest extends DecisionStrategyTestCase<
 
         Position position = decisionStrategy.computeNewPositionFor(newCandles, depth, volume);
 
-        assertThat(position.getDirection(), is(equalTo(OrderDirection.sell)));
+        assertThat(position.getDirection(), is(equalTo(Direction.sell)));
     }
 
     @Override

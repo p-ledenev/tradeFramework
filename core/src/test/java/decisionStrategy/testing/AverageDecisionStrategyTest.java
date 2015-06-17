@@ -3,7 +3,7 @@ package decisionStrategy.testing;
 import averageConstructors.ExponentialAverageConstructor;
 import decisionStrategies.AveragingDecisionStrategy;
 import model.Candle;
-import model.OrderDirection;
+import model.Direction;
 import model.Position;
 import org.hamcrest.CoreMatchers;
 import org.joda.time.DateTime;
@@ -25,7 +25,7 @@ public class AverageDecisionStrategyTest extends DecisionStrategyTestCase<Averag
     public void shouldComputeOrderDirection() {
         Position position = decisionStrategy.computeNewPositionFor(candles, depth, volume);
 
-        assertThat(position.getDirection(), is(equalTo(OrderDirection.buy)));
+        assertThat(position.getDirection(), is(equalTo(Direction.buy)));
         assertThat(position.getVolume(), is(equalTo(volume)));
     }
 
@@ -94,7 +94,7 @@ public class AverageDecisionStrategyTest extends DecisionStrategyTestCase<Averag
 
         Position position = decisionStrategy.computeNewPositionFor(newCandles, depth, volume);
 
-        assertThat(position.getDirection(), is(equalTo(OrderDirection.none)));
+        assertThat(position.getDirection(), is(equalTo(Direction.neutral)));
     }
 
     @Override

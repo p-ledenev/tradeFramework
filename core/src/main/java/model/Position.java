@@ -11,22 +11,22 @@ import org.joda.time.DateTime;
 public class Position {
 
     private Candle candle;
-    private OrderDirection direction;
+    private Direction direction;
     private int volume;
 
     public static Position begining() {
-        return new Position(OrderDirection.none, 0, Candle.empty());
+        return new Position(Direction.neutral, 0, Candle.empty());
     }
 
     public static Position closing(Candle candle) {
-        return new Position(OrderDirection.none, 0, candle);
+        return new Position(Direction.neutral, 0, candle);
     }
 
-    public static Position opening(OrderDirection direction, int volume, Candle candle) {
+    public static Position opening(Direction direction, int volume, Candle candle) {
         return new Position(direction, volume, candle);
     }
 
-    private Position(OrderDirection direction, int volume, Candle candle) {
+    private Position(Direction direction, int volume, Candle candle) {
         this.volume = volume;
         this.direction = direction;
         this.candle = candle.clone();
@@ -37,7 +37,7 @@ public class Position {
     }
 
     public boolean hasSameDirection(Position position) {
-        return direction.isEqual(position.getDirection());
+        return direction.equals(position.getDirection());
     }
 
     public boolean hasSameDay(Position position) {
@@ -57,15 +57,15 @@ public class Position {
     }
 
     public boolean isBuy() {
-        return direction.isEqual(OrderDirection.buy);
+        return Direction.buy.equals(direction);
     }
 
     public boolean isSell() {
-        return direction.isEqual(OrderDirection.sell);
+        return Direction.sell.equals(direction);
     }
 
-    public boolean isNone() {
-        return direction.isEqual(OrderDirection.none);
+    public boolean isNeutral() {
+        return Direction.neutral.equals(direction);
     }
 
     public boolean equals(Position position) {

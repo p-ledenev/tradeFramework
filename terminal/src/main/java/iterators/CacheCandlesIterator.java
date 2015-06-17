@@ -1,5 +1,6 @@
-package model;
+package iterators;
 
+import model.*;
 import org.joda.time.DateTime;
 
 import java.util.List;
@@ -7,11 +8,11 @@ import java.util.List;
 /**
  * Created by ledenev.p on 02.06.2015.
  */
-public class CashCandlesIterator implements ICandlesIterator {
+public class CacheCandlesIterator implements ICandlesIterator {
 
     private ICandlesIterator iterator;
 
-    public CashCandlesIterator(ICandlesIterator iterator) {
+    public CacheCandlesIterator(ICandlesIterator iterator) {
         this.iterator = iterator;
     }
 

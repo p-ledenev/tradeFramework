@@ -4,7 +4,7 @@ import averageConstructors.AverageConstructorFactory;
 import averageConstructors.IAverageConstructor;
 import averageConstructors.IAveragingSupport;
 import lombok.Data;
-import model.OrderDirection;
+import model.Direction;
 import tools.Format;
 import tools.Round;
 
@@ -34,19 +34,19 @@ public class AveragingDecisionStrategy extends DecisionStrategy {
     }
 
     @Override
-    protected OrderDirection computeOrderDirection(int depth) {
+    protected Direction computeOrderDirection(int depth) {
 
         addDerivatives(depth);
 
         double averageDerivative = getLastAverageDerivative();
 
         if (averageDerivative > 0)
-            return OrderDirection.buy;
+            return Direction.buy;
 
         if (averageDerivative < 0)
-            return OrderDirection.sell;
+            return Direction.sell;
 
-        return OrderDirection.none;
+        return Direction.neutral;
     }
 
     @Override
@@ -63,6 +63,11 @@ public class AveragingDecisionStrategy extends DecisionStrategy {
                 Double.toString(Round.toSignificant(getLastDerivativeValue() * 10000)),
                 Double.toString(Round.toSignificant(getLastAverageDerivative() * 100000))
         };
+    }
+
+    @Override
+    public int getSufficientCandlesSizeFor(int depth) {
+        return depth * 2 + 3;
     }
 
     private void addDerivatives(int depth) {

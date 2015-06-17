@@ -29,10 +29,6 @@ public class MoneyState {
     }
 
     public boolean equals(MoneyState state) {
-
-        if (state == null)
-            return false;
-
         return state.hasEqualMoney(money);
     }
 

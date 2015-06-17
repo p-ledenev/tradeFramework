@@ -1,4 +1,6 @@
-package model;
+package iterators;
+
+import model.Candle;
 
 import java.util.ArrayList;
 import java.util.HashMap;

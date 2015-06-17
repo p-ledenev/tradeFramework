@@ -1,4 +1,4 @@
-package alfa;
+package model;
 
 /**
  * Created by ledenev.p on 11.06.2015.
@@ -11,5 +11,5 @@ public enum AlfaOrderStatus {
     submissionBlocked,
     executionSucceed,
     executionStatusNotObtained,
-    deleted
+    deleted,
 }

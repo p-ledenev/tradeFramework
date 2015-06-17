@@ -34,20 +34,15 @@ public class Portfolio implements IMoneyStateSupport {
         machines.add(machine);
     }
 
-    public List<Order> processCandles(List<Candle> candles) {
-
-        List<Order> orders = new ArrayList<Order>();
+    public void addOrderTo(List<Order> orders, List<Candle> candles) {
         for (Machine machine : machines)
-            orders.add(machine.processCandles(candles));
-
-        return orders;
+            machine.addOrderTo(orders, candles);
     }
 
     public String printStrategy() {
         return machines.get(0).getDecisionStrategyName();
     }
 
-    @Override
     public MoneyState getCurrentState() {
         return new MoneyState(getLatestTime(), computeCurrentMoney());
     }
@@ -72,5 +67,14 @@ public class Portfolio implements IMoneyStateSupport {
 
     public int countMachines() {
         return machines.size();
+    }
+
+    public int estimateInitialCandlesSize() {
+        int size = 0;
+        for (Machine machine : machines)
+            if (size < machine.estimateSufficientCandlesSize())
+                size = machine.estimateSufficientCandlesSize();
+
+        return size;
     }
 }

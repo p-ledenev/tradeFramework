@@ -2,6 +2,7 @@ package model;
 
 import exceptions.PositionAlreadySetFailure;
 import lombok.Data;
+import tools.Format;
 import tools.Log;
 
 /**
@@ -60,16 +61,27 @@ public class Order {
         return machine.getPositionVolume() + newPosition.getVolume();
     }
 
-    public OrderDirection getDirection() {
+    public Direction getDirection() {
         return machine.getPositionDirection().opposite();
     }
 
-    public boolean hasOppositeDirection(Order order) {
-        return false;
+    public boolean isBuy() {
+        return Direction.buy.equals(getDirection());
+    }
+
+    public boolean isSell() {
+        return Direction.sell.equals(getDirection());
+    }
+
+    public boolean isEmpty() {
+        return Direction.neutral.equals(getDirection()) || getVolume() == 0;
+    }
+
+    public boolean hasOppositeDirectionTo(Order order) {
+        return getDirection().isOppositeTo(order.getDirection());
     }
 
     public boolean applyToMachine() throws PositionAlreadySetFailure {
-
         if (isExecuted)
             machine.apply(newPosition);
 
@@ -78,7 +90,15 @@ public class Order {
 
     @Override
     public String toString() {
-        return machine.getPortfolioTitle() + " " + machine.getDepth() + " " +
-                newPosition.getDirection() + " " + getValue() + " " + getVolume();
+        return Format.asString(newPosition.getDate()) + " " + machine.getPortfolioTitle() + " " + machine.getDepth() + " " +
+                newPosition.getDirection() + " " + getValue() + " " + getVolume() + " " + (isExecuted ? "succeed" : "failed");
+    }
+
+    public void blockMachine() {
+        machine.block();
+    }
+
+    public void unblockMachine() {
+        machine.unblock();
     }
 }

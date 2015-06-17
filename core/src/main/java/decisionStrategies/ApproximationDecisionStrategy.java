@@ -4,7 +4,7 @@ import approximationConstructors.Approximation;
 import approximationConstructors.IApproximationConstructor;
 import approximationConstructors.LinearApproximationConstructor;
 import lombok.Data;
-import model.OrderDirection;
+import model.Direction;
 
 /**
  * Created by ledenev.p on 05.05.2015.
@@ -22,19 +22,19 @@ public class ApproximationDecisionStrategy extends DecisionStrategy {
     }
 
     @Override
-    protected OrderDirection computeOrderDirection(int depth) {
+    protected Direction computeOrderDirection(int depth) {
 
         ap = constructor.approximate(createCandleArrayBy(candles.size() - 1, depth));
 
         double highestDegreeParam = ap.getHighestDegreeParameter();
 
         if (highestDegreeParam > 0)
-            return OrderDirection.buy;
+            return Direction.buy;
 
         if (highestDegreeParam < 0)
-            return OrderDirection.sell;
+            return Direction.sell;
 
-        return OrderDirection.none;
+        return Direction.neutral;
     }
 
     @Override
@@ -51,5 +51,10 @@ public class ApproximationDecisionStrategy extends DecisionStrategy {
                 ap.printPowerFunction(),
                 Double.toString(ap.computeApproximatedValue())
         };
+    }
+
+    @Override
+    public int getSufficientCandlesSizeFor(int depth) {
+        return depth + 2;
     }
 }

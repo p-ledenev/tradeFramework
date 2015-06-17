@@ -14,7 +14,7 @@ public class RealRequestTest {
 
     @Before
     public void setUp() throws Throwable {
-        gateway = new AlfaGateway("pledenev", "");
+        gateway = new AlfaGateway("pledenev", "", "FORTS", "172310", AlfaTimeframe.minute);
     }
 
     @Test

@@ -34,7 +34,6 @@ public class Format {
 
     public static DateTime asDate(String date) {
         DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm:ss");
-
         return formatter.parseDateTime(date);
     }
 

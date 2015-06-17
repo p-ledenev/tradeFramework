@@ -16,7 +16,7 @@ public class MinMaxSiftStrategy implements ISiftCandlesStrategy {
     private double maxValue;
 
     public MinMaxSiftStrategy(double sieveParam) {
-        this.sieveParam =sieveParam;
+        this.sieveParam = sieveParam;
         minValue = Double.MAX_VALUE;
         maxValue = Double.MIN_VALUE;
     }

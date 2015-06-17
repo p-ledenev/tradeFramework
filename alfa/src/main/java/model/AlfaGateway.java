@@ -1,9 +1,9 @@
-package alfa;
+package model;
 
 import com.jacob.activeX.ActiveXComponent;
 import com.jacob.com.LibraryLoader;
 import com.jacob.com.Variant;
-import model.Candle;
+import exceptions.*;
 import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
@@ -24,15 +24,24 @@ public class AlfaGateway {
     public LocalTime tradeFrom = new LocalTime(10, 0);
     public LocalTime tradeTo = new LocalTime(23, 45);
 
-    protected ActiveXComponent connector;
-    protected String login;
-    protected String password;
+    private ActiveXComponent connector;
 
-    public AlfaGateway(String login, String password) throws Throwable {
+    private String login;
+    private String password;
+
+    private String market;
+    private String account;
+    private AlfaTimeframe timeframe;
+
+    public AlfaGateway(String login, String password, String market, String account, AlfaTimeframe timeframe) throws Throwable {
         initJacobLibrary();
 
         this.login = login;
         this.password = password;
+
+        this.market = market;
+        this.account = account;
+        this.timeframe = timeframe;
 
         connector = new ActiveXComponent("clsid:{A0AD8986-E9EF-4340-B0AB-062D7A2966F5}");
     }
@@ -79,7 +88,7 @@ public class AlfaGateway {
             throw new AlfaGatewayFailure(logMessage("DropOrder"));
     }
 
-    public double loadLastValueFor(String security) throws AlfaGatewayFailure {
+    public double loadLastValueFor(String security) throws LoadLastValueFailure, AlfaGatewayFailure {
         connect();
 
         String conditions = "p_code in (\"" + security + "\")";
@@ -89,12 +98,12 @@ public class AlfaGateway {
             throw new AlfaGatewayFailure(logMessage("LoadLastValue"));
 
         if (response == null)
-            throw new AlfaGatewayFailure("LoadLastValue: no data received");
+            throw new LoadLastValueFailure("LoadLastValue: no data received");
 
         String[] data = response.getString().split("\\|");
 
         if (data[1].equals("6"))
-            throw new AlfaGatewayFailure("LoadLastValue: no trades started");
+            throw new LoadLastValueFailure("LoadLastValue: no trades started");
 
         return Double.parseDouble(data[0]);
     }
@@ -113,8 +122,12 @@ public class AlfaGateway {
         return response.getString();
     }
 
+    public int submit(AlfaOrder order) throws AlfaGatewayFailure, OrderSubmissionFailure, UnsupportedDirection {
+        return submit(account, order.getSecurity(), market, order.getAlfaDirection(), order.getVolume(), order.getValue());
+    }
+
     public int submit(String account, String security, String market, AlfaOrderDirection direction, int volume, double value)
-            throws AlfaGatewayFailure, OrderSubmitionFailure, UnsupportedDirection {
+            throws AlfaGatewayFailure, OrderSubmissionFailure {
         connect();
 
         Variant nil = variant(null);
@@ -128,7 +141,7 @@ public class AlfaGateway {
             throw new AlfaGatewayFailure(logMessage("CreateLimitOrder"));
 
         if (response == null || response.getInt() <= 0)
-            throw new OrderSubmitionFailure("CreateLimitOrder: no data received");
+            throw new OrderSubmissionFailure("CreateLimitOrder: no data received");
 
         return response.getInt();
     }
@@ -147,7 +160,7 @@ public class AlfaGateway {
         return Integer.parseInt(volume[0]);
     }
 
-    public List<Candle> loadMarketData(String security, String market, AlfaTimeframe timeframe, DateTime dateFrom, DateTime dateTo) throws AlfaGatewayFailure {
+    public List<Candle> loadMarketData(String security, DateTime dateFrom, DateTime dateTo) throws AlfaGatewayFailure {
         connect();
 
         Variant response = connector.invoke("GetArchiveFinInfo", variant(market), variant(security), variant(timeframe.getCode()),

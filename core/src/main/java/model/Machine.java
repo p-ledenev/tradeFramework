@@ -25,6 +25,7 @@ public class Machine implements IMoneyStateSupport {
 
     private int depth;
     private double currentMoney;
+    private boolean isBlocked;
 
     private DecisionStrategy decisionStrategy;
     @Setter
@@ -38,6 +39,7 @@ public class Machine implements IMoneyStateSupport {
 
         position = Position.begining();
         currentMoney = 0;
+        isBlocked = false;
     }
 
     public void apply(Position newPosition) throws PositionAlreadySetFailure {
@@ -67,7 +69,7 @@ public class Machine implements IMoneyStateSupport {
     }
 
     private int computeVolume() {
-        if (!position.isNone())
+        if (!position.isNeutral())
             return position.getVolume();
 
         return portfolio.getLot();
@@ -109,7 +111,19 @@ public class Machine implements IMoneyStateSupport {
         return portfolio.getSecurity();
     }
 
-    public OrderDirection getPositionDirection() {
+    public Direction getPositionDirection() {
         return position.getDirection();
+    }
+
+    public void block() {
+        isBlocked = true;
+    }
+
+    public void unblock() {
+        isBlocked = false;
+    }
+
+    public int estimateSufficientCandlesSize() {
+        return decisionStrategy.estimateSufficientCandlesSizeFor(depth);
     }
 }
