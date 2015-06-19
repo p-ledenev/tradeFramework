@@ -18,21 +18,10 @@ public class CacheCandlesIterator implements ICandlesIterator {
 
     public List<Candle> getNextCandlesFor(String security, DateTime dateFrom, DateTime dateTo) throws Throwable {
 
-        if (CandlesCache.hasRelevantDataFor(security))
+        if (CandlesCache.hasRelevantDataFor(security, dateFrom, dateTo))
             return CandlesCache.getCandles(security);
 
         List<Candle> candles = iterator.getNextCandlesFor(security, dateFrom, dateTo);
-        CandlesCache.addCandles(security, candles);
-
-        return candles;
-    }
-
-    public List<Candle> getNextCandlesFor(String security, DateTime dateTo, int count) throws Throwable {
-
-        if (CandlesCache.hasRelevantDataFor(security))
-            return CandlesCache.getCandles(security);
-
-        List<Candle> candles = iterator.getNextCandlesFor(security, dateTo, count);
         CandlesCache.addCandles(security, candles);
 
         return candles;

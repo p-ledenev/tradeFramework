@@ -6,7 +6,7 @@ import model.ICandlesIterator;
 import model.Portfolio;
 import org.joda.time.DateTime;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by ledenev.p on 17.06.2015.
@@ -18,12 +18,20 @@ public class PortfolioCandlesInitializer implements IPortfolioCandlesIterator {
     private ICandlesIterator iterator;
 
     public List<Candle> getNextCandlesFor(Portfolio portfolio) throws Throwable {
-        int size = portfolio.computeInitialCandlesSize();
+        int requiredSize = portfolio.computeInitialCandlesSize();
+        List<Candle> candles = new ArrayList<Candle>();
 
-        List<Candle> candles = iterator.getNextCandlesFor(portfolio.getSecurity(), DateTime.now(), 3 * size);
+        DateTime dateTo = DateTime.now();
+        DateTime dateFrom = dateTo.minusDays(3);
 
-        portfolio.computeStorageSizeFor(candles);
+        int siftedSize = 0;
+        while (siftedSize < requiredSize) {
+            candles = iterator.getNextCandlesFor(portfolio.getSecurity(), dateFrom, dateTo);
 
-        return  candles;
+            siftedSize = portfolio.computeStorageSizeFor(candles);
+            dateFrom = dateFrom.minusDays(1);
+        }
+
+        return candles;
     }
 }

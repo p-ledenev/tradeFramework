@@ -6,8 +6,7 @@ import model.*;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.Period;
-import settings.OrdersLogger;
-import settings.PortfolioInitializer;
+import settings.*;
 import tools.Format;
 import tools.Log;
 
@@ -62,7 +61,7 @@ public class Trader {
         OrdersLogger.log(orders);
 
         if (needSubmitTradeData)
-            PortfolioInitializer.write(portfolios);
+            DataInitializer.write(portfolios);
     }
 
     private void suspendProcessing() throws Throwable {

@@ -27,6 +27,7 @@ public class Machine implements IMoneyStateSupport {
     private double currentMoney;
     private boolean isBlocked;
 
+    @Setter
     private DecisionStrategy decisionStrategy;
     @Setter
     private ICommissionStrategy commissionStrategy;
@@ -40,6 +41,13 @@ public class Machine implements IMoneyStateSupport {
         position = Position.begining();
         currentMoney = 0;
         isBlocked = false;
+    }
+
+    public Machine(Position position, int depth, double currentMoney, boolean isBlocked) {
+        this.position = position;
+        this.depth = depth;
+        this.currentMoney = currentMoney;
+        this.isBlocked = isBlocked;
     }
 
     public void apply(Position newPosition) throws PositionAlreadySetFailure {
@@ -125,5 +133,9 @@ public class Machine implements IMoneyStateSupport {
 
     public int getInitialStorageSize() {
         return decisionStrategy.getInitialStorageSizeFor(depth);
+    }
+
+    public double getPositionValue() {
+        return position.getValue();
     }
 }

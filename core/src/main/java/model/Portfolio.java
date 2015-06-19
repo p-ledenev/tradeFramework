@@ -87,4 +87,12 @@ public class Portfolio implements IMoneyStateSupport {
     public int computeStorageSizeFor(List<Candle> candles) {
         return candlesStorage.computeStorageSizeFor(candles);
     }
+
+    public Candle getLastCandle() {
+        return candlesStorage.last();
+    }
+
+    public String getDecisonStrategyName() {
+        return  machines.get(0).getDecisionStrategyName();
+    }
 }

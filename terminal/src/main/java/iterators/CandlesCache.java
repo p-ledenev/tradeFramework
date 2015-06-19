@@ -1,11 +1,9 @@
 package iterators;
 
-import model.Candle;
+import model.*;
+import org.joda.time.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by ledenev.p on 04.06.2015.
@@ -31,14 +29,18 @@ public class CandlesCache {
         return candles;
     }
 
-    public static boolean hasRelevantDataFor(String security) {
+    public static boolean hasRelevantDataFor(String security, DateTime dateFrom, DateTime dateTo) {
         List<Candle> candles = getCandles(security);
 
         if (candles.size() <= 0)
             return false;
 
-        Candle lastCandle = candles.get(candles.size()-1);
+        Candle first = candles.get(0);
+        Candle last = candles.get(candles.size() - 1);
 
-        return lastCandle.isRelevant(1);
+        dateFrom = new DateTime(dateFrom.getYear(), dateFrom.getMonthOfYear(), dateFrom.getDayOfMonth(), dateFrom.getHourOfDay(), dateFrom.getMinuteOfHour() + 1);
+        dateTo = new DateTime(dateTo.getYear(), dateTo.getMonthOfYear(), dateTo.getDayOfMonth(), dateTo.getHourOfDay(), dateTo.getMinuteOfHour());
+
+        return first.isBeforeOrEqual(dateFrom) && last.isAfterOrEqual(dateTo);
     }
 }

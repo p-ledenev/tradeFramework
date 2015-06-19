@@ -1,6 +1,7 @@
 package model;
 
-import lombok.Getter;
+import exceptions.*;
+import lombok.*;
 
 /**
  * Created by ledenev.p on 31.03.2015.
@@ -38,5 +39,17 @@ public enum Direction {
             return true;
 
         return false;
+    }
+
+    public boolean hasSame(String name) {
+        return this.name.equals(name);
+    }
+
+    public static Direction getBy(String name) throws UnsupportedDirection {
+        for (Direction direction : values())
+            if (direction.hasSame(name))
+                return direction;
+
+        throw new UnsupportedDirection("For " + neutral.getName());
     }
 }

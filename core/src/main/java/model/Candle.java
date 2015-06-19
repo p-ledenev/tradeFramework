@@ -104,4 +104,12 @@ public class Candle implements IAveragingSupport, IApproximationSupport, Cloneab
 
         return null;
     }
+
+    public boolean isBeforeOrEqual(DateTime dateFrom) {
+        return date.isBefore(dateFrom) || date.equals(dateFrom);
+    }
+
+    public boolean isAfterOrEqual(DateTime dateTo) {
+        return date.isAfter(dateTo) || date.equals(dateTo);
+    }
 }

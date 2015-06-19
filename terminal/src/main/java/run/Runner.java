@@ -2,8 +2,7 @@ package run;
 
 import iterators.CacheCandlesIterator;
 import model.*;
-import settings.AlfaSettings;
-import settings.PortfolioInitializer;
+import settings.*;
 
 import java.util.List;
 
@@ -16,7 +15,7 @@ public class Runner {
 
     public static void main(String[] args) throws Throwable {
 
-        List<Portfolio> portfolios = PortfolioInitializer.initialize();
+        List<Portfolio> portfolios = DataInitializer.initialize();
 
         AlfaGateway gateway = AlfaSettings.createGateway();
 

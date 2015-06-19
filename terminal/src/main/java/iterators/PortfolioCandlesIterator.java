@@ -2,6 +2,7 @@ package iterators;
 
 import lombok.AllArgsConstructor;
 import model.*;
+import org.joda.time.*;
 
 import java.util.List;
 
@@ -15,6 +16,8 @@ public class PortfolioCandlesIterator implements IPortfolioCandlesIterator {
     private ICandlesIterator iterator;
 
     public List<Candle> getNextCandlesFor(Portfolio portfolio) throws Throwable {
-        return null;
+        Candle candle = portfolio.getLastCandle();
+
+        return iterator.getNextCandlesFor(portfolio.getSecurity(), candle.getDate().plusSeconds(2), DateTime.now());
     }
 }

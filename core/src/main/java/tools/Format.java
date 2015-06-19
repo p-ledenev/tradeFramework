@@ -28,13 +28,21 @@ public class Format {
     }
 
     public static String asString(DateTime date) {
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm:ss");
+        return asString(date, "dd.MM.yyyy HH:mm:ss");
+    }
+
+    public static String asString(DateTime date, String pattern) {
+        DateTimeFormatter formatter = DateTimeFormat.forPattern(pattern);
         return formatter.print(date);
     }
 
-    public static DateTime asDate(String date) {
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm:ss");
+    public static DateTime asDate(String date, String pattern) {
+        DateTimeFormatter formatter = DateTimeFormat.forPattern(pattern);
         return formatter.parseDateTime(date);
+    }
+
+    public static DateTime asDate(String date) {
+        return asDate(date, "dd.MM.yyyy HH:mm:ss");
     }
 
     public static int getWorkingDaysBetweenTwoDates(DateTime startDate, DateTime endDate) {

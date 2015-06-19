@@ -2,6 +2,7 @@ package model;
 
 import lombok.AllArgsConstructor;
 import org.joda.time.DateTime;
+import tools.*;
 
 import java.util.*;
 
@@ -15,18 +16,11 @@ public class AlfaCandlesIterator implements ICandlesIterator {
     private AlfaGateway gateway;
 
     public List<Candle> getNextCandlesFor(String security, DateTime dateFrom, DateTime dateTo) throws Throwable {
-        return gateway.loadMarketData(security, dateFrom, dateTo);
-    }
+        List<Candle> candles = gateway.loadMarketData(security, dateFrom, dateTo);
 
-    public List<Candle> getNextCandlesFor(String security, DateTime dateTo, int count) throws Throwable {
-
-        List<Candle> candles = new ArrayList<Candle>();
-
-        DateTime dateFrom = dateTo.minusDays(1);
-        while (candles.size() < count) {
-            dateFrom = dateFrom.minusDays(1);
-            candles = gateway.loadMarketData(security, dateFrom, dateTo);
-        }
+        Log.info("Alfa candle iterator. Loaded candles");
+        for (Candle candle : candles)
+            Log.info(candle.print());
 
         return candles;
     }

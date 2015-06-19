@@ -54,6 +54,4 @@ public class CandlesStorage {
     public int computeStorageSizeFor(List<Candle> candles) {
         return siftStrategy.sift(candles).size();
     }
-
-    // TODO remove unused candles
 }

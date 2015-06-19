@@ -9,7 +9,5 @@ import java.util.List;
  */
 public interface ICandlesIterator {
 
-    List<Candle> getNextCandlesFor(String security, DateTime dateFrom, DateTime dateTo) throws  Throwable;
-
-    List<Candle> getNextCandlesFor(String security, DateTime dateTo, int count) throws  Throwable;
+    List<Candle> getNextCandlesFor(String security, DateTime dateFrom, DateTime dateTo) throws Throwable;
 }
