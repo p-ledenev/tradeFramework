@@ -5,8 +5,7 @@ import commissionStrategies.ScalpingCommissionStrategy;
 import decisionStrategies.DecisionStrategy;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import model.Machine;
-import model.Portfolio;
+import model.*;
 import siftStrategies.ISiftCandlesStrategy;
 import siftStrategies.SiftCandlesStrategyFactory;
 import takeProfitStrategies.ITakeProfitStrategy;
@@ -60,13 +59,15 @@ public class InitialSettings {
     }
 
     public Portfolio initPortfolio() throws Throwable {
-        Portfolio portfolio = new Portfolio(strategyName, security);
+
+        ISiftCandlesStrategy siftStrategy = SiftCandlesStrategyFactory.createSiftStrategy(sieveParam);
+        CandlesStorage candlesStorage = new CandlesStorage(siftStrategy);
+        Portfolio portfolio = new Portfolio(strategyName, security, candlesStorage);
 
         for (int depth : depths) {
             ITakeProfitStrategy profitStrategy = TakeProfitStrategyFactory.createTakeProfitStrategy();
-            ISiftCandlesStrategy siftStrategy = SiftCandlesStrategyFactory.createSiftStrategy(sieveParam);
 
-            DecisionStrategy decisionStrategy = DecisionStrategy.createFor(strategyName, profitStrategy, siftStrategy);
+            DecisionStrategy decisionStrategy = DecisionStrategy.createFor(strategyName, profitStrategy, candlesStorage);
             ICommissionStrategy commissionStrategy = new ScalpingCommissionStrategy(commission);
 
             Machine machine = new Machine(portfolio, decisionStrategy, commissionStrategy, depth);

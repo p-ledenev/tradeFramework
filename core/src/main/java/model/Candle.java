@@ -15,8 +15,6 @@ import tools.Log;
 @Data
 public class Candle implements IAveragingSupport, IApproximationSupport, Cloneable {
 
-    public static int relevancePeriodMinutes = 1;
-
     protected DateTime date;
     protected double value;
 
@@ -38,7 +36,7 @@ public class Candle implements IAveragingSupport, IApproximationSupport, Cloneab
         return dateMillisecs >= tradeFrom.getMillisOfDay() && dateMillisecs <= tradeTo.getMillisOfDay();
     }
 
-    public boolean isRelevant() {
+    public boolean isRelevant(int relevancePeriodMinutes) {
         long dateMillisecs = date.getMillis();
         long currentMillisecs = new DateTime().getMillis();
 

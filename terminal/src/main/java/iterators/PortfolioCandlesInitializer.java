@@ -18,8 +18,12 @@ public class PortfolioCandlesInitializer implements IPortfolioCandlesIterator {
     private ICandlesIterator iterator;
 
     public List<Candle> getNextCandlesFor(Portfolio portfolio) throws Throwable {
-        int size = portfolio.estimateInitialCandlesSize();
+        int size = portfolio.computeInitialCandlesSize();
 
-        return iterator.getNextCandlesFor(portfolio.getSecurity(), DateTime.now(), size);
+        List<Candle> candles = iterator.getNextCandlesFor(portfolio.getSecurity(), DateTime.now(), 3 * size);
+
+        portfolio.computeStorageSizeFor(candles);
+
+        return  candles;
     }
 }

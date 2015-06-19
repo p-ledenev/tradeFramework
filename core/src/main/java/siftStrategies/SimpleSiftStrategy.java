@@ -19,7 +19,7 @@ public class SimpleSiftStrategy implements ISiftCandlesStrategy {
         lastValue = Double.MAX_VALUE;
     }
 
-    @Override
+
     public List<Candle> sift(List<Candle> newCandles) {
 
         List<Candle> sifted = new ArrayList<Candle>();

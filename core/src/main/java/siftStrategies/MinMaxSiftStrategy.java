@@ -21,7 +21,6 @@ public class MinMaxSiftStrategy implements ISiftCandlesStrategy {
         maxValue = Double.MIN_VALUE;
     }
 
-    @Override
     public List<Candle> sift(List<Candle> newCandles) {
 
         List<Candle> sifted = new ArrayList<Candle>();

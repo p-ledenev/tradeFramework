@@ -1,7 +1,8 @@
-package alfa;
+package model.testing;
 
+import model.*;
 import org.junit.*;
-import tools.Log;
+import tools.*;
 
 /**
  * Created by ledenev.p on 31.03.2015.

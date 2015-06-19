@@ -13,21 +13,24 @@ import java.util.List;
 @Data
 public class Portfolio implements IMoneyStateSupport {
 
+    private CandlesStorage candlesStorage;
     private List<Machine> machines;
     private String security;
     private String title;
     private int lot;
 
-    public Portfolio(String title, String security, int lot) {
+    public Portfolio(String title, String security, int lot, CandlesStorage candlesStorage) {
         this.title = title;
         this.security = security;
+
         this.lot = lot;
+        this.candlesStorage = candlesStorage;
 
         machines = new ArrayList<Machine>();
     }
 
-    public Portfolio(String title, String security) {
-        this(title, security, 100);
+    public Portfolio(String title, String security, CandlesStorage candlesStorage) {
+        this(title, security, 100, candlesStorage);
     }
 
     public void addMachine(Machine machine) {
@@ -35,8 +38,11 @@ public class Portfolio implements IMoneyStateSupport {
     }
 
     public void addOrderTo(List<Order> orders, List<Candle> candles) {
+
+        candlesStorage.add(candles);
+
         for (Machine machine : machines)
-            machine.addOrderTo(orders, candles);
+            machine.addOrderTo(orders);
     }
 
     public String printStrategy() {
@@ -69,12 +75,16 @@ public class Portfolio implements IMoneyStateSupport {
         return machines.size();
     }
 
-    public int estimateInitialCandlesSize() {
+    public int computeInitialCandlesSize() {
         int size = 0;
         for (Machine machine : machines)
-            if (size < machine.estimateSufficientCandlesSize())
-                size = machine.estimateSufficientCandlesSize();
+            if (size < machine.getInitialStorageSize())
+                size = machine.getInitialStorageSize();
 
         return size;
+    }
+
+    public int computeStorageSizeFor(List<Candle> candles) {
+        return candlesStorage.computeStorageSizeFor(candles);
     }
 }

@@ -221,4 +221,16 @@ public class AlfaOrder {
             Log.info(toString() + " " + e.getMessage());
         }
     }
+
+    public String getSecurity() {
+        return order.getSecurity();
+    }
+
+    public int getVolume() {
+        return order.getVolume();
+    }
+
+    public double getValue() {
+        return order.getValue();
+    }
 }

@@ -14,7 +14,7 @@ public class PortfolioCandlesIterator implements IPortfolioCandlesIterator {
 
     private ICandlesIterator iterator;
 
-    public List<Portfolio> getNextCandlesFor(Portfolio portfolio) throws Throwable {
+    public List<Candle> getNextCandlesFor(Portfolio portfolio) throws Throwable {
         return null;
     }
 }

@@ -66,14 +66,14 @@ public class AveragingDecisionStrategy extends DecisionStrategy {
     }
 
     @Override
-    public int getSufficientCandlesSizeFor(int depth) {
+    public int getInitialStorageSizeFor(int depth) {
         return depth * 2 + 3;
     }
 
     private void addDerivatives(int depth) {
 
         int start = (derivatives.size() + 2 > depth - 1) ? derivatives.size() + 2 : depth - 1;
-        for (int i = start; i < candles.size(); i++) {
+        for (int i = start; i < candlesStorage.size(); i++) {
 
             double averageValue = constructor.average(createCandleArrayBy(i, depth));
             double derivativeValue = (averageValue - getLastAverageValue()) / averageValue;
@@ -88,8 +88,6 @@ public class AveragingDecisionStrategy extends DecisionStrategy {
             }
             averageDerivatives.add(averageDerivative);
         }
-
-        int k = 0;
     }
 
     private IAveragingSupport[] asArray(List<Derivative> derivatives) {
@@ -99,12 +97,16 @@ public class AveragingDecisionStrategy extends DecisionStrategy {
     private double getLastAverageValue() {
 
         if (averageValues.size() == 0)
-            return 0.;
+            return 0;
 
         return averageValues.get(averageValues.size() - 1);
     }
 
     private double getLastAverageDerivative() {
+
+        if (averageDerivatives.size() == 0)
+            return 0;
+
         return averageDerivatives.get(averageDerivatives.size() - 1);
     }
 

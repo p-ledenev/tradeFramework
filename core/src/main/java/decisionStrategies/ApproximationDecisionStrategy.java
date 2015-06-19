@@ -24,7 +24,10 @@ public class ApproximationDecisionStrategy extends DecisionStrategy {
     @Override
     protected Direction computeOrderDirection(int depth) {
 
-        ap = constructor.approximate(createCandleArrayBy(candles.size() - 1, depth));
+        if (candlesStorage.size() < depth)
+            return Direction.neutral;
+
+        ap = constructor.approximate(createCandleArrayBy(candlesStorage.size() - 1, depth));
 
         double highestDegreeParam = ap.getHighestDegreeParameter();
 
@@ -54,7 +57,7 @@ public class ApproximationDecisionStrategy extends DecisionStrategy {
     }
 
     @Override
-    public int getSufficientCandlesSizeFor(int depth) {
+    public int getInitialStorageSizeFor(int depth) {
         return depth + 2;
     }
 }

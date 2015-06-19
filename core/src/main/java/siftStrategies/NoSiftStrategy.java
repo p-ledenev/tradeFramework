@@ -9,7 +9,6 @@ import java.util.List;
  */
 public class NoSiftStrategy implements ISiftCandlesStrategy {
 
-    @Override
     public List<Candle> sift(List<Candle> newCandles) {
         return newCandles;
     }

@@ -1,17 +1,17 @@
 package decisionStrategy.testing;
 
-import decisionStrategies.DecisionStrategy;
-import model.Candle;
-import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
-import siftStrategies.NoSiftStrategy;
-import siftStrategies.ISiftCandlesStrategy;
-import takeProfitStrategies.ITakeProfitStrategy;
-import takeProfitStrategies.NoTakeProfitStrategy;
+import decisionStrategies.*;
+import model.*;
+import org.joda.time.*;
+import org.junit.*;
+import siftStrategies.*;
+import takeProfitStrategies.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.*;
 
 /**
  * Created by ledenev.p on 05.05.2015.
@@ -34,27 +34,31 @@ public abstract class DecisionStrategyTestCase<TStrategy extends DecisionStrateg
         volume = 10;
 
         candles = new ArrayList<Candle>();
-        for (double value : candleValues)
+        List<Candle> candlesForStorage = new ArrayList<Candle>();
+        for (double value : candleValues) {
             candles.add(new Candle(date.plusDays(1), value));
+            candlesForStorage.add(new Candle(date.plusDays(1), value));
+        }
 
         decisionStrategy = createStrategy();
 
-        ISiftCandlesStrategy siftStrategy = new NoSiftStrategy();
-        decisionStrategy.setSiftStrategy(siftStrategy);
+        decisionStrategy.setCandlesStorage(new CandlesStorage(new NoSiftStrategy(), candlesForStorage));
 
         ITakeProfitStrategy profitStrategy = new NoTakeProfitStrategy();
         decisionStrategy.setProfitStrategy(profitStrategy);
     }
 
     @Test
-    public void shouldReturnNoneDirectionForOnlyOneCandle() {
+    public void shouldReturnNeutralDirectionForOnlyOneCandle() {
 
         List<Candle> newCandles = new ArrayList<Candle>();
         newCandles.add(new Candle(DateTime.now(), 5.5));
 
-        decisionStrategy.setCandles(new ArrayList<Candle>());
+        decisionStrategy.getCandlesStorage().setCandles(newCandles);
 
-        decisionStrategy.computeNewPositionFor(newCandles, depth, volume);
+        Position position = decisionStrategy.computeNewPositionFor(depth, volume);
+
+        assertThat(position.getDirection(), is(equalTo(Direction.neutral)));
     }
 
     protected abstract TStrategy createStrategy();

@@ -22,7 +22,7 @@ public class ApproximationDecisionStrategyTest extends DecisionStrategyTestCase<
 
     @Test
     public void shouldComputeOrderDirection() {
-        Position position = decisionStrategy.computeNewPositionFor(candles, depth, volume);
+        Position position = decisionStrategy.computeNewPositionFor(depth, volume);
 
         assertThat(position.getDirection(), is(equalTo(Direction.buy)));
         assertThat(position.getVolume(), is(equalTo(volume)));
@@ -30,25 +30,27 @@ public class ApproximationDecisionStrategyTest extends DecisionStrategyTestCase<
 
     @Test
     public void shouldAddOneNewCandles() {
-        decisionStrategy.computeNewPositionFor(candles, depth, volume);
+        decisionStrategy.computeNewPositionFor(depth, volume);
 
         List<Candle> newCandles = new ArrayList<Candle>();
         newCandles.add(new Candle(DateTime.now(), 5.5));
 
-        Position position = decisionStrategy.computeNewPositionFor(newCandles, depth, volume);
+        decisionStrategy.getCandlesStorage().add(newCandles);
+        Position position = decisionStrategy.computeNewPositionFor(depth, volume);
 
         assertThat(position.getDirection(), is(equalTo(Direction.buy)));
     }
 
     @Test
     public void shouldAddTwoNewCandles() {
-        decisionStrategy.computeNewPositionFor(candles, depth, volume);
+        decisionStrategy.computeNewPositionFor(depth, volume);
 
         List<Candle> newCandles = new ArrayList<Candle>();
         newCandles.add(new Candle(DateTime.now(), 5.5));
         newCandles.add(new Candle(DateTime.now(), 5.1));
 
-        Position position = decisionStrategy.computeNewPositionFor(newCandles, depth, volume);
+        decisionStrategy.getCandlesStorage().add(newCandles);
+        Position position = decisionStrategy.computeNewPositionFor(depth, volume);
 
         assertThat(position.getDirection(), is(equalTo(Direction.buy)));
     }
@@ -56,14 +58,15 @@ public class ApproximationDecisionStrategyTest extends DecisionStrategyTestCase<
     @Test
     public void shouldReturnPositionForMinCandlesLength() {
 
+        decisionStrategy.getCandlesStorage().setCandles(new ArrayList<Candle>());
+
         List<Candle> newCandles = new ArrayList<Candle>();
         newCandles.add(new Candle(DateTime.now(), 5.5));
         newCandles.add(new Candle(DateTime.now(), 4.5));
         newCandles.add(new Candle(DateTime.now(), 3.0));
 
-        decisionStrategy.setCandles(new ArrayList<Candle>());
-
-        Position position = decisionStrategy.computeNewPositionFor(newCandles, depth, volume);
+        decisionStrategy.getCandlesStorage().add(newCandles);
+        Position position = decisionStrategy.computeNewPositionFor(depth, volume);
 
         assertThat(position.getDirection(), is(equalTo(Direction.sell)));
     }

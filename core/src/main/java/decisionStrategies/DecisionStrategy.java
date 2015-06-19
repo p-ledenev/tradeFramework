@@ -1,17 +1,13 @@
 package decisionStrategies;
 
-import exceptions.NoDecisionStrategyFoundFailure;
-import lombok.Data;
-import model.Candle;
-import model.Direction;
-import model.Position;
-import org.reflections.Reflections;
-import siftStrategies.ISiftCandlesStrategy;
-import takeProfitStrategies.ITakeProfitStrategy;
+import exceptions.*;
+import lombok.*;
+import model.*;
+import org.reflections.*;
+import takeProfitStrategies.*;
+import tools.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by ledenev.p on 09.04.2015.
@@ -19,11 +15,10 @@ import java.util.Set;
 @Data
 public abstract class DecisionStrategy {
 
-    protected List<Candle> candles;
+    protected CandlesStorage candlesStorage;
     private ITakeProfitStrategy profitStrategy;
-    private ISiftCandlesStrategy siftStrategy;
 
-    public static DecisionStrategy createFor(String name, ITakeProfitStrategy profitStrategy, ISiftCandlesStrategy siftStrategy)
+    public static DecisionStrategy createFor(String name, ITakeProfitStrategy profitStrategy, CandlesStorage candlesStorage)
             throws Throwable {
         Reflections reflections = new Reflections("decisionStrategies");
         Set<Class<?>> strategyClasses = reflections.getTypesAnnotatedWith(Strategy.class);
@@ -37,7 +32,7 @@ public abstract class DecisionStrategy {
             if (DecisionStrategy.class.isAssignableFrom(strategyClass) && strategyName.equals(name)) {
                 DecisionStrategy strategy = (DecisionStrategy) strategyClass.newInstance();
                 strategy.setProfitStrategy(profitStrategy);
-                strategy.setSiftStrategy(siftStrategy);
+                strategy.setCandlesStorage(candlesStorage);
 
                 return strategy;
             }
@@ -47,40 +42,26 @@ public abstract class DecisionStrategy {
     }
 
     public DecisionStrategy() {
-        candles = new ArrayList<Candle>();
     }
 
-    public DecisionStrategy(ITakeProfitStrategy profitStrategy, ISiftCandlesStrategy siftStrategy) {
+    public DecisionStrategy(ITakeProfitStrategy profitStrategy, CandlesStorage candlesStorage) {
         this();
 
         this.profitStrategy = profitStrategy;
-        this.siftStrategy = siftStrategy;
+        this.candlesStorage = candlesStorage;
     }
 
-    public Position computeNewPositionFor(List<Candle> newCandles, int depth, int volume) {
+    public Position computeNewPositionFor(int depth, int volume) {
 
-        List<Candle> sifted = siftStrategy.sift(newCandles);
-        // TODO remove unused candles
-        candles.addAll(sifted);
-
-        // TODO warn if size is less than needed
-        if (candles.size() < depth)
-            return Position.closing(getLastCandle());
+        if (candlesStorage.lessThan(getInitialStorageSizeFor(depth)))
+            Log.info("CandlesStorage size less than initial size: " + getInitialStorageSizeFor(depth));
 
         if (profitStrategy.shouldTakeProfit())
-            return Position.closing(getLastCandle());
+            return Position.closing(candlesStorage.last());
 
         Direction direction = computeOrderDirection(depth);
 
-        return Position.opening(direction, volume, getLastCandle());
-    }
-
-    public Candle getLastCandle() {
-
-        if (candles.size() == 0)
-            return Candle.empty();
-
-        return candles.get(candles.size() - 1);
+        return Position.opening(direction, volume, candlesStorage.last());
     }
 
     protected abstract Direction computeOrderDirection(int depth);
@@ -96,24 +77,22 @@ public abstract class DecisionStrategy {
         Candle[] array = new Candle[depth];
 
         for (int i = 0; i < depth; i++)
-            array[i] = candles.get(start - depth + i + 1);
+            array[i] = candlesStorage.get(start - depth + i + 1);
 
         return array;
     }
 
-    public int estimateSufficientCandlesSizeFor(int depth) {
-        double ruledOutProportion = siftStrategy.estimateRuledOutProportion();
-
-        return Double.valueOf(getSufficientCandlesSizeFor(depth) / (1. - ruledOutProportion)).intValue();
-    }
-
     public StrategyState getCurrentState() {
-        return new StrategyState(getLastCandle(), collectCurrentStateParams());
+        return new StrategyState(candlesStorage.last(), collectCurrentStateParams());
     }
 
     public abstract String[] getStateParamsHeader();
 
     protected abstract String[] collectCurrentStateParams();
 
-    protected abstract int getSufficientCandlesSizeFor(int depth);
+    public abstract int getInitialStorageSizeFor(int depth);
+
+    public Candle getLastCandle() {
+        return candlesStorage.last();
+    }
 }

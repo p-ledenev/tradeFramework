@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * Created by ledenev.p on 04.06.2015.
  */
-public class CandlesCash {
+public class CandlesCache {
 
     public static Map<String, List<Candle>> candlesMap;
 
@@ -29,5 +29,16 @@ public class CandlesCash {
             return new ArrayList<Candle>();
 
         return candles;
+    }
+
+    public static boolean hasRelevantDataFor(String security) {
+        List<Candle> candles = getCandles(security);
+
+        if (candles.size() <= 0)
+            return false;
+
+        Candle lastCandle = candles.get(candles.size()-1);
+
+        return lastCandle.isRelevant(1);
     }
 }

@@ -58,9 +58,9 @@ public class Machine implements IMoneyStateSupport {
         return "depth; " + portfolio.printStrategy();
     }
 
-    public void addOrderTo(List<Order> orders, List<Candle> candles) {
+    public void addOrderTo(List<Order> orders) {
 
-        Position newPosition = decisionStrategy.computeNewPositionFor(candles, depth, computeVolume());
+        Position newPosition = decisionStrategy.computeNewPositionFor(depth, computeVolume());
 
         if (position.hasSameDirection(newPosition))
             return;
@@ -123,7 +123,7 @@ public class Machine implements IMoneyStateSupport {
         isBlocked = false;
     }
 
-    public int estimateSufficientCandlesSize() {
-        return decisionStrategy.estimateSufficientCandlesSizeFor(depth);
+    public int getInitialStorageSize() {
+        return decisionStrategy.getInitialStorageSizeFor(depth);
     }
 }
