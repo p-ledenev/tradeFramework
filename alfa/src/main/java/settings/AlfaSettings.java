@@ -19,8 +19,8 @@ public class AlfaSettings {
         String password = reader.readLine();
         String market = reader.readLine();
         String account = reader.readLine();
-        AlfaTimeframe timeramework = AlfaTimeframe.valueOf(reader.readLine());
+        AlfaTimeframe timeframe = AlfaTimeframe.valueOf(reader.readLine());
 
-        return new AlfaGateway(login, password, market, account, timeramework);
+        return new AlfaGateway(login, password, market, account, timeframe);
     }
 }
