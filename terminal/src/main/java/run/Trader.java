@@ -1,18 +1,15 @@
 package run;
 
 import iterators.*;
-import lombok.AllArgsConstructor;
+import lombok.*;
 import model.*;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeConstants;
+import org.joda.time.*;
 import org.joda.time.Period;
 import settings.*;
-import tools.Format;
-import tools.Log;
+import tools.*;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by ledenev.p on 02.06.2015.
@@ -25,7 +22,7 @@ public class Trader {
 
     private ICandlesIterator candlesIterator;
     private IOrdersExecutor executor;
-    private List<Portfolio> portfolios;
+    private PortfoliosInitializer initializer;
 
     public void trade() throws Throwable {
 
@@ -43,7 +40,7 @@ public class Trader {
     private void process(IPortfolioCandlesIterator iterator) throws Throwable {
 
         List<Order> orders = new ArrayList<Order>();
-        for (Portfolio portfolio : portfolios) {
+        for (Portfolio portfolio : initializer.getPortfolios()) {
             List<Candle> candles = iterator.getNextCandlesFor(portfolio);
             portfolio.addOrderTo(orders, candles);
         }
@@ -61,7 +58,7 @@ public class Trader {
         OrdersLogger.log(orders);
 
         if (needSubmitTradeData)
-            DataInitializer.write(portfolios);
+            initializer.write();
     }
 
     private void suspendProcessing() throws Throwable {

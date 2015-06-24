@@ -1,9 +1,9 @@
 package siftStrategies;
 
-import model.Candle;
+import lombok.*;
+import model.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by DiKey on 12.04.2015.
@@ -11,6 +11,7 @@ import java.util.List;
 
 public class MinMaxSiftStrategy implements ISiftCandlesStrategy {
 
+    @Getter
     private double sieveParam;
     private double minValue;
     private double maxValue;

@@ -68,7 +68,7 @@ public class Position {
         return Direction.neutral.equals(direction);
     }
 
-    public boolean equals(Position position) {
+    public boolean equalTo(Position position) {
         if (position == null)
             return false;
 

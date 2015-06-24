@@ -33,16 +33,12 @@ public class PortfolioBuilder {
         commission = Double.parseDouble(params[5]);
     }
 
-    public PortfolioBuilder(Portfolio portfolio) {
-        this.portfolio = portfolio;
-    }
-
     public void create() {
         ISiftCandlesStrategy siftStrategy = new MinMaxSiftStrategy(sieveParam);
         portfolio = new Portfolio(title, security, lot, new CandlesStorage(siftStrategy));
     }
 
-    public void init(String line) throws Throwable {
+    public void addMachine(String line) throws Throwable {
 
         ITakeProfitStrategy profitStrategy = new NoTakeProfitStrategy();
         ICommissionStrategy commissionStrategy = new ScalpingCommissionStrategy(commission);
@@ -51,10 +47,12 @@ public class PortfolioBuilder {
         MachineBuilder builder = new MachineBuilder(line);
         builder.create();
         builder.init(portfolio, decisionStrategy, commissionStrategy);
+
+        portfolio.addMachine(builder.getMachine());
     }
 
     public String serialize() {
-        String result = portfolio.getSecurity() + "\t" + portfolio.getSecurity() + "\t" + portfolio.getDecisonStrategyName() + "\n";
+        String result = security + "\t" + title + "\t" + decisionStrategyName + "\t" + lot + "\t" + sieveParam + "\t" + commission + "\n";
 
         for (Machine machine : portfolio.getMachines()) {
             MachineBuilder builder = new MachineBuilder(machine);
