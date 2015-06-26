@@ -45,6 +45,7 @@ public class Trader {
             portfolio.addOrderTo(orders, candles);
         }
 
+        Log.info("Orders to execute");
         for (Order order : orders)
             order.print();
 
