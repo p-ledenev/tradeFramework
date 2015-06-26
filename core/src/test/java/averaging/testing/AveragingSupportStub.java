@@ -1,6 +1,6 @@
 package averaging.testing;
 
-import averageConstructors.IAveragingSupport;
+import averageConstructors.*;
 
 /**
  * Created by DiKey on 26.04.2015.

@@ -1,10 +1,9 @@
 package model;
 
 import exceptions.*;
-import tools.Log;
+import tools.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by ledenev.p on 01.04.2015.
@@ -17,7 +16,7 @@ public class AlfaOrdersExecutor implements IOrdersExecutor {
         this.gateway = gateway;
     }
 
-    public void execute(List<Order> orders) throws Throwable {
+    public void execute(List<Order> orders) throws InterruptedException {
 
         List<AlfaOrder> alfaOrders = wrap(orders);
 
@@ -41,6 +40,15 @@ public class AlfaOrdersExecutor implements IOrdersExecutor {
 
         for (AlfaOrder order : alfaOrders)
             Log.info(order.toString() + " " + order.printStatus());
+    }
+
+    public void checkVolumeFor(String security, int volume) throws Throwable {
+
+        int alfaVolume = gateway.loadSecurityVolume(security);
+        if (alfaVolume == volume)
+            return;
+
+        Log.info("For security " + security + " Alfa Terminal has " + alfaVolume + ", but portfolios have " + volume);
     }
 
     private boolean hasOrdersToProcess(List<AlfaOrder> alfaOrders) {
@@ -79,11 +87,17 @@ public class AlfaOrdersExecutor implements IOrdersExecutor {
             for (AlfaOrder opposite : alfaOrders) {
                 if (order.isOppositeTo(opposite)) {
                     try {
+                        Log.info("Mutual execution opposite orders: ");
+                        Log.info(order.toString());
+                        Log.info(opposite.toString());
+
                         double lastValue = gateway.loadLastValueFor(order.getSecurity());
                         order.executedWith(lastValue);
                         opposite.executedWith(lastValue);
 
                     } catch (LoadLastValueFailure e) {
+                        Log.info(order.toString() + " " + e.getMessage());
+
                         order.blockSubmission();
                         opposite.blockSubmission();
 

@@ -1,8 +1,8 @@
 package siftStrategies;
 
-import model.Candle;
+import model.*;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by ledenev.p on 09.04.2015.

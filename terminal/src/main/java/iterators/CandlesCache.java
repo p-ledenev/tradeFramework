@@ -38,9 +38,6 @@ public class CandlesCache {
         Candle first = candles.get(0);
         Candle last = candles.get(candles.size() - 1);
 
-        dateFrom = new DateTime(dateFrom.getYear(), dateFrom.getMonthOfYear(), dateFrom.getDayOfMonth(), dateFrom.getHourOfDay(), dateFrom.getMinuteOfHour() + 1);
-        dateTo = new DateTime(dateTo.getYear(), dateTo.getMonthOfYear(), dateTo.getDayOfMonth(), dateTo.getHourOfDay(), dateTo.getMinuteOfHour());
-
-        return first.isBeforeOrEqual(dateFrom) && last.isAfterOrEqual(dateTo);
+        return first.hasDate(dateFrom.plusMinutes(1)) && last.hasDate(dateTo);
     }
 }

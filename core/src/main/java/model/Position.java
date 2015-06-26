@@ -1,7 +1,7 @@
 package model;
 
-import lombok.Data;
-import org.joda.time.DateTime;
+import lombok.*;
+import org.joda.time.*;
 
 /**
  * Created by DiKey on 04.04.2015.
@@ -85,5 +85,9 @@ public class Position {
 
     public String printCSV() {
         return candle.printTitleCSV();
+    }
+
+    public int getSignVolume() {
+        return direction.getSign() * volume;
     }
 }

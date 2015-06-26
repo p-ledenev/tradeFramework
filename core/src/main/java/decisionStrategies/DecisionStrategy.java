@@ -24,7 +24,7 @@ public abstract class DecisionStrategy {
         Set<Class<?>> strategyClasses = reflections.getTypesAnnotatedWith(Strategy.class);
 
         if (strategyClasses.size() <= 0)
-            throw new NoDecisionStrategyFoundFailure("no strategy classes found");
+            throw new NoDecisionStrategyFoundFailure("no strategy class found");
 
         for (Class strategyClass : strategyClasses) {
             String strategyName = ((Strategy) strategyClass.getAnnotation(Strategy.class)).name();
@@ -54,7 +54,7 @@ public abstract class DecisionStrategy {
     public Position computeNewPositionFor(int depth, int volume) {
 
         if (candlesStorage.lessThan(getInitialStorageSizeFor(depth)))
-            Log.info("CandlesStorage size less than initial size: " + getInitialStorageSizeFor(depth));
+            Log.debug("CandlesStorage size less than initial size: " + getInitialStorageSizeFor(depth));
 
         if (profitStrategy.shouldTakeProfit())
             return Position.closing(candlesStorage.last());

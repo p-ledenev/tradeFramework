@@ -1,8 +1,8 @@
 package resultWriters;
 
-import lombok.AllArgsConstructor;
+import lombok.*;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by DiKey on 16.05.2015.

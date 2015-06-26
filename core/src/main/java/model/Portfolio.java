@@ -1,10 +1,10 @@
 package model;
 
-import lombok.Data;
-import org.joda.time.DateTime;
+import lombok.*;
+import org.joda.time.*;
+import tools.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by ledenev.p on 01.04.2015.
@@ -39,7 +39,8 @@ public class Portfolio implements IMoneyStateSupport {
 
     public void addOrderTo(List<Order> orders, List<Candle> candles) {
 
-        candlesStorage.add(candles);
+        if (candlesStorage.validateTimeSequence(candles))
+            candlesStorage.add(candles);
 
         for (Machine machine : machines)
             machine.addOrderTo(orders);
@@ -93,6 +94,24 @@ public class Portfolio implements IMoneyStateSupport {
     }
 
     public String getDecisonStrategyName() {
-        return  machines.get(0).getDecisionStrategyName();
+        return machines.get(0).getDecisionStrategyName();
+    }
+
+    public void printBlockedMachines() {
+        for (Machine machine : machines)
+            if (machine.isBlocked())
+                Log.info(title + " " + machine.getDepth() + " is blocked");
+    }
+
+    public boolean hasSecurity(String security) {
+        return this.security.equals(security);
+    }
+
+    public int getSignVolume() {
+        int volume = 0;
+        for (Machine machine : machines)
+            volume += machine.getSignVolume();
+
+        return volume;
     }
 }

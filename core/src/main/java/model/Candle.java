@@ -1,12 +1,10 @@
 package model;
 
-import approximationConstructors.IApproximationSupport;
-import averageConstructors.IAveragingSupport;
-import lombok.Data;
-import org.joda.time.DateTime;
-import org.joda.time.LocalTime;
-import tools.Format;
-import tools.Log;
+import approximationConstructors.*;
+import averageConstructors.*;
+import lombok.*;
+import org.joda.time.*;
+import tools.*;
 
 /**
  * Created by ledenev.p on 31.03.2015.
@@ -105,11 +103,11 @@ public class Candle implements IAveragingSupport, IApproximationSupport, Cloneab
         return null;
     }
 
-    public boolean isBeforeOrEqual(DateTime dateFrom) {
-        return date.isBefore(dateFrom) || date.equals(dateFrom);
+    public boolean hasDate(DateTime date) {
+        return this.date.equals(date);
     }
 
-    public boolean isAfterOrEqual(DateTime dateTo) {
-        return date.isAfter(dateTo) || date.equals(dateTo);
+    public boolean before(Candle candle) {
+        return date.isBefore(candle.getDate());
     }
 }

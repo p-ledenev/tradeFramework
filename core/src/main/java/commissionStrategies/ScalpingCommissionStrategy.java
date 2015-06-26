@@ -1,6 +1,6 @@
 package commissionStrategies;
 
-import model.Position;
+import model.*;
 
 /**
  * Created by DiKey on 04.04.2015.

@@ -1,9 +1,8 @@
 package resultWriters;
 
-import model.Portfolio;
-import model.PortfolioMoneyStatesCollector;
+import model.*;
 
-import java.io.PrintWriter;
+import java.io.*;
 
 /**
  * Created by DiKey on 11.05.2015.

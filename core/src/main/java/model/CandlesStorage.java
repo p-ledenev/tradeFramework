@@ -2,6 +2,7 @@ package model;
 
 import lombok.*;
 import siftStrategies.*;
+import tools.*;
 
 import java.util.*;
 
@@ -28,6 +29,10 @@ public class CandlesStorage {
 
     public void add(List<Candle> newCandles) {
         List<Candle> sifted = siftStrategy.sift(newCandles);
+
+        for (Candle candle : sifted)
+            Log.debug("Added to candle storage: " + candle.print());
+
         candles.addAll(sifted);
     }
 
@@ -53,5 +58,12 @@ public class CandlesStorage {
 
     public int computeStorageSizeFor(List<Candle> candles) {
         return siftStrategy.sift(candles).size();
+    }
+
+    public boolean validateTimeSequence(List<Candle> newCandles) {
+        if (newCandles.size() == 0)
+            return true;
+
+        return last().before(newCandles.get(0));
     }
 }

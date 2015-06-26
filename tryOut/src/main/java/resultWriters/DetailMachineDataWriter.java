@@ -1,12 +1,9 @@
 package resultWriters;
 
-import lombok.Data;
-import model.MachinePositionsCollector;
-import model.Portfolio;
-import model.Position;
-import model.StrategyStatesCollector;
+import lombok.*;
+import model.*;
 
-import java.io.PrintWriter;
+import java.io.*;
 
 /**
  * Created by DiKey on 11.05.2015.

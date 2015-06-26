@@ -13,7 +13,7 @@ public class OrdersLogger {
 
     public static void log(List<Order> orders) throws Throwable {
 
-        PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(Runner.dataPath + "/operations.log", true)));
+        PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(Runner.dataPath + "operations.log", true)));
 
         for (Order order : orders)
             writer.println(order.toString());

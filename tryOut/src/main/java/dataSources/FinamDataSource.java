@@ -1,15 +1,11 @@
 package dataSources;
 
-import model.TryOutCandle;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import model.*;
+import org.joda.time.*;
+import org.joda.time.format.*;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 /**
  * Created by DiKey on 16.05.2015.

@@ -1,9 +1,8 @@
 package iterators;
 
-import model.Candle;
-import model.Portfolio;
+import model.*;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by ledenev.p on 17.06.2015.

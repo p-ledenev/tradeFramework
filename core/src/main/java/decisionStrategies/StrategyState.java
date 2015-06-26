@@ -1,10 +1,9 @@
 package decisionStrategies;
 
-import lombok.Data;
-import model.Candle;
+import lombok.*;
+import model.*;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by ledenev.p on 14.05.2015.

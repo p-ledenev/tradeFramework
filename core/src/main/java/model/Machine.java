@@ -1,14 +1,12 @@
 package model;
 
-import commissionStrategies.ICommissionStrategy;
-import decisionStrategies.DecisionStrategy;
-import exceptions.PositionAlreadySetFailure;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.joda.time.DateTime;
+import commissionStrategies.*;
+import decisionStrategies.*;
+import exceptions.*;
+import lombok.*;
+import org.joda.time.*;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by ledenev.p on 01.04.2015.
@@ -137,5 +135,9 @@ public class Machine implements IMoneyStateSupport {
 
     public double getPositionValue() {
         return position.getValue();
+    }
+
+    public int getSignVolume() {
+        return position.getSignVolume();
     }
 }

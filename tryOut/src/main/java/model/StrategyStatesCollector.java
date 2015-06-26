@@ -1,11 +1,9 @@
 package model;
 
-import decisionStrategies.DecisionStrategy;
-import decisionStrategies.StrategyState;
-import lombok.Data;
+import decisionStrategies.*;
+import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by ledenev.p on 14.05.2015.

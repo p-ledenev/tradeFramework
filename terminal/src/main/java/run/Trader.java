@@ -59,6 +59,43 @@ public class Trader {
 
         if (needSubmitTradeData)
             initializer.write();
+
+        logBlockedMachines();
+        checkVolumeDifferences();
+    }
+
+    private void checkVolumeDifferences() throws Throwable {
+
+        Set<String> securities = extractSecurities();
+        for (String security : securities) {
+            int volume = computeVolumeFor(security);
+
+            executor.checkVolumeFor(security, volume);
+        }
+    }
+
+    private int computeVolumeFor(String security) {
+
+        int volume = 0;
+        for (Portfolio portfolio : initializer.getPortfolios())
+            if (portfolio.hasSecurity(security))
+                volume += portfolio.getSignVolume();
+
+        return volume;
+    }
+
+    private Set<String> extractSecurities() {
+        Set<String> securities = new HashSet<String>();
+
+        for (Portfolio portfolio : initializer.getPortfolios())
+            securities.add(portfolio.getSecurity());
+
+        return securities;
+    }
+
+    private void logBlockedMachines() {
+        for (Portfolio portfolio : initializer.getPortfolios())
+            portfolio.printBlockedMachines();
     }
 
     private void suspendProcessing() throws Throwable {
@@ -73,7 +110,7 @@ public class Trader {
 
         Period rclock = new Period(0, 0, 0, 0);
         Period postfix = new Period(10, 4, 50, 0);
-        Period prefix = new Period(23 - date.getHourOfDay(), 59 - date.getMinuteOfDay(), 59 - date.getSecondOfDay(), 0);
+        Period prefix = new Period(23 - date.getHourOfDay(), 59 - date.getMinuteOfHour(), 59 - date.getSecondOfMinute(), 0);
 
         boolean weekend = (date.getDayOfWeek() == DateTimeConstants.SATURDAY || date.getDayOfWeek() == DateTimeConstants.SUNDAY);
 
@@ -84,21 +121,21 @@ public class Trader {
             postfix = new Period(0, 0, 0, 0);
 
             int upSeconds = 50;
-            int delta = (date.getSecondOfDay() >= upSeconds) ? 60 - date.getSecondOfDay() : -date.getSecondOfDay();
+            int delta = (date.getSecondOfMinute() >= upSeconds) ? 60 - date.getSecondOfMinute() : -date.getSecondOfMinute();
             prefix = new Period(0, 0, upSeconds + delta, 0);
         }
 
         if (date.compareTo(tradePauseBegin) >= 0 && date.compareTo(tradePauseEnd) <= 0) {
-            prefix = new Period(0, 61 - date.getMinuteOfDay(), 0, 0);
+            prefix = new Period(0, 61 - date.getMinuteOfHour(), 0, 0);
         }
 
         if (date.compareTo(tradeBegin) < 0) {
             prefix = new Period(0, 0, 0, 0);
-            postfix = new Period(10 - date.getHourOfDay(), 04 - date.getMinuteOfDay(), 50 - date.getSecondOfDay(), 0);
+            postfix = new Period(10 - date.getHourOfDay(), 04 - date.getMinuteOfHour(), 50 - date.getSecondOfMinute(), 0);
         }
 
         Log.info("wake up " + Format.asString(date.plus(rclock).plus(prefix).plus(postfix)));
 
-        Thread.sleep(rclock.plus(prefix).plus(postfix).getMillis());
+        Thread.sleep(rclock.plus(prefix).plus(postfix).toStandardDuration().getMillis());
     }
 }

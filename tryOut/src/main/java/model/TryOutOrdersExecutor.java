@@ -1,6 +1,6 @@
 package model;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by ledenev.p on 02.04.2015.
@@ -15,7 +15,7 @@ public class TryOutOrdersExecutor implements IOrdersExecutor {
         this.tradeYear = tradeYear;
     }
 
-    public void execute(List<Order> orders) throws Throwable {
+    public void execute(List<Order> orders) {
 
         for (Order order : orders) {
 
@@ -26,5 +26,9 @@ public class TryOutOrdersExecutor implements IOrdersExecutor {
             order.setValue(((TryOutCandle)next).getNextValue());
             order.executed();
         }
+    }
+
+    public void checkVolumeFor(String security, int volume) throws Throwable {
+
     }
 }

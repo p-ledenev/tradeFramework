@@ -1,12 +1,11 @@
 package run;
 
-import lombok.AllArgsConstructor;
+import lombok.*;
 import model.*;
-import resultWriters.TradeDataWriter;
-import tools.Log;
+import resultWriters.*;
+import tools.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by ledenev.p on 15.05.2015.

@@ -1,7 +1,7 @@
 package decisionStrategies;
 
-import averageConstructors.IAveragingSupport;
-import lombok.Data;
+import averageConstructors.*;
+import lombok.*;
 
 /**
  * Created by DiKey on 12.04.2015.

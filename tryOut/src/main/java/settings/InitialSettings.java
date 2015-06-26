@@ -1,19 +1,13 @@
 package settings;
 
-import commissionStrategies.ICommissionStrategy;
-import commissionStrategies.ScalpingCommissionStrategy;
-import decisionStrategies.DecisionStrategy;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import commissionStrategies.*;
+import decisionStrategies.*;
+import lombok.*;
 import model.*;
-import siftStrategies.ISiftCandlesStrategy;
-import siftStrategies.SiftCandlesStrategyFactory;
-import takeProfitStrategies.ITakeProfitStrategy;
-import takeProfitStrategies.TakeProfitStrategyFactory;
+import siftStrategies.*;
+import takeProfitStrategies.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by ledenev.p on 02.04.2015.
@@ -23,8 +17,9 @@ import java.util.List;
 @NoArgsConstructor
 public class InitialSettings {
 
-    //public static String settingPath = "F:/Teddy/Alfa/java/v1.0/tradeFramework/tryOut/data";
-    public static String settingPath = "d:/Projects/Alfa/java/v1.0/tradeFramework/tryOut/data";
+    //public static String settingPath = "F:/Teddy/Alfa/java/v1.0/tradeFramework/tryOut/data/";
+    //public static String settingPath = "d:/Projects/Alfa/java/v1.0/tradeFramework/tryOut/data/";
+    public static String settingPath = "./";
 
     private String security;
     private String timeFrame;

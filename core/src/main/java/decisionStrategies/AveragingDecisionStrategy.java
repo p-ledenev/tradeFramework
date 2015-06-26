@@ -1,15 +1,11 @@
 package decisionStrategies;
 
-import averageConstructors.AverageConstructorFactory;
-import averageConstructors.IAverageConstructor;
-import averageConstructors.IAveragingSupport;
-import lombok.Data;
-import model.Direction;
-import tools.Format;
-import tools.Round;
+import averageConstructors.*;
+import lombok.*;
+import model.*;
+import tools.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by DiKey on 12.04.2015.

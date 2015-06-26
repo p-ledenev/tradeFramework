@@ -1,10 +1,9 @@
 package resultWriters;
 
-import model.MachineMoneyStatesCollector;
-import model.Portfolio;
+import model.*;
 
-import java.io.PrintWriter;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 /**
  * Created by DiKey on 11.05.2015.

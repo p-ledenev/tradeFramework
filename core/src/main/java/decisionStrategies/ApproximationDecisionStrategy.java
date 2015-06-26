@@ -1,10 +1,8 @@
 package decisionStrategies;
 
-import approximationConstructors.Approximation;
-import approximationConstructors.IApproximationConstructor;
-import approximationConstructors.LinearApproximationConstructor;
-import lombok.Data;
-import model.Direction;
+import approximationConstructors.*;
+import lombok.*;
+import model.*;
 
 /**
  * Created by ledenev.p on 05.05.2015.

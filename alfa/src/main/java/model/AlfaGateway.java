@@ -1,20 +1,14 @@
 package model;
 
-import com.jacob.activeX.ActiveXComponent;
-import com.jacob.com.LibraryLoader;
-import com.jacob.com.Variant;
+import com.jacob.activeX.*;
+import com.jacob.com.*;
 import exceptions.*;
-import org.joda.time.DateTime;
-import org.joda.time.LocalTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.*;
+import org.joda.time.format.*;
+import tools.*;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 /**
  * Created by ledenev.p on 27.03.2015.
@@ -74,6 +68,13 @@ public class AlfaGateway {
         connector.setProperty("UserName", variant(login));
         connector.setProperty("Password", variant(password));
         connector.setProperty("Connected", variant(true));
+
+        try {
+            Log.info("Connection is lost. Trying reconnect within 10sec");
+            Thread.sleep(10 * 1000);
+        } catch (InterruptedException e) {
+            Log.error("interrupted", e);
+        }
     }
 
     public void dropOrder(int orderId) throws AlfaGatewayFailure {
@@ -84,7 +85,7 @@ public class AlfaGateway {
         connector.invoke("DropOrder", variant(orderId), nil, nil, nil, nil, nil, variant(3));
 
         String resultMessage = getLastOperationMessage();
-        if (!isLastOperationSucceed() || resultMessage == null || !resultMessage.contains("удалена"))
+        if (!isLastOperationSucceed() || resultMessage == null || !(resultMessage.contains("удалена") || resultMessage.contains("удалению")))
             throw new AlfaGatewayFailure(logMessage("DropOrder"));
     }
 
@@ -102,7 +103,7 @@ public class AlfaGateway {
 
         String[] data = response.getString().split("\\|");
 
-        if (data[1].equals("6"))
+        if (!data[1].equals("6"))
             throw new LoadLastValueFailure("LoadLastValue: no trades started");
 
         return Double.parseDouble(data[0]);
@@ -123,18 +124,18 @@ public class AlfaGateway {
     }
 
     public int submit(AlfaOrder order) throws AlfaGatewayFailure, OrderSubmissionFailure, UnsupportedDirection {
-        return submit(account, order.getSecurity(), market, order.getAlfaDirection(), order.getVolume(), order.getValue());
+        return submit(order.getSecurity(), order.getAlfaDirection(), order.getVolume(), order.getValue());
     }
 
-    public int submit(String account, String security, String market, AlfaOrderDirection direction, int volume, double value)
+    public int submit(String security, AlfaOrderDirection direction, int volume, double value)
             throws AlfaGatewayFailure, OrderSubmissionFailure {
         connect();
 
-        Variant nil = variant(null);
-        Date date = DateTime.now().plusDays(1).toDate();
+        Variant nil = new Variant();
+        DateTime date = DateTime.now().plusDays(1);
 
         Variant response = connector.invoke("CreateLimitOrder", variant(account), variant(market), variant(security),
-                variant(date), variant(""), variant("RUR"), variant(direction.name()), variant(volume), variant(value),
+                variant(date.toDate()), variant(""), variant("RUR"), variant(direction.name()), variant(volume), variant(value),
                 nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, variant(11));
 
         if (!isLastOperationSucceed())
@@ -146,7 +147,7 @@ public class AlfaGateway {
         return response.getInt();
     }
 
-    public int loadSecurityVolume(String account, String security) throws AlfaGatewayFailure {
+    public int loadSecurityVolume(String security) throws AlfaGatewayFailure {
         connect();
 
         Variant response = connector.invoke("GetLocalDBData", variant("balance"), variant("real_rest"),
@@ -164,7 +165,7 @@ public class AlfaGateway {
         connect();
 
         Variant response = connector.invoke("GetArchiveFinInfo", variant(market), variant(security), variant(timeframe.getCode()),
-                variant(dateFrom), variant(dateTo), variant(3), variant(20));
+                variant(dateFrom.toDate()), variant(dateTo.toDate()), variant(3), variant(20));
 
         if (!isLastOperationSucceed() || response == null)
             return new ArrayList<Candle>();
@@ -182,12 +183,17 @@ public class AlfaGateway {
 
     protected List<Candle> parseMarketData(String data) {
 
-        DateTimeFormatter format = DateTimeFormat.forPattern("dd.MM.yyyy HH:mm:ss");
+        DateTimeFormatter format = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
         List<Candle> candles = new ArrayList<Candle>();
 
-        String[] result = data.split("\n\r");
+        String[] result = data.split("\r\n");
         for (String line : result) {
-            String[] strCandle = line.split("|");
+
+            line = line.trim();
+            if (line.isEmpty())
+                continue;
+
+            String[] strCandle = line.split("\\|");
 
             DateTime date = format.parseDateTime(strCandle[0]);
             double value = Double.parseDouble(strCandle[4]);
@@ -220,5 +226,26 @@ public class AlfaGateway {
 
     protected Variant variant(Object o) {
         return new Variant(o);
+    }
+
+    public void readConsolePassword() {
+        Console console = System.console();
+
+        char[] chars = console.readPassword("Enter password: ");
+        this.password = new String(chars);
+    }
+
+    public void readScannerPassword() {
+        Scanner scanner = new Scanner(System.in);
+
+        Log.info("Enter password: ");
+        this.password = scanner.nextLine();
+    }
+
+    public void readPassword() {
+        if (System.console() != null)
+            readConsolePassword();
+        else
+            readScannerPassword();
     }
 }

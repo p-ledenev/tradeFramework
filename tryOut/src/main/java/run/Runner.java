@@ -1,15 +1,11 @@
 package run;
 
-import dataSources.DataSourceFactory;
-import dataSources.IDataSource;
+import dataSources.*;
 import model.*;
-import settings.InitialSettings;
+import settings.*;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 /**
  * Created by ledenev.p on 02.04.2015.
@@ -40,7 +36,7 @@ public class Runner {
     private static List<InitialSettings> readSettings() throws Throwable {
         List<InitialSettings> settings = new ArrayList<InitialSettings>();
 
-        BufferedReader reader = new BufferedReader(new FileReader(new File(InitialSettings.settingPath + "/settings.txt")));
+        BufferedReader reader = new BufferedReader(new FileReader(new File(InitialSettings.settingPath + "settings.txt")));
 
         String line;
         while ((line = reader.readLine()) != null)

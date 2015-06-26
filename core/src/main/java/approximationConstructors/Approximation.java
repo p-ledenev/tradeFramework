@@ -1,7 +1,7 @@
 package approximationConstructors;
 
-import lombok.Data;
-import tools.Round;
+import lombok.*;
+import tools.*;
 
 /**
  * Created by ledenev.p on 17.04.2015.

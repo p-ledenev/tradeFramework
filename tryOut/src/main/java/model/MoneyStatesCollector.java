@@ -1,13 +1,11 @@
 package model;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.joda.time.DateTime;
-import tools.Round;
+import lombok.*;
+import org.joda.time.*;
+import tools.*;
 
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 /**
  * Created by DiKey on 11.05.2015.

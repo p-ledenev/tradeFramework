@@ -67,10 +67,10 @@ public class PortfoliosInitializer {
     }
 
     public BufferedReader getReader() throws FileNotFoundException {
-        return new BufferedReader(new FileReader(new File(Runner.dataPath + "/" + initFile)));
+        return new BufferedReader(new FileReader(new File(Runner.dataPath + initFile)));
     }
 
     public PrintWriter getWriter() throws FileNotFoundException {
-        return new PrintWriter(Runner.dataPath + "/" + initFile);
+        return new PrintWriter(Runner.dataPath + initFile);
     }
 }

@@ -1,6 +1,6 @@
 package averageConstructors;
 
-import tools.Format;
+import tools.*;
 
 /**
  * Created by ledenev.p on 16.04.2015.

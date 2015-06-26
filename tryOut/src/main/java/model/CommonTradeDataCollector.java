@@ -1,12 +1,9 @@
 package model;
 
-import lombok.Getter;
-import resultWriters.MachinesDataWriter;
-import resultWriters.ResultWriter;
-import resultWriters.SummaryDataWriter;
+import lombok.*;
+import resultWriters.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by ledenev.p on 02.04.2015.

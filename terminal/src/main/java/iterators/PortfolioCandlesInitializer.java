@@ -1,10 +1,8 @@
 package iterators;
 
-import lombok.AllArgsConstructor;
-import model.Candle;
-import model.ICandlesIterator;
-import model.Portfolio;
-import org.joda.time.DateTime;
+import lombok.*;
+import model.*;
+import org.joda.time.*;
 
 import java.util.*;
 
@@ -18,11 +16,12 @@ public class PortfolioCandlesInitializer implements IPortfolioCandlesIterator {
     private ICandlesIterator iterator;
 
     public List<Candle> getNextCandlesFor(Portfolio portfolio) throws Throwable {
+
         int requiredSize = portfolio.computeInitialCandlesSize();
         List<Candle> candles = new ArrayList<Candle>();
 
         DateTime dateTo = DateTime.now();
-        DateTime dateFrom = dateTo.minusDays(3);
+        DateTime dateFrom = dateTo.minusDays(1);
 
         int siftedSize = 0;
         while (siftedSize < requiredSize) {

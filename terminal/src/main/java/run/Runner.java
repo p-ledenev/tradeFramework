@@ -9,11 +9,13 @@ import settings.*;
  */
 public class Runner {
 
-    public static String dataPath = "d:/Projects/Alfa/java/v1.0/tradeFramework/terminal/data";
+    //public static String dataPath = "d:/Projects/Alfa/java/v1.0/tradeFramework/terminal/data/";
+    public static String dataPath = "./";
 
     public static void main(String[] args) throws Throwable {
 
         AlfaGateway gateway = AlfaSettings.createGateway();
+        gateway.readPassword();
 
         ICandlesIterator iterator = new CacheCandlesIterator(new AlfaCandlesIterator(gateway));
         IOrdersExecutor ordersExecutor = new AlfaOrdersExecutor(gateway);

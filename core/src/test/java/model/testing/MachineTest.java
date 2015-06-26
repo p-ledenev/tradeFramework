@@ -1,17 +1,14 @@
 package model.testing;
 
-import exceptions.PositionAlreadySetFailure;
+import exceptions.*;
 import model.*;
-import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
+import org.joda.time.*;
+import org.junit.*;
 
 import static junit.framework.TestCase.assertTrue;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by DiKey on 11.05.2015.

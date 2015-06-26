@@ -1,13 +1,10 @@
 package approximation.testing;
 
-import approximationConstructors.Approximation;
-import approximationConstructors.LinearApproximationConstructor;
-import org.junit.Before;
-import org.junit.Test;
-import tools.Log;
+import approximationConstructors.*;
+import org.junit.*;
 
-import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 /**
  * Created by ledenev.p on 17.04.2015.

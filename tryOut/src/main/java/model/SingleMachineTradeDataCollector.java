@@ -1,10 +1,8 @@
 package model;
 
-import resultWriters.DetailMachineDataWriter;
-import resultWriters.ResultWriter;
+import resultWriters.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by ledenev.p on 12.05.2015.

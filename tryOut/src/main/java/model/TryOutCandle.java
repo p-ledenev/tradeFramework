@@ -1,8 +1,8 @@
 package model;
 
-import lombok.Data;
-import org.joda.time.DateTime;
-import tools.Format;
+import lombok.*;
+import org.joda.time.*;
+import tools.*;
 
 /**
  * Created by ledenev.p on 21.05.2015.

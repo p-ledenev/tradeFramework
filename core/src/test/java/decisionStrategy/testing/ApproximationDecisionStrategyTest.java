@@ -1,19 +1,16 @@
 package decisionStrategy.testing;
 
-import approximationConstructors.LinearApproximationConstructor;
-import decisionStrategies.ApproximationDecisionStrategy;
-import model.Candle;
-import model.Direction;
-import model.Position;
-import org.joda.time.DateTime;
-import org.junit.Test;
+import approximationConstructors.*;
+import decisionStrategies.*;
+import model.*;
+import org.joda.time.*;
+import org.junit.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 /**
  * Created by ledenev.p on 05.05.2015.

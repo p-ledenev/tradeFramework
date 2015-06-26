@@ -1,9 +1,8 @@
 package siftStrategies;
 
-import model.Candle;
+import model.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by DiKey on 12.04.2015.

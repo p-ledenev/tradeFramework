@@ -1,9 +1,8 @@
 package model;
 
-import exceptions.PositionAlreadySetFailure;
-import lombok.Data;
-import tools.Format;
-import tools.Log;
+import exceptions.*;
+import lombok.*;
+import tools.*;
 
 /**
  * Created by DiKey on 04.04.2015.
@@ -62,6 +61,10 @@ public class Order {
     }
 
     public Direction getDirection() {
+
+        if (machine.getPosition().isNeutral())
+            return newPosition.getDirection();
+
         return machine.getPositionDirection().opposite();
     }
 
@@ -91,7 +94,7 @@ public class Order {
     @Override
     public String toString() {
         return Format.asString(newPosition.getDate()) + " " + machine.getPortfolioTitle() + " " + machine.getDepth() + " " +
-                newPosition.getDirection() + " " + getValue() + " " + getVolume() + " " + (isExecuted ? "succeed" : "failed");
+                newPosition.getDirection() + " " + getValue() + " " + getVolume() + " " + (isExecuted ? "executed" : "not executed");
     }
 
     public void blockMachine() {
@@ -100,5 +103,9 @@ public class Order {
 
     public void unblockMachine() {
         machine.unblock();
+    }
+
+    public boolean hasSameVolume(Order order) {
+        return getVolume() == order.getVolume();
     }
 }

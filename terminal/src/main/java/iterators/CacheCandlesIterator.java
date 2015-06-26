@@ -1,9 +1,9 @@
 package iterators;
 
 import model.*;
-import org.joda.time.DateTime;
+import org.joda.time.*;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by ledenev.p on 02.06.2015.
@@ -18,11 +18,16 @@ public class CacheCandlesIterator implements ICandlesIterator {
 
     public List<Candle> getNextCandlesFor(String security, DateTime dateFrom, DateTime dateTo) throws Throwable {
 
-        if (CandlesCache.hasRelevantDataFor(security, dateFrom, dateTo))
-            return CandlesCache.getCandles(security);
+        List<Candle> candles;
+        if (CandlesCache.hasRelevantDataFor(security, dateFrom, dateTo)) {
+            candles = CandlesCache.getCandles(security);
+        } else {
+            candles = iterator.getNextCandlesFor(security, dateFrom, dateTo);
+            CandlesCache.addCandles(security, candles);
+        }
 
-        List<Candle> candles = iterator.getNextCandlesFor(security, dateFrom, dateTo);
-        CandlesCache.addCandles(security, candles);
+//        for (Candle candle : candles)
+//            Log.info("Cache candle iterator: " + candle.print());
 
         return candles;
     }

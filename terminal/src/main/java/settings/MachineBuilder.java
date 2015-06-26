@@ -54,8 +54,9 @@ public class MachineBuilder {
     }
 
     public String serialize() {
-        return machine.getDepth() + "\t" + machine.getCurrentMoney() + "\t" + (machine.isBlocked() ? "1" : "0") + "\t" +
-                Format.asString(machine.getPositionDate()) + "\t" + machine.getPositionDirection().getName() + "\t"
-                + machine.getPositionValue() + "\t" + machine.getPositionVolume();
+        return machine.getDepth() + "\t" + Round.toDecadeAmount(machine.getCurrentMoney()) + "\t" +
+                (machine.isBlocked() ? "1" : "0") + "\t" + Format.asString(machine.getPositionDate()) + "\t" +
+                machine.getPositionDirection().getName() + "\t"
+                + Round.toDecadeAmount(machine.getPositionValue()) + "\t" + machine.getPositionVolume();
     }
 }

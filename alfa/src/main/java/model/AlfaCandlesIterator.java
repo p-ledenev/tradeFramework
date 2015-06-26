@@ -1,7 +1,7 @@
 package model;
 
-import lombok.AllArgsConstructor;
-import org.joda.time.DateTime;
+import lombok.*;
+import org.joda.time.*;
 import tools.*;
 
 import java.util.*;
@@ -16,12 +16,25 @@ public class AlfaCandlesIterator implements ICandlesIterator {
     private AlfaGateway gateway;
 
     public List<Candle> getNextCandlesFor(String security, DateTime dateFrom, DateTime dateTo) throws Throwable {
+        Log.info("Alfa candle iterator " + security + ". Loading candles for " + Format.asString(dateFrom) + " - " + Format.asString(dateTo));
+
         List<Candle> candles = gateway.loadMarketData(security, dateFrom, dateTo);
 
-        Log.info("Alfa candle iterator. Loaded candles");
-        for (Candle candle : candles)
-            Log.info(candle.print());
+        validateTimeSequence(candles, dateTo);
+
+//        for (Candle candle : candles)
+//            Log.info("Alfa candle iterator: " + candle.print());
 
         return candles;
+    }
+
+    private void validateTimeSequence(List<Candle> candles, DateTime dateTo) {
+
+        if (candles.size() == 0)
+            return;
+
+        int last = candles.size() - 1;
+        if (candles.get(last).hasDate(dateTo.plusMinutes(1)))
+            candles.remove(last);
     }
 }

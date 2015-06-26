@@ -1,6 +1,6 @@
 package approximation.testing;
 
-import approximationConstructors.IApproximationSupport;
+import approximationConstructors.*;
 
 /**
  * Created by ledenev.p on 17.04.2015.

@@ -1,10 +1,10 @@
 package model;
 
 import exceptions.*;
-import lombok.Data;
-import tools.Log;
+import lombok.*;
+import tools.*;
 
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * Created by ledenev.p on 11.06.2015.
@@ -52,9 +52,14 @@ public class AlfaOrder {
             message = "OperateStock: Order No " + orderNumber + " was deleted. This machine continue working";
 
         if (status == AlfaOrderStatus.executionSucceed)
-            message = "OperateStock: " + toString() + " succeed";
+            message = "OperateStock: Order No " + orderNumber + " succeed";
 
         return message;
+    }
+
+    @Override
+    public String toString() {
+        return order.toString();
     }
 
     public boolean allowExecution() {
@@ -115,6 +120,7 @@ public class AlfaOrder {
             order.setValue(lastValue + (order.isBuy() ? 0.002 : -0.002) * lastValue);
 
         } catch (LoadLastValueFailure e) {
+            Log.info(toString() + " " + e.getMessage());
             status = AlfaOrderStatus.submissionBlocked;
 
         } catch (AlfaGatewayFailure e) {
@@ -132,9 +138,11 @@ public class AlfaOrder {
             status = AlfaOrderStatus.submissionSucceed;
 
         } catch (UnsupportedDirection e) {
+            Log.error("submit", e);
             status = AlfaOrderStatus.submissionBlocked;
 
         } catch (OrderSubmissionFailure e) {
+            Log.info(toString() + " " + e.getMessage());
             status = AlfaOrderStatus.submissionStatusNotObtained;
 
         } catch (AlfaGatewayFailure e) {
@@ -144,10 +152,10 @@ public class AlfaOrder {
 
     public AlfaOrderDirection getAlfaDirection() throws UnsupportedDirection {
         if (order.isBuy())
-            return AlfaOrderDirection.Buy;
+            return AlfaOrderDirection.B;
 
         if (order.isSell())
-            return AlfaOrderDirection.Sell;
+            return AlfaOrderDirection.S;
 
         throw new UnsupportedDirection("Order has no direction");
     }
@@ -169,10 +177,13 @@ public class AlfaOrder {
     }
 
     public boolean isOppositeTo(AlfaOrder alfaOrder) {
-        return order.hasSameSecurity(alfaOrder.getOrder()) && order.hasOppositeDirectionTo(alfaOrder.getOrder()) && isNewest() && alfaOrder.isNewest();
+        return order.hasSameSecurity(alfaOrder.getOrder()) &&
+                order.hasOppositeDirectionTo(alfaOrder.getOrder()) &&
+                isNewest() && alfaOrder.isNewest()
+                && order.hasSameVolume(alfaOrder.getOrder());
     }
 
-    public void dropIfNecessary() throws AlfaGatewayFailure {
+    public void dropIfNecessary() {
 
         if (shouldBeBlocked())
             order.blockMachine();
@@ -180,15 +191,23 @@ public class AlfaOrder {
         if (!shouldBeDeleted())
             return;
 
-        gateway.dropOrder(this.getOrderNumber());
+        try {
+            gateway.dropOrder(this.getOrderNumber());
 
-        status = AlfaOrderStatus.deleted;
-        order.unblockMachine();
+            status = AlfaOrderStatus.deleted;
+            order.unblockMachine();
+
+        } catch (AlfaGatewayFailure e) {
+            Log.error("Drop order error: ", e);
+        }
     }
 
     public void loadStatus() {
 
         checkAttemptCounter++;
+
+        if (orderNumber == null)
+            return;
 
         try {
             String result = gateway.loadStatus(orderNumber);
@@ -198,6 +217,11 @@ public class AlfaOrder {
             double totalValue = 0;
             int totalVolume = 0;
             for (String strDeal : deals) {
+
+                strDeal = strDeal.trim();
+                if (strDeal.isEmpty())
+                    continue;
+
                 String[] deal = strDeal.split("\\|");
 
                 int dealVolume = Integer.parseInt(deal[1]);

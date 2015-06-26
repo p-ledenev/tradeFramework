@@ -1,7 +1,7 @@
 package model.testing;
 
-import commissionStrategies.ICommissionStrategy;
-import model.Position;
+import commissionStrategies.*;
+import model.*;
 
 /**
  * Created by DiKey on 11.05.2015.
