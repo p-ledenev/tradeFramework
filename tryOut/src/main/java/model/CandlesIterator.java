@@ -22,6 +22,22 @@ public class CandlesIterator {
         return nextCandles;
     }
 
+    public double countMeanDeviation(int year) {
+        double mean = 0;
+
+        for (int i = 1; i < candles.size(); i++) {
+            Candle c1 = candles.get(i);
+            Candle c2 = candles.get(i - 1);
+
+            if (!c1.hasYearAs(year))
+                continue;
+
+            mean += Math.abs(c1.getValue() - c2.getValue()) / c1.getValue();
+        }
+
+        return mean / candles.size();
+    }
+
     public boolean hasNextCandles() {
         return currentIndex < candles.size();
     }

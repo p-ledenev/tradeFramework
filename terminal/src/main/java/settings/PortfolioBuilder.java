@@ -61,4 +61,10 @@ public class PortfolioBuilder {
 
         return result;
     }
+
+    public boolean isMachineBlocked(String line) throws Throwable {
+        MachineBuilder builder = new MachineBuilder(line);
+
+        return builder.isBlocked();
+    }
 }

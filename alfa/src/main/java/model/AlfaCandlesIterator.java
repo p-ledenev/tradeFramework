@@ -22,9 +22,6 @@ public class AlfaCandlesIterator implements ICandlesIterator {
 
         validateTimeSequence(candles, dateTo);
 
-//        for (Candle candle : candles)
-//            Log.info("Alfa candle iterator: " + candle.print());
-
         return candles;
     }
 

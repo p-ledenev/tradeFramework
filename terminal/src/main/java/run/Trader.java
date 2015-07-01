@@ -27,7 +27,11 @@ public class Trader {
     public void trade() throws Throwable {
 
         IPortfolioCandlesIterator iterator = new PortfolioCandlesInitializer(candlesIterator);
+
+        Log.disableDebug();
         process(iterator);
+        Log.enableDebug();
+
         suspendProcessing();
 
         iterator = new PortfolioCandlesIterator(candlesIterator);
@@ -52,11 +56,19 @@ public class Trader {
         executor.execute(orders);
 
         boolean needSubmitTradeData = false;
-        for (Order order : orders)
-            if (order.applyToMachine())
+        for (Order order : orders) {
+            order.applyToMachine();
+
+            if (order.isProcessed())
                 needSubmitTradeData = true;
+        }
 
         OrdersLogger.log(orders);
+
+        if (initializer.initFileWasModified()) {
+            initializer.reread();
+            needSubmitTradeData = true;
+        }
 
         if (needSubmitTradeData)
             initializer.write();

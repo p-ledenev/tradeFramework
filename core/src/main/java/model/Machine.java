@@ -23,6 +23,7 @@ public class Machine implements IMoneyStateSupport {
 
     private int depth;
     private double currentMoney;
+    @Setter
     private boolean isBlocked;
 
     @Setter
@@ -69,6 +70,9 @@ public class Machine implements IMoneyStateSupport {
         Position newPosition = decisionStrategy.computeNewPositionFor(depth, computeVolume());
 
         if (position.hasSameDirection(newPosition))
+            return;
+
+        if (isBlocked)
             return;
 
         orders.add(new Order(newPosition, this));

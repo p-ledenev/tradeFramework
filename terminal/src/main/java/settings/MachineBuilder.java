@@ -10,6 +10,8 @@ import tools.*;
 /**
  * Created by ledenev.p on 19.06.2015.
  */
+
+@Data
 public class MachineBuilder {
 
     private int depth;

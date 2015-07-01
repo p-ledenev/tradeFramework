@@ -11,9 +11,9 @@ import tools.*;
 @Data
 public class Order {
 
-    protected Position newPosition;
-    protected Machine machine;
-    protected boolean isExecuted;
+    private Position newPosition;
+    private Machine machine;
+    private OrderStatus status;
 
     public Order(Machine machine) {
         this.machine = machine;
@@ -25,7 +25,11 @@ public class Order {
     }
 
     public void executed() {
-        isExecuted = true;
+        status = OrderStatus.executed;
+    }
+
+    public void blocked() {
+        status = OrderStatus.blocked;
     }
 
     public Candle getLastCandle() {
@@ -84,20 +88,19 @@ public class Order {
         return getDirection().isOppositeTo(order.getDirection());
     }
 
-    public boolean applyToMachine() throws PositionAlreadySetFailure {
-        if (isExecuted)
+    public void applyToMachine() throws PositionAlreadySetFailure {
+        if (isExecuted())
             machine.apply(newPosition);
-
-        return isExecuted;
     }
 
     @Override
     public String toString() {
         return Format.asString(newPosition.getDate()) + " " + machine.getPortfolioTitle() + " " + machine.getDepth() + " " +
-                newPosition.getDirection() + " " + getValue() + " " + getVolume() + " " + (isExecuted ? "executed" : "not executed");
+                newPosition.getDirection() + " " + getValue() + " " + getVolume() + " " + (isExecuted() ? "executed" : "not executed");
     }
 
     public void blockMachine() {
+        blocked();
         machine.block();
     }
 
@@ -107,5 +110,13 @@ public class Order {
 
     public boolean hasSameVolume(Order order) {
         return getVolume() == order.getVolume();
+    }
+
+    public boolean isExecuted() {
+        return OrderStatus.executed.equals(status);
+    }
+
+    public boolean isProcessed() {
+        return !OrderStatus.newest.equals(status);
     }
 }

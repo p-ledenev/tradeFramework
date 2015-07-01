@@ -26,9 +26,6 @@ public class CacheCandlesIterator implements ICandlesIterator {
             CandlesCache.addCandles(security, candles);
         }
 
-//        for (Candle candle : candles)
-//            Log.info("Cache candle iterator: " + candle.print());
-
         return candles;
     }
 }

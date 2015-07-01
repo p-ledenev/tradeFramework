@@ -1,12 +1,14 @@
 package tools;
 
-import org.slf4j.*;
+import org.apache.log4j.*;
 
+import javax.annotation.concurrent.*;
 import java.lang.management.*;
 
+@NotThreadSafe
 public class Log {
 
-    private static final Logger logger = LoggerFactory.getLogger(Log.class);
+    private static final Logger logger = Logger.getLogger(Log.class);
 
     public static void configureLogger() {
         logger.info("Hello!!!");
@@ -41,13 +43,17 @@ public class Log {
         return getLogger().isDebugEnabled();
     }
 
-    public static boolean isTraceEnabled() {
-        return getLogger().isTraceEnabled();
-    }
-
     public static void printJavaRuntimeInfo() {
         RuntimeMXBean bean = ManagementFactory.getRuntimeMXBean();
         info(bean.getInputArguments().toString());
 
+    }
+
+    public static void enableDebug() {
+        getLogger().setLevel(Level.DEBUG);
+    }
+
+    public static void disableDebug() {
+        getLogger().setLevel(Level.INFO);
     }
 }

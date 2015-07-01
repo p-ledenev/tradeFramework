@@ -9,7 +9,7 @@ import java.io.*;
  */
 public class AlfaSettings {
 
-    // public static String initFile = "d:/Projects/Alfa/java/v1.0/tradeFramework/alfa/settings/alfa.settings";
+    //public static String initFile = "d:/Projects/Alfa/java/v1.0/tradeFramework/alfa/settings/alfa.settings";
     public static String initFile = "./alfa.settings";
 
     public static AlfaGateway createGateway() throws Throwable {

@@ -114,4 +114,8 @@ public class Portfolio implements IMoneyStateSupport {
 
         return volume;
     }
+
+    public Machine getMachine(int i) {
+        return machines.get(i);
+    }
 }

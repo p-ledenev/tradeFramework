@@ -46,6 +46,11 @@ public class DataWritingTest {
             public PrintWriter getWriter() throws FileNotFoundException {
                 return new PrintWriter(resultWriter);
             }
+
+            @Override
+            public boolean initFileWasModified() {
+                return false;
+            }
         };
     }
 

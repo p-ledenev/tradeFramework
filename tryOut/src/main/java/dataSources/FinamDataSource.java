@@ -3,6 +3,7 @@ package dataSources;
 import model.*;
 import org.joda.time.*;
 import org.joda.time.format.*;
+import tools.*;
 
 import java.io.*;
 import java.util.*;
@@ -17,18 +18,30 @@ public class FinamDataSource implements IDataSource {
         List<TryOutCandle> candles = new ArrayList<TryOutCandle>();
         BufferedReader reader = new BufferedReader(new FileReader(new File(fileName)));
 
+        String errorMessage = "";
+        int errorCount = 0;
+
         String line;
         while ((line = reader.readLine()) != null) {
             if (line == "")
                 continue;
 
             String[] data = line.split(";");
-            candles.add(createCandle(data));
+            try {
+                candles.add(createCandle(data));
+
+            } catch (Exception e) {
+                errorMessage += "Error parsing " + line + "\n";
+                errorCount++;
+            }
         }
 
         reader.close();
 
         setAdditionalParamsTo(candles);
+
+        if (errorCount > 0)
+            Log.info("\n" + errorMessage + "total error number: " + errorCount);
 
         return candles;
     }
