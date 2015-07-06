@@ -12,12 +12,15 @@ import java.util.*;
 public class MinMaxSiftStrategy implements ISiftCandlesStrategy {
 
     @Getter
+    @Setter
     private double sieveParam;
+
     private double minValue;
     private double maxValue;
 
     public MinMaxSiftStrategy(double sieveParam) {
         this.sieveParam = sieveParam;
+
         minValue = Double.MAX_VALUE;
         maxValue = Double.MIN_VALUE;
     }

@@ -10,4 +10,6 @@ import java.util.*;
 public interface ISiftCandlesStrategy {
 
     List<Candle> sift(List<Candle> newCandles);
+
+    void setSieveParam(double sieveParam);
 }
