@@ -12,4 +12,13 @@ public class NoSiftStrategy implements ISiftCandlesStrategy {
     public List<Candle> sift(List<Candle> newCandles) {
         return newCandles;
     }
+
+    @Override
+    public void setSieveParam(double sieveParam) {
+    }
+
+    @Override
+    public double getSieveParam() {
+        return 0;
+    }
 }

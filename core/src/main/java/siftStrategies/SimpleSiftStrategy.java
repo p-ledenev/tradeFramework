@@ -1,6 +1,6 @@
 package siftStrategies;
 
-import lombok.Setter;
+import lombok.*;
 import model.*;
 
 import java.util.*;
@@ -12,6 +12,7 @@ import java.util.*;
 public class SimpleSiftStrategy implements ISiftCandlesStrategy {
 
     @Setter
+    @Getter
     private double sieveParam;
     private double lastValue;
 

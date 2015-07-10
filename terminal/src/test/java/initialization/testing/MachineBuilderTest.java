@@ -90,4 +90,9 @@ public class MachineBuilderTest {
     public void shouldReadCommissionStrategy() throws Throwable {
         assertThat(((ScalpingCommissionStrategy) machine.getCommissionStrategy()).getCommission(), is(equalTo(0.5)));
     }
+
+    @Test
+    public void shouldReadSeiveParam() throws Throwable {
+        assertThat(machine.getDecisionStrategy().getCandlesStorage().getSiftStrategy().getSieveParam(), equalTo(0.0145));
+    }
 }

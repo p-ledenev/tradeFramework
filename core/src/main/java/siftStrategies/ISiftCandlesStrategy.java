@@ -12,4 +12,6 @@ public interface ISiftCandlesStrategy {
     List<Candle> sift(List<Candle> newCandles);
 
     void setSieveParam(double sieveParam);
+
+   double getSieveParam();
 }

@@ -18,8 +18,8 @@ import java.util.*;
 public class InitialSettings {
 
     //public static String settingPath = "F:/Teddy/Alfa/java/v1.0/tradeFramework/tryOut/data/";
-    //public static String settingPath = "d:/Projects/Alfa/java/v1.0/tradeFramework/tryOut/data/";
-    public static String settingPath = "./";
+    public static String settingPath = "d:/Projects/Alfa/java/v1.0/tradeFramework/tryOut/data/";
+    //public static String settingPath = "./";
 
     private String security;
     private String timeFrame;
@@ -55,12 +55,15 @@ public class InitialSettings {
 
     public Portfolio initPortfolio() throws Throwable {
 
-        ISiftCandlesStrategy siftStrategy = SiftCandlesStrategyFactory.createSiftStrategy(sieveParam);
-        CandlesStorage candlesStorage = new CandlesStorage(siftStrategy);
-        Portfolio portfolio = new Portfolio(strategyName, security, candlesStorage);
+        Portfolio portfolio = new Portfolio(strategyName, security);
 
         for (int depth : depths) {
             ITakeProfitStrategy profitStrategy = TakeProfitStrategyFactory.createTakeProfitStrategy();
+
+            ISiftCandlesStrategy siftStrategy = SiftCandlesStrategyFactory.createSiftStrategy(sieveParam);
+            siftStrategy = new MovingSiftCandlesStrategy(siftStrategy, (int)(0.5 * depth));
+
+            CandlesStorage candlesStorage = new CandlesStorage(siftStrategy);
 
             DecisionStrategy decisionStrategy = DecisionStrategy.createFor(strategyName, profitStrategy, candlesStorage);
             ICommissionStrategy commissionStrategy = new ScalpingCommissionStrategy(commission);

@@ -65,6 +65,10 @@ public class Machine implements IMoneyStateSupport {
         return "depth; " + portfolio.printStrategy();
     }
 
+    public void addToStorage(List<Candle> candles) {
+        decisionStrategy.addToStorage(candles);
+    }
+
     public void addOrderTo(List<Order> orders) {
 
         Position newPosition = decisionStrategy.computeNewPositionFor(depth, computeVolume());
@@ -143,5 +147,9 @@ public class Machine implements IMoneyStateSupport {
 
     public int getSignVolume() {
         return position.getSignVolume();
+    }
+
+    public int computeStorageSizeFor(List<Candle> candles) {
+        return decisionStrategy.computeStorageSizeFor(candles);
     }
 }

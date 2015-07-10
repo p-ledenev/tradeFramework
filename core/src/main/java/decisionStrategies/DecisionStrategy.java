@@ -51,8 +51,13 @@ public abstract class DecisionStrategy {
         this.candlesStorage = candlesStorage;
     }
 
-    public Position computeNewPositionFor(int depth, int volume) {
+    public void addToStorage(List<Candle> candles) {
+        // TODO add all date after candles (not just skip all)
+        if (candlesStorage.validateTimeSequence(candles))
+            candlesStorage.add(candles);
+    }
 
+    public Position computeNewPositionFor(int depth, int volume) {
         if (candlesStorage.lessThan(getInitialStorageSizeFor(depth)))
             Log.debug("CandlesStorage size less than initial size: " + getInitialStorageSizeFor(depth));
 
@@ -94,5 +99,9 @@ public abstract class DecisionStrategy {
 
     public Candle getLastCandle() {
         return candlesStorage.last();
+    }
+
+    public int computeStorageSizeFor(List<Candle> candles) {
+        return candlesStorage.computeStorageSizeFor(candles);
     }
 }

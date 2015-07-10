@@ -34,15 +34,18 @@ public class PortfolioBuilder {
     }
 
     public void create() {
-        ISiftCandlesStrategy siftStrategy = new MinMaxSiftStrategy(sieveParam);
-        portfolio = new Portfolio(title, security, lot, new CandlesStorage(siftStrategy));
+        portfolio = new Portfolio(title, security, lot);
     }
 
     public void addMachine(String line) throws Throwable {
 
         ITakeProfitStrategy profitStrategy = new NoTakeProfitStrategy();
         ICommissionStrategy commissionStrategy = new ScalpingCommissionStrategy(commission);
-        DecisionStrategy decisionStrategy = DecisionStrategy.createFor(decisionStrategyName, profitStrategy, portfolio.getCandlesStorage());
+
+        ISiftCandlesStrategy siftStrategy = SiftCandlesStrategyFactory.createSiftStrategy(sieveParam);
+        CandlesStorage storage = new CandlesStorage(siftStrategy);
+
+        DecisionStrategy decisionStrategy = DecisionStrategy.createFor(decisionStrategyName, profitStrategy, storage);
 
         MachineBuilder builder = new MachineBuilder(line);
         builder.create();

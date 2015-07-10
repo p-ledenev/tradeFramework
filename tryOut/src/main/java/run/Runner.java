@@ -2,10 +2,13 @@ package run;
 
 import dataSources.*;
 import model.*;
+import org.joda.time.*;
 import settings.*;
+import tools.*;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * Created by ledenev.p on 02.04.2015.
@@ -13,6 +16,10 @@ import java.util.*;
 public class Runner {
 
     public static void main(String[] args) throws Throwable {
+
+        DateTime dateStart = DateTime.now();
+
+        ExecutorService executor = Executors.newCachedThreadPool();
 
         List<InitialSettings> settingsList = readSettings();
         for (InitialSettings settings : settingsList) {
@@ -28,9 +35,16 @@ public class Runner {
                 TradeDataCollector dataCollector = createDataCollector(portfolio);
 
                 Trader trader = new Trader(candlesIterator, dataCollector, ordersExecutor, portfolio);
-                trader.trade();
+                executor.submit(trader);
             }
         }
+
+        executor.shutdown();
+        while (!executor.isTerminated()) {
+        }
+
+        DateTime dateEnd = DateTime.now();
+        Log.info("All threads finished. Execution time (minutes): " + (dateEnd.getMillis() - dateStart.getMillis()) / (1000. * 60));
     }
 
     private static List<InitialSettings> readSettings() throws Throwable {

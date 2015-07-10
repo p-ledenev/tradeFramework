@@ -13,24 +13,22 @@ import java.util.*;
 @Data
 public class Portfolio implements IMoneyStateSupport {
 
-    private CandlesStorage candlesStorage;
     private List<Machine> machines;
     private String security;
     private String title;
     private int lot;
 
-    public Portfolio(String title, String security, int lot, CandlesStorage candlesStorage) {
+    public Portfolio(String title, String security, int lot) {
         this.title = title;
         this.security = security;
 
         this.lot = lot;
-        this.candlesStorage = candlesStorage;
 
         machines = new ArrayList<Machine>();
     }
 
-    public Portfolio(String title, String security, CandlesStorage candlesStorage) {
-        this(title, security, 100, candlesStorage);
+    public Portfolio(String title, String security) {
+        this(title, security, 100);
     }
 
     public void addMachine(Machine machine) {
@@ -39,11 +37,10 @@ public class Portfolio implements IMoneyStateSupport {
 
     public void addOrderTo(List<Order> orders, List<Candle> candles) {
 
-        if (candlesStorage.validateTimeSequence(candles))
-            candlesStorage.add(candles);
-
-        for (Machine machine : machines)
+        for (Machine machine : machines) {
+            machine.addToStorage(candles);
             machine.addOrderTo(orders);
+        }
     }
 
     public String printStrategy() {
@@ -86,11 +83,28 @@ public class Portfolio implements IMoneyStateSupport {
     }
 
     public int computeStorageSizeFor(List<Candle> candles) {
-        return candlesStorage.computeStorageSizeFor(candles);
+        int maxSize = 0;
+
+        for (Machine machine : machines) {
+            int size = machine.computeStorageSizeFor(candles);
+            if (size > maxSize)
+                maxSize = size;
+        }
+
+        return maxSize;
     }
 
     public Candle getLastCandle() {
-        return candlesStorage.last();
+        Candle last = Candle.empty();
+
+        for (Machine machine : machines) {
+           Candle machineCandle = machine.getLastCandle();
+
+            if (last.before(machineCandle))
+                last = machineCandle;
+        }
+
+        return last;
     }
 
     public String getDecisonStrategyName() {

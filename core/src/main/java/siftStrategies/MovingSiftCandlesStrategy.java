@@ -12,7 +12,7 @@ public class MovingSiftCandlesStrategy implements ISiftCandlesStrategy {
 
     private ISiftCandlesStrategy strategy;
     private int depth;
-    private List<Candle> forSifting;
+    private ArrayList<Candle> forSifting;
 
     public MovingSiftCandlesStrategy(ISiftCandlesStrategy strategy, int depth) {
         this.strategy = strategy;
@@ -21,7 +21,6 @@ public class MovingSiftCandlesStrategy implements ISiftCandlesStrategy {
         forSifting = new ArrayList<Candle>();
     }
 
-
     @Override
     public List<Candle> sift(List<Candle> newCandles) {
 
@@ -29,6 +28,8 @@ public class MovingSiftCandlesStrategy implements ISiftCandlesStrategy {
 
         for (int i = 0; i < forSifting.size() - depth; i++)
             forSifting.remove(i);
+
+        forSifting.trimToSize();
 
         if (forSifting.size() >= depth)
             strategy.setSieveParam(computeSieveParam());
@@ -46,11 +47,16 @@ public class MovingSiftCandlesStrategy implements ISiftCandlesStrategy {
             mean += Math.abs(c1.getValue() - c2.getValue()) / c1.getValue();
         }
 
-        return mean / forSifting.size();
+        return (mean / forSifting.size()) * 100;
     }
 
     @Override
     public void setSieveParam(double sieveParam) {
         strategy.setSieveParam(sieveParam);
+    }
+
+    @Override
+    public double getSieveParam() {
+        return strategy.getSieveParam();
     }
 }

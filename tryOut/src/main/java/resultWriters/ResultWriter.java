@@ -39,7 +39,8 @@ public abstract class ResultWriter {
         int year = getYear();
 
         Log.info("Open file to write: " + resultPath + "/" + fileName + "_" + security + "_" + year + "_" + title + ".csv");
-        return new PrintWriter(resultPath + "/" + fileName + "_" + security + "_" + year + "_" + title + ".csv", "utf-8");
+        FileWriter writer = new FileWriter(resultPath + "/" + fileName + "_" + security + "_" + year + "_" + title + ".csv", false);
+        return new PrintWriter(writer);
     }
 
     protected abstract Portfolio getPortfolio();

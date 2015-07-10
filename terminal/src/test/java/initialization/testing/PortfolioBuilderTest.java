@@ -3,7 +3,6 @@ package initialization.testing;
 import model.*;
 import org.junit.*;
 import settings.*;
-import siftStrategies.*;
 
 import java.io.*;
 import java.util.*;
@@ -74,11 +73,6 @@ public class PortfolioBuilderTest {
     @Test
     public void shouldReadLot() throws Throwable {
         assertThat(portfolios.get(0).getLot(), equalTo(1));
-    }
-
-    @Test
-    public void shouldReadSeiveParam() throws Throwable {
-        assertThat(((MinMaxSiftStrategy) portfolios.get(0).getCandlesStorage().getSiftStrategy()).getSieveParam(), equalTo(0.0145));
     }
 
     @Test
