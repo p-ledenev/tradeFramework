@@ -27,6 +27,8 @@ public class Trader {
             List<Order> orders = new ArrayList<Order>();
             portfolio.addOrderTo(orders, candles);
 
+            //Log.info(candles.get(0).print());
+
             if (orders.size() <= 0)
                 continue;
 

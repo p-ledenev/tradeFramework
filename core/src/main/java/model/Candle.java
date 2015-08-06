@@ -79,6 +79,10 @@ public class Candle implements IAveragingSupport, IApproximationSupport, Cloneab
         return getDateDay() == candle.getDateDay();
     }
 
+    public boolean hasSameDate(Candle candle) {
+        return getDate().equals(candle.getDate());
+    }
+
     public int getDateDay() {
         return date.getDayOfYear();
     }

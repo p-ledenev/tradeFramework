@@ -16,6 +16,7 @@ public class CandlesStorage {
     private ISiftCandlesStrategy siftStrategy;
 
     public CandlesStorage() {
+        candles = new ArrayList<Candle>();
     }
 
     public CandlesStorage(ISiftCandlesStrategy siftStrategy, List<Candle> candles) {
@@ -26,6 +27,7 @@ public class CandlesStorage {
     public CandlesStorage(ISiftCandlesStrategy siftStrategy) {
         this(siftStrategy, new ArrayList<Candle>());
     }
+
 
     public void add(List<Candle> newCandles) {
         List<Candle> sifted = siftStrategy.sift(newCandles);
@@ -66,4 +68,35 @@ public class CandlesStorage {
 
         return last().before(newCandles.get(0));
     }
+
+    public List<Candle> getAfter(Candle candle, int depth) {
+
+        int index = (candles.size() - 1) / 2;
+        int section = candles.size();
+        while (!candle.hasSameDay(candles.get(index))) {
+
+            int newIndex = 0;
+            section /= 2;
+            if (candle.before(candles.get(index))) {
+                newIndex = index - section / 2;
+                index = newIndex == index ? newIndex - 1 : newIndex;
+
+            } else {
+                newIndex = index + section / 2;
+                index = newIndex == index ? newIndex + 1 : newIndex;
+            }
+
+            if (index < 0 || index >= candles.size())
+                return new ArrayList<Candle>();
+        }
+
+        List<Candle> response = new ArrayList<Candle>();
+        int length = candles.size() > index + depth ? index + depth : candles.size();
+        for (int i = index + 1; i < length + 1; i++)
+            response.add(candles.get(i));
+
+        return response;
+    }
+
+
 }

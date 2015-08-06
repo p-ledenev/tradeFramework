@@ -18,8 +18,8 @@ import java.util.*;
 public class InitialSettings {
 
     //public static String settingPath = "F:/Teddy/Alfa/java/v1.0/tradeFramework/tryOut/data/";
-    //public static String settingPath = "d:/Projects/Alfa/java/v1.0/tradeFramework/tryOut/data/";
-    public static String settingPath = "./";
+    public static String settingPath = "d:/Projects/Alfa/java/v1.0/tradeFramework/tryOut/data/";
+    //public static String settingPath = "./";
 
     private String security;
     private String timeFrame;
@@ -53,7 +53,7 @@ public class InitialSettings {
         return settings;
     }
 
-    public Portfolio initPortfolio() throws Throwable {
+    public Portfolio initPortfolio(List<TryOutCandle> allData) throws Throwable {
 
         ISiftCandlesStrategy siftStrategy = SiftCandlesStrategyFactory.createSiftStrategy(sieveParam);
         CandlesStorage candlesStorage = new CandlesStorage(siftStrategy);
@@ -65,10 +65,21 @@ public class InitialSettings {
             DecisionStrategy decisionStrategy = DecisionStrategy.createFor(strategyName, profitStrategy, candlesStorage);
             ICommissionStrategy commissionStrategy = new ScalpingCommissionStrategy(commission);
 
+            setSpecificParamsFor(decisionStrategy, allData, siftStrategy);
+
             Machine machine = new Machine(portfolio, decisionStrategy, commissionStrategy, depth);
             portfolio.addMachine(machine);
         }
 
         return portfolio;
+    }
+
+    private void setSpecificParamsFor(DecisionStrategy strategy, List<TryOutCandle> allData, ISiftCandlesStrategy siftStrategy) {
+
+        if (strategy.getClass() == NeuroTrainingDecisionStrategy.class) {
+            Candle[] candlesArray = allData.toArray(new Candle[allData.size()]);
+            CandlesStorage allDataStorage = new CandlesStorage(siftStrategy, Arrays.asList(candlesArray));
+            ((NeuroTrainingDecisionStrategy) strategy).setAllDataStorage(allDataStorage);
+        }
     }
 }

@@ -21,10 +21,11 @@ public class Runner {
                 List<TryOutCandle> candles = DataSourceFactory.createDataSource().readCandlesFrom(
                         IDataSource.sourcePath + "/" + year + "/" + settings.getSecurity() + "_" + settings.getTimeFrame() + ".txt");
 
-                IOrdersExecutor ordersExecutor = new TryOutOrdersExecutor(candles, Integer.parseInt(year));
+                IOrdersExecutor ordersExecutor = new TryOutOrdersExecutor(Integer.parseInt(year));
 
                 CandlesIterator candlesIterator = new CandlesIterator(candles);
-                Portfolio portfolio = settings.initPortfolio();
+
+                Portfolio portfolio = settings.initPortfolio(candles);
                 TradeDataCollector dataCollector = createDataCollector(portfolio);
 
                 Trader trader = new Trader(candlesIterator, dataCollector, ordersExecutor, portfolio);

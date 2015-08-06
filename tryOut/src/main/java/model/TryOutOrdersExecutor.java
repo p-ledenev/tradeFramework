@@ -7,11 +7,9 @@ import java.util.*;
  */
 public class TryOutOrdersExecutor implements IOrdersExecutor {
 
-    private List<TryOutCandle> candles;
     private int tradeYear;
 
-    public TryOutOrdersExecutor(List<TryOutCandle> candles, int tradeYear) {
-        this.candles = candles;
+    public TryOutOrdersExecutor(int tradeYear) {
         this.tradeYear = tradeYear;
     }
 
