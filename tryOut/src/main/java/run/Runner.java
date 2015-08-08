@@ -3,9 +3,13 @@ package run;
 import dataSources.*;
 import model.*;
 import settings.*;
+import tools.Log;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * Created by ledenev.p on 02.04.2015.
@@ -13,6 +17,8 @@ import java.util.*;
 public class Runner {
 
     public static void main(String[] args) throws Throwable {
+
+        ExecutorService executor = Executors.newFixedThreadPool(4);
 
         List<InitialSettings> settingsList = readSettings();
         for (InitialSettings settings : settingsList) {
@@ -29,9 +35,15 @@ public class Runner {
                 TradeDataCollector dataCollector = createDataCollector(portfolio);
 
                 Trader trader = new Trader(candlesIterator, dataCollector, ordersExecutor, portfolio);
-                trader.trade();
+                executor.execute(trader);
             }
         }
+
+        executor.shutdown();
+        while (!executor.isTerminated()) {
+        }
+
+        Log.info("All threads are done");
     }
 
     private static List<InitialSettings> readSettings() throws Throwable {

@@ -25,7 +25,11 @@ public class StrategyStatesCollector {
 
     public void addCurrentStateIfChanged() {
         if (!strategy.getCurrentState().equals(getLastState()))
-            add(strategy.getCurrentState());
+            addCurrentState();
+    }
+
+    public void addCurrentState() {
+        add(strategy.getCurrentState());
     }
 
     public StrategyState getLastState() {

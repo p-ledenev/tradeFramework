@@ -12,8 +12,8 @@ import java.util.*;
 @Data
 public class CandlesStorage {
 
-    private List<Candle> candles;
-    private ISiftCandlesStrategy siftStrategy;
+    protected List<Candle> candles;
+    protected ISiftCandlesStrategy siftStrategy;
 
     public CandlesStorage() {
         candles = new ArrayList<Candle>();
@@ -30,10 +30,12 @@ public class CandlesStorage {
 
 
     public void add(List<Candle> newCandles) {
+
         List<Candle> sifted = siftStrategy.sift(newCandles);
 
-        for (Candle candle : sifted)
-            Log.debug("Added to candle storage: " + candle.print());
+        if (Log.isDebugEnabled())
+            for (Candle candle : sifted)
+                Log.debug("Added to candle storage: " + candle.print());
 
         candles.addAll(sifted);
     }
@@ -73,7 +75,7 @@ public class CandlesStorage {
 
         int index = (candles.size() - 1) / 2;
         int section = candles.size();
-        while (!candle.hasSameDay(candles.get(index))) {
+        while (!candle.hasSameDate(candles.get(index))) {
 
             int newIndex = 0;
             section /= 2;
@@ -91,7 +93,7 @@ public class CandlesStorage {
         }
 
         List<Candle> response = new ArrayList<Candle>();
-        int length = candles.size() > index + depth ? index + depth : candles.size();
+        int length = candles.size() > index + depth ? index + depth : candles.size() - 1;
         for (int i = index + 1; i < length + 1; i++)
             response.add(candles.get(i));
 

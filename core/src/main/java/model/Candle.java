@@ -49,12 +49,20 @@ public class Candle implements IAveragingSupport, IApproximationSupport, Cloneab
         return Math.abs(this.value - value) / value * 100;
     }
 
-    public boolean greaterThan(double value) {
+    public boolean hasValueGreaterThan(double value) {
         return this.value > value;
     }
 
-    public boolean lessThan(double value) {
+    public boolean hasValueLessThan(double value) {
         return this.value < value;
+    }
+
+    public boolean greaterThan(Candle candle) {
+        return hasValueGreaterThan(candle.getValue());
+    }
+
+    public boolean lessThan(Candle candle) {
+        return hasValueLessThan(candle.getValue());
     }
 
     @Override

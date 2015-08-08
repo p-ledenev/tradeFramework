@@ -17,8 +17,8 @@ import java.util.*;
 @NoArgsConstructor
 public class InitialSettings {
 
-    //public static String settingPath = "F:/Teddy/Alfa/java/v1.0/tradeFramework/tryOut/data/";
-    public static String settingPath = "d:/Projects/Alfa/java/v1.0/tradeFramework/tryOut/data/";
+    public static String settingPath = "F:/Teddy/Alfa/java/v1.0/tradeFramework/tryOut/data/";
+    //public static String settingPath = "d:/Projects/Alfa/java/v1.0/tradeFramework/tryOut/data/";
     //public static String settingPath = "./";
 
     private String security;
@@ -56,7 +56,7 @@ public class InitialSettings {
     public Portfolio initPortfolio(List<TryOutCandle> allData) throws Throwable {
 
         ISiftCandlesStrategy siftStrategy = SiftCandlesStrategyFactory.createSiftStrategy(sieveParam);
-        CandlesStorage candlesStorage = new CandlesStorage(siftStrategy);
+        CandlesStorage candlesStorage = new TryOutCandlesStorage(siftStrategy);
         Portfolio portfolio = new Portfolio(strategyName, security, candlesStorage);
 
         for (int depth : depths) {
@@ -76,10 +76,10 @@ public class InitialSettings {
 
     private void setSpecificParamsFor(DecisionStrategy strategy, List<TryOutCandle> allData, ISiftCandlesStrategy siftStrategy) {
 
-        if (strategy.getClass() == NeuroTrainingDecisionStrategy.class) {
+        if (strategy instanceof NeuronTrainingDecisionStrategy) {
             Candle[] candlesArray = allData.toArray(new Candle[allData.size()]);
             CandlesStorage allDataStorage = new CandlesStorage(siftStrategy, Arrays.asList(candlesArray));
-            ((NeuroTrainingDecisionStrategy) strategy).setAllDataStorage(allDataStorage);
+            ((NeuronTrainingDecisionStrategy) strategy).setAllDataStorage(allDataStorage);
         }
     }
 }

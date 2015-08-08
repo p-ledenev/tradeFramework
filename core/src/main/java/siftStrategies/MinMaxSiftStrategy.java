@@ -28,8 +28,8 @@ public class MinMaxSiftStrategy implements ISiftCandlesStrategy {
 
         for (Candle candle : newCandles) {
 
-            if (candle.greaterThan(maxValue)) maxValue = candle.getValue();
-            if (candle.lessThan(minValue)) minValue = candle.getValue();
+            if (candle.hasValueGreaterThan(maxValue)) maxValue = candle.getValue();
+            if (candle.hasValueLessThan(minValue)) minValue = candle.getValue();
 
             if (candle.computeVariance(maxValue) < sieveParam && candle.computeVariance(minValue) < sieveParam)
                 continue;

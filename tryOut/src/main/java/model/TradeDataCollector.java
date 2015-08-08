@@ -17,7 +17,7 @@ public abstract class TradeDataCollector {
 
     public void collect(List<Order> orders) {
 
-        if (portfolioCollector.isEmpty())
+        if (portfolioCollector.isEmpty() && !orders.isEmpty())
             portfolioCollector.setInitialMoneyAmount(computeInitialAmount(orders.get(0)));
 
         portfolioCollector.addStateIfChanged();

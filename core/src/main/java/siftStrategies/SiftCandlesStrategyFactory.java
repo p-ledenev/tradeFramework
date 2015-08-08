@@ -6,6 +6,7 @@ package siftStrategies;
 public class SiftCandlesStrategyFactory {
 
     public static ISiftCandlesStrategy createSiftStrategy(double sieveParam) {
-        return new MinMaxSiftStrategy(sieveParam);
+        //return new MinMaxSiftStrategy(sieveParam);
+        return new NoSiftStrategy();
     }
 }

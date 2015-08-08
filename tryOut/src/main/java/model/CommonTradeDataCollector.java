@@ -34,7 +34,7 @@ public class CommonTradeDataCollector extends TradeDataCollector {
     protected void collectMachinesTradeData(List<Order> orders) {
         for (MachineMoneyStatesCollector statesCollector : machineCollectors) {
 
-            if (statesCollector.isEmpty())
+            if (statesCollector.isEmpty() && !orders.isEmpty())
                 statesCollector.setInitialMoneyAmount(computeInitialAmount(orders.get(0)));
 
             statesCollector.addStateIfChanged();
