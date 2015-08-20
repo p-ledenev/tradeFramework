@@ -1,5 +1,6 @@
 package decisionStrategies;
 
+import lombok.*;
 import model.*;
 
 import java.util.*;
@@ -8,11 +9,26 @@ import java.util.*;
  * Created by ledenev.p on 04.08.2015.
  */
 
-@Strategy(name = "MaxMinNeuronTrainingStrategy")
-public class MaxMinNeuronTrainingDecisionStrategy extends NeuronTrainingDecisionStrategy {
+@Strategy(name = "NeuroTrainingStrategy")
+public class NeuroTrainingDecisionStrategy extends DecisionStrategy {
+
+    @Setter
+    CandlesStorage allDataStorage;
 
     private double rise;
     private double fall;
+
+    @Override
+    protected Direction computeOrderDirection(int depth) {
+        Candle last = candlesStorage.last();
+
+        List<Candle> data = allDataStorage.getAfter(last, depth);
+
+        if (data.size() < depth)
+            return Direction.neutral;
+
+        return computeDirection(data);
+    }
 
     @Override
     public String[] getStateParamsHeader() {
@@ -31,7 +47,11 @@ public class MaxMinNeuronTrainingDecisionStrategy extends NeuronTrainingDecision
     }
 
     @Override
-    protected Direction computeDirection(List<Candle> data) {
+    public int getInitialStorageSizeFor(int depth) {
+        return depth;
+    }
+
+    private Direction computeDirection(List<Candle> data) {
 
         double max = Double.MIN_VALUE, min = Double.MAX_VALUE;
         for (Candle candle : data) {
@@ -44,14 +64,14 @@ public class MaxMinNeuronTrainingDecisionStrategy extends NeuronTrainingDecision
         rise = (max - last) / last;
         fall = (last - min) / last;
 
-        double kf = 0;
+        //Log.info("rise: " + rise + "; fall: " + fall);
 
-        if (rise < kf && fall < kf)
-            return Direction.neutral;
-
-        if (rise > fall)
+        if (rise > 0.001)
             return Direction.buy;
-        else
+
+        if (fall > 0.001)
             return Direction.sell;
+
+        return Direction.neutral;
     }
 }

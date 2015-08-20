@@ -7,7 +7,7 @@ import java.util.*;
 
 public class Format {
 
-    public static long indexFor(DateTime date) {
+    public static int indexFor(DateTime date) {
 
         DateTime year = new DateTime(date.getYear(), 1, 1, 0, 0);
         int days = getWorkingDaysBetweenTwoDates(year, date);

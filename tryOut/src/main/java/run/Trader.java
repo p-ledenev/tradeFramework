@@ -12,7 +12,7 @@ import java.util.*;
  */
 
 @AllArgsConstructor
-public class Trader implements Runnable {
+public class Trader {
     private CandlesIterator candlesIterator;
     private TradeDataCollector dataCollector;
     private IOrdersExecutor orderExecutor;
@@ -27,6 +27,9 @@ public class Trader implements Runnable {
             List<Order> orders = new ArrayList<Order>();
             portfolio.addOrderTo(orders, candles);
 
+            if (orders.size() <= 0)
+                continue;
+
             orderExecutor.execute(orders);
 
             for (Order order : orders)
@@ -34,7 +37,7 @@ public class Trader implements Runnable {
 
             dataCollector.collect(orders);
 
-            if (!orders.isEmpty() && (lastCandle == null || !lastCandle.hasSameDay(candles.get(0)))) {
+            if (lastCandle == null || !lastCandle.hasSameDay(candles.get(0))) {
                 Log.info("Portfolio: " + orders.get(0).getPortfolioTitle() + "; processing candle - " + candles.get(0).print());
                 lastCandle = candles.get(0);
             }
@@ -42,14 +45,5 @@ public class Trader implements Runnable {
 
         TradeDataWriter writer = dataCollector.getResultWriter();
         writer.writeData();
-    }
-
-    public void run() {
-        try {
-            trade();
-
-        } catch (Throwable e) {
-            Log.error("", e);
-        }
     }
 }

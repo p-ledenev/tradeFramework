@@ -19,7 +19,7 @@ public class TryOutCandle extends Candle {
     }
 
     @Override
-    public String printTitleCSV() {
+    public String printTitleCSVFor() {
         return index + ";" + Format.asString(date);
     }
 }

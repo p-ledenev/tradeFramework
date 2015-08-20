@@ -28,6 +28,15 @@ public class StrategyState extends Object {
         return response;
     }
 
+    public String printCSVFor(int index) {
+        String response = candle.printCSVFor(index);
+
+        for (String param : params)
+            response += ";" + param;
+
+        return response;
+    }
+
     public boolean equals(StrategyState state) {
         if (state == null)
             return false;

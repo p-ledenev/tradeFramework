@@ -83,8 +83,8 @@ public class Position {
         candle.setDate(date);
     }
 
-    public String printCSV() {
-        return candle.printTitleCSV();
+    public String printCSVFor(int index) {
+        return candle.printTitleCSVFor(index);
     }
 
     public int getSignVolume() {
