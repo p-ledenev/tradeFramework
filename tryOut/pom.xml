@@ -64,7 +64,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>run.Runner</mainClass>
+                            <mainClass>model.Runner</mainClass>
                         </manifest>
                         <manifestEntries>
                             <Class-Path>.</Class-Path>
