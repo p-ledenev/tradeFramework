@@ -1,17 +1,12 @@
 package model;
 
-import dataSources.DataSourceFactory;
-import dataSources.IDataSource;
-import decisionStrategies.MaxMinNeuronTrainingDecisionStrategy;
-import decisionStrategies.NeuronTrainingDecisionStrategy;
-import settings.InitialSettings;
-import siftStrategies.ISiftCandlesStrategy;
-import siftStrategies.SiftCandlesStrategyFactory;
-import tools.Log;
+import dataSources.*;
+import decisionStrategies.neuron.*;
+import settings.*;
+import siftStrategies.*;
+import tools.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by DiKey on 11.08.2015.

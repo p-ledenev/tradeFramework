@@ -15,6 +15,7 @@
         <module>tryOut</module>
         <module>alfa</module>
         <module>nnTutor</module>
+        <module>decisionStrategies</module>
     </modules>
 
 </project>

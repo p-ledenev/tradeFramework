@@ -13,6 +13,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>trade</groupId>
+            <artifactId>decision.strategies</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.16.2</version>
@@ -58,6 +64,12 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
             <version>1.10.19</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.encog</groupId>
+            <artifactId>encog-core</artifactId>
+            <version>3.3.0</version>
         </dependency>
 
     </dependencies>

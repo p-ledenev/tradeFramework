@@ -1,12 +1,10 @@
-package decisionStrategies;
+package decisionStrategies.neuron;
 
-import lombok.Setter;
-import model.Candle;
-import model.CandlesStorage;
-import model.Direction;
-import model.TrainingResult;
+import decisionStrategies.*;
+import lombok.*;
+import model.*;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by DiKey on 08.08.2015.
@@ -17,9 +15,9 @@ public abstract class NeuronTrainingDecisionStrategy extends DecisionStrategy {
     protected CandlesStorage allDataStorage;
 
     @Override
-    protected Direction computeOrderDirection(int depth) {
+    protected Direction computeOrderDirection(Candle[] candles) {
 
-        TrainingResult result = computeTrainingResult(depth);
+        TrainingResult result = computeTrainingResult(candles.length);
         return result.getDirection();
     }
 

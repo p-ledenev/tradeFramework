@@ -12,7 +12,7 @@ import java.util.*;
  */
 
 @AllArgsConstructor
-public class Trader {
+public class Trader implements Runnable {
     private CandlesIterator candlesIterator;
     private TradeDataCollector dataCollector;
     private IOrdersExecutor orderExecutor;
@@ -45,5 +45,13 @@ public class Trader {
 
         TradeDataWriter writer = dataCollector.getResultWriter();
         writer.writeData();
+    }
+
+    public void run() {
+        try {
+            trade();
+        } catch (Throwable e) {
+            Log.error("", e);
+        }
     }
 }

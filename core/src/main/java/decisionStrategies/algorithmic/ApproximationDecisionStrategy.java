@@ -1,6 +1,7 @@
-package decisionStrategies;
+package decisionStrategies.algorithmic;
 
 import approximationConstructors.*;
+import decisionStrategies.*;
 import lombok.*;
 import model.*;
 
@@ -20,12 +21,12 @@ public class ApproximationDecisionStrategy extends DecisionStrategy {
     }
 
     @Override
-    protected Direction computeOrderDirection(int depth) {
+    protected Direction computeOrderDirection(Candle[] candles) {
 
-        if (candlesStorage.size() < depth)
+        if (candlesStorage.size() < candles.length)
             return Direction.neutral;
 
-        ap = constructor.approximate(createCandleArrayBy(candlesStorage.size() - 1, depth));
+        ap = constructor.approximate(candles);
 
         double highestDegreeParam = ap.getHighestDegreeParameter();
 

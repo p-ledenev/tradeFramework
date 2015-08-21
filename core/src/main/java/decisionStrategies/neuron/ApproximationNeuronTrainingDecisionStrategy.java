@@ -1,12 +1,10 @@
-package decisionStrategies;
+package decisionStrategies.neuron;
 
-import approximationConstructors.Approximation;
-import approximationConstructors.IApproximationConstructor;
-import approximationConstructors.LinearApproximationConstructor;
-import model.Candle;
-import model.Direction;
+import approximationConstructors.*;
+import decisionStrategies.*;
+import model.*;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by ledenev.p on 04.08.2015.

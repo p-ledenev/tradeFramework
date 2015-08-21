@@ -1,4 +1,4 @@
-package decisionStrategies;
+package decisionStrategies.algorithmic;
 
 import averageConstructors.*;
 import lombok.*;

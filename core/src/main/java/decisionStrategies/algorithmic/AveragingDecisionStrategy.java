@@ -1,6 +1,7 @@
-package decisionStrategies;
+package decisionStrategies.algorithmic;
 
 import averageConstructors.*;
+import decisionStrategies.*;
 import lombok.*;
 import model.*;
 import tools.*;
@@ -30,9 +31,9 @@ public class AveragingDecisionStrategy extends DecisionStrategy {
     }
 
     @Override
-    protected Direction computeOrderDirection(int depth) {
+    protected Direction computeOrderDirection(Candle[] candles) {
 
-        addDerivatives(depth);
+        addDerivatives(candles);
 
         double averageDerivative = getLastAverageDerivative();
 
@@ -66,12 +67,14 @@ public class AveragingDecisionStrategy extends DecisionStrategy {
         return depth * 2 + 3;
     }
 
-    private void addDerivatives(int depth) {
+    private void addDerivatives(Candle[] candles) {
+
+        int depth = candles.length;
 
         int start = (derivatives.size() + 2 > depth - 1) ? derivatives.size() + 2 : depth - 1;
         for (int i = start; i < candlesStorage.size(); i++) {
 
-            double averageValue = constructor.average(createCandleArrayBy(i, depth));
+            double averageValue = constructor.average(candles);
             double derivativeValue = (averageValue - getLastAverageValue()) / averageValue;
 
             averageValues.add(averageValue);

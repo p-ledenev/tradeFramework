@@ -1,6 +1,7 @@
 package decisionStrategy.testing;
 
 import decisionStrategies.*;
+import decisionStrategies.algorithmic.*;
 import exceptions.*;
 import model.*;
 import org.junit.*;

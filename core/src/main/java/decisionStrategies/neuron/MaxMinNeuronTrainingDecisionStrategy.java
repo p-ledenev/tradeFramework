@@ -1,5 +1,6 @@
-package decisionStrategies;
+package decisionStrategies.neuron;
 
+import decisionStrategies.*;
 import lombok.*;
 import model.*;
 
@@ -9,26 +10,14 @@ import java.util.*;
  * Created by ledenev.p on 04.08.2015.
  */
 
-@Strategy(name = "NeuroTrainingStrategy")
-public class NeuroTrainingDecisionStrategy extends DecisionStrategy {
+@Strategy(name = "MaxMinNeuronTrainingStrategy")
+public class MaxMinNeuronTrainingDecisionStrategy extends NeuronTrainingDecisionStrategy {
 
     @Setter
     CandlesStorage allDataStorage;
 
     private double rise;
     private double fall;
-
-    @Override
-    protected Direction computeOrderDirection(int depth) {
-        Candle last = candlesStorage.last();
-
-        List<Candle> data = allDataStorage.getAfter(last, depth);
-
-        if (data.size() < depth)
-            return Direction.neutral;
-
-        return computeDirection(data);
-    }
 
     @Override
     public String[] getStateParamsHeader() {
@@ -51,7 +40,8 @@ public class NeuroTrainingDecisionStrategy extends DecisionStrategy {
         return depth;
     }
 
-    private Direction computeDirection(List<Candle> data) {
+    @Override
+    public Direction computeDirection(List<Candle> data) {
 
         double max = Double.MIN_VALUE, min = Double.MAX_VALUE;
         for (Candle candle : data) {

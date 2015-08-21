@@ -2,6 +2,7 @@ package settings;
 
 import commissionStrategies.*;
 import decisionStrategies.*;
+import decisionStrategies.neuron.*;
 import lombok.*;
 import model.*;
 import siftStrategies.*;
@@ -80,6 +81,10 @@ public class InitialSettings {
             Candle[] candlesArray = allData.toArray(new Candle[allData.size()]);
             CandlesStorage allDataStorage = new CandlesStorage(siftStrategy, Arrays.asList(candlesArray));
             ((NeuronTrainingDecisionStrategy) strategy).setAllDataStorage(allDataStorage);
+        }
+
+        if (strategy instanceof  NeuronDecisionStrategy) {
+
         }
     }
 }

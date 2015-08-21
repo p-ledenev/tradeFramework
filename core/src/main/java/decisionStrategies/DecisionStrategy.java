@@ -20,7 +20,7 @@ public abstract class DecisionStrategy {
 
     public static DecisionStrategy createFor(String name, ITakeProfitStrategy profitStrategy, CandlesStorage candlesStorage)
             throws Throwable {
-        Reflections reflections = new Reflections("decisionStrategies");
+        Reflections reflections = new Reflections("algorithmicDecisionStrategies");
         Set<Class<?>> strategyClasses = reflections.getTypesAnnotatedWith(Strategy.class);
 
         if (strategyClasses.size() <= 0)
@@ -59,12 +59,13 @@ public abstract class DecisionStrategy {
         if (profitStrategy.shouldTakeProfit())
             return Position.closing(candlesStorage.last());
 
-        Direction direction = computeOrderDirection(depth);
+        Candle[] candles = createCandleArray(depth);
+        Direction direction = computeOrderDirection(candles);
 
         return Position.opening(direction, volume, candlesStorage.last());
     }
 
-    protected abstract Direction computeOrderDirection(int depth);
+    protected abstract Direction computeOrderDirection(Candle[] candles);
 
     public String getName() {
         Strategy annotation = this.getClass().getAnnotation(Strategy.class);
@@ -72,7 +73,11 @@ public abstract class DecisionStrategy {
         return annotation.name();
     }
 
-    protected Candle[] createCandleArrayBy(int start, int depth) {
+    private Candle[] createCandleArray(int depth) {
+        return createCandleArrayBy(candlesStorage.size() - 1, depth);
+    }
+
+    private Candle[] createCandleArrayBy(int start, int depth) {
 
         Candle[] array = new Candle[depth];
 

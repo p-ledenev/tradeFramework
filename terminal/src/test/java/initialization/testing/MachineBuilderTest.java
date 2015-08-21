@@ -1,7 +1,7 @@
 package initialization.testing;
 
 import commissionStrategies.*;
-import decisionStrategies.*;
+import decisionStrategies.algorithmic.*;
 import model.*;
 import org.junit.*;
 import settings.*;

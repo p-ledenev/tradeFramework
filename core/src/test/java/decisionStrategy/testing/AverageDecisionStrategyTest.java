@@ -1,7 +1,7 @@
 package decisionStrategy.testing;
 
 import averageConstructors.*;
-import decisionStrategies.*;
+import decisionStrategies.algorithmic.*;
 import model.*;
 import org.joda.time.*;
 import org.junit.*;
