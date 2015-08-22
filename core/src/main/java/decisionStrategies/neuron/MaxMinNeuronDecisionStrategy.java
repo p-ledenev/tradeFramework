@@ -1,5 +1,6 @@
 package decisionStrategies.neuron;
 
+import decisionStrategies.*;
 import model.*;
 import org.encog.ml.data.*;
 import org.encog.ml.data.basic.*;
@@ -9,6 +10,8 @@ import java.util.*;
 /**
  * Created by ledenev.p on 21.08.2015.
  */
+
+@Strategy(name = "MaxMinNeuronStrategy")
 public class MaxMinNeuronDecisionStrategy extends NeuronDecisionStrategy {
 
     @Override
@@ -19,12 +22,14 @@ public class MaxMinNeuronDecisionStrategy extends NeuronDecisionStrategy {
         MLData input = new BasicMLData(result.getNormalizedValueIncrementsAsArray());
         MLData output = network.compute(input);
 
-        if (output.getData(0) == 1 && output.getData(1) == 0)
+        if (output.getData(0) > output.getData(1))
             return Direction.buy;
 
-        if (output.getData(0) == 0 && output.getData(1) == 1)
-            return Direction.sell;
+        return Direction.sell;
+    }
 
-        return Direction.neutral;
+    @Override
+    public String getNetworkName() {
+        return "Perceptron";
     }
 }

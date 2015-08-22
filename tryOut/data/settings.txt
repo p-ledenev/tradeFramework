@@ -1,2 +1,1 @@
-usd~&~1min~&~ApproximationNeuronTrainingStrategy~&~0.25~&~0.0145~&~2010;2011;2012;2013;2014~&~50
-usd~&~1min~&~MaxMinNeuronTrainingStrategy~&~0.25~&~0.0145~&~2010;2011;2012;2013;2014~&~50
+usd~&~1min~&~MaxMinNeuronStrategy~&~0.25~&~0.0145~&~2010~&~51

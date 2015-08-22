@@ -18,8 +18,8 @@ import java.util.*;
 @NoArgsConstructor
 public class InitialSettings {
 
-    public static String settingPath = "F:/Teddy/Alfa/java/v1.0/tradeFramework/tryOut/data/";
-    //public static String settingPath = "d:/Projects/Alfa/java/v1.0/tradeFramework/tryOut/data/";
+    //public static String settingPath = "F:/Teddy/Alfa/java/v1.0/tradeFramework/tryOut/data/";
+    public static String settingPath = "d:/Projects/Alfa/java/v1.0/tradeFramework/tryOut/data/";
     //public static String settingPath = "./";
 
     private String security;
@@ -75,7 +75,7 @@ public class InitialSettings {
         return portfolio;
     }
 
-    private void setSpecificParamsFor(DecisionStrategy strategy, List<TryOutCandle> allData, ISiftCandlesStrategy siftStrategy) {
+    private void setSpecificParamsFor(DecisionStrategy strategy, List<TryOutCandle> allData, ISiftCandlesStrategy siftStrategy) throws Throwable {
 
         if (strategy instanceof NeuronTrainingDecisionStrategy) {
             Candle[] candlesArray = allData.toArray(new Candle[allData.size()]);
@@ -83,8 +83,9 @@ public class InitialSettings {
             ((NeuronTrainingDecisionStrategy) strategy).setAllDataStorage(allDataStorage);
         }
 
-        if (strategy instanceof  NeuronDecisionStrategy) {
-
+        if (strategy instanceof NeuronDecisionStrategy) {
+            NeuronDecisionStrategy neuronStrategy = (NeuronDecisionStrategy) strategy;
+            neuronStrategy.readNetwork(settingPath + neuronStrategy.getNetworkName() + ".eg");
         }
     }
 }

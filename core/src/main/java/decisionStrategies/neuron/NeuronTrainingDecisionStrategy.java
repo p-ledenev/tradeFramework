@@ -40,6 +40,6 @@ public abstract class NeuronTrainingDecisionStrategy extends DecisionStrategy {
 
     @Override
     public int getInitialStorageSizeFor(int depth) {
-        return depth;
+        return depth + 1;
     }
 }

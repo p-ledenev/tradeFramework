@@ -20,7 +20,7 @@ public abstract class DecisionStrategy {
 
     public static DecisionStrategy createFor(String name, ITakeProfitStrategy profitStrategy, CandlesStorage candlesStorage)
             throws Throwable {
-        Reflections reflections = new Reflections("algorithmicDecisionStrategies");
+        Reflections reflections = new Reflections("decisionStrategies");
         Set<Class<?>> strategyClasses = reflections.getTypesAnnotatedWith(Strategy.class);
 
         if (strategyClasses.size() <= 0)
@@ -53,8 +53,10 @@ public abstract class DecisionStrategy {
 
     public Position computeNewPositionFor(int depth, int volume) {
 
-        if (candlesStorage.lessThan(getInitialStorageSizeFor(depth)))
+        if (candlesStorage.lessThan(getInitialStorageSizeFor(depth))) {
             Log.debug("CandlesStorage size less than initial size: " + getInitialStorageSizeFor(depth));
+            return Position.begining();
+        }
 
         if (profitStrategy.shouldTakeProfit())
             return Position.closing(candlesStorage.last());
