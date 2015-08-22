@@ -1,9 +1,11 @@
 package model;
 
-import lombok.*;
-import tools.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import tools.Round;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by DiKey on 11.08.2015.
@@ -15,10 +17,6 @@ public class TrainingResult {
 
     List<Double> normalizedValueIncrements;
     Direction direction;
-
-    public static TrainingResult createFor(List<Candle> candles) {
-        return createFor(candles, Direction.neutral);
-    }
 
     public static TrainingResult createFor(List<Candle> candles, Direction direction) {
 
@@ -34,13 +32,12 @@ public class TrainingResult {
             min = (increment < min) ? increment : min;
         }
 
-        double minPeriod = 0;
-        double maxPeriod = 1;
+        double borderMin = 0;
+        double borderMax = 1;
 
         List<Double> normalizeValueIncrements = new ArrayList<Double>();
         for (Double each : valueIncrements) {
-
-            double normalizedValue = (each - min) * (maxPeriod - minPeriod) / (max - min) + minPeriod;
+            double normalizedValue = (each - min) * (borderMax - borderMin) / (max - min) + borderMin;
             normalizeValueIncrements.add(Round.toSignificant(normalizedValue));
         }
 
@@ -53,7 +50,14 @@ public class TrainingResult {
         for (double value : normalizedValueIncrements)
             result += value + ";";
 
-        return result + direction.getSign();
+        String tutorDecision = "0;0";
+        if (Direction.buy.equals(direction))
+            tutorDecision = "1;0";
+
+        if (Direction.sell.equals(direction))
+            tutorDecision = "0;1";
+
+        return result + tutorDecision;
     }
 
     public boolean hasSameIncrements(TrainingResult result) {
@@ -66,16 +70,5 @@ public class TrainingResult {
                 return false;
 
         return true;
-    }
-
-    public double[] getNormalizedValueIncrementsAsArray() {
-
-        double[] result = new double[normalizedValueIncrements.size()];
-
-        int i = 0;
-        for (Double item : normalizedValueIncrements)
-            result[i++] = item;
-
-        return result;
     }
 }

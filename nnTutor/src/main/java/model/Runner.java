@@ -59,8 +59,7 @@ public class Runner {
         Log.info("Preparation finished");
 
         //hasSameIncrements(results);
-
-        Log.info("Comparison finished");
+        //Log.info("Comparison finished");
     }
 
     public static void hasSameIncrements(List<TrainingResult> results) throws Throwable {
