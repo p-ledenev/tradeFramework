@@ -230,7 +230,8 @@ public class AlfaOrder {
             }
 
             if (order.getVolume() != totalVolume) {
-                status = AlfaOrderStatus.executedPartly;
+                if (isMaxCheckAttemptsExceeded())
+                    status = AlfaOrderStatus.executedPartly;
                 return;
             }
 
