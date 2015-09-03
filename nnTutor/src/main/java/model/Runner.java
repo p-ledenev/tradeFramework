@@ -28,7 +28,7 @@ public class Runner {
         CandlesStorage allDataStorage = new CandlesStorage(siftStrategy, Arrays.asList(candles.toArray(new Candle[candles.size()])));
         CandlesStorage storage = new CandlesStorage(siftStrategy);
 
-        NeuronTrainingDecisionStrategy strategy = new MaxMinNeuronTrainingDecisionStrategy();
+        NeuronTrainingDecisionStrategy strategy = NeuronTrainingDecisionStrategyFactory.createStrategy();
         strategy.setAllDataStorage(allDataStorage);
         strategy.setCandlesStorage(storage);
 
@@ -73,7 +73,7 @@ public class Runner {
                     k++;
                 }
             }
-           // Log.info("iteration: " + i);
+            // Log.info("iteration: " + i);
         }
         Log.info("Total equals sets " + k);
     }

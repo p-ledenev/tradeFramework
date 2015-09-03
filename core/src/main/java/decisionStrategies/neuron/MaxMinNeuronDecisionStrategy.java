@@ -22,10 +22,13 @@ public class MaxMinNeuronDecisionStrategy extends NeuronDecisionStrategy {
         MLData input = new BasicMLData(result.getNormalizedValueIncrementsAsArray());
         MLData output = network.compute(input);
 
-        if (output.getData(0) > output.getData(1))
+        if (output.getData(0) >= 0.7)
             return Direction.buy;
 
-        return Direction.sell;
+        if (output.getData(1) >= 0.7)
+            return Direction.sell;
+
+        return Direction.neutral;
     }
 
     @Override

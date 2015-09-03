@@ -18,6 +18,10 @@ public class TrainingResult {
     List<Double> normalizedValueIncrements;
     Direction direction;
 
+    public static TrainingResult createFor(List<Candle> candles) {
+        return createFor(candles, Direction.neutral);
+    }
+
     public static TrainingResult createFor(List<Candle> candles, Direction direction) {
 
         double max = Double.MIN_VALUE;
@@ -37,7 +41,9 @@ public class TrainingResult {
 
         List<Double> normalizeValueIncrements = new ArrayList<Double>();
         for (Double each : valueIncrements) {
-            double normalizedValue = (each - min) * (borderMax - borderMin) / (max - min) + borderMin;
+            double normalizedValue = 0;
+            if (max != min)
+                normalizedValue = (each - min) * (borderMax - borderMin) / (max - min) + borderMin;
             normalizeValueIncrements.add(Round.toSignificant(normalizedValue));
         }
 
@@ -70,5 +76,16 @@ public class TrainingResult {
                 return false;
 
         return true;
+    }
+
+    public double[] getNormalizedValueIncrementsAsArray() {
+
+        double[] result = new double[normalizedValueIncrements.size()];
+
+        int i = 0;
+        for (Double item : normalizedValueIncrements)
+            result[i++] = item;
+
+        return result;
     }
 }

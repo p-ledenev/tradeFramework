@@ -79,7 +79,7 @@ public abstract class DecisionStrategy {
         return createCandleArrayBy(candlesStorage.size() - 1, depth);
     }
 
-    private Candle[] createCandleArrayBy(int start, int depth) {
+    protected Candle[] createCandleArrayBy(int start, int depth) {
 
         Candle[] array = new Candle[depth];
 

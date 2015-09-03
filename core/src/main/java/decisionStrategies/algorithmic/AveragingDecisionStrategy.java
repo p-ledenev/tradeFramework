@@ -74,7 +74,7 @@ public class AveragingDecisionStrategy extends DecisionStrategy {
         int start = (derivatives.size() + 2 > depth - 1) ? derivatives.size() + 2 : depth - 1;
         for (int i = start; i < candlesStorage.size(); i++) {
 
-            double averageValue = constructor.average(candles);
+            double averageValue = constructor.average(createCandleArrayBy(i, depth));
             double derivativeValue = (averageValue - getLastAverageValue()) / averageValue;
 
             averageValues.add(averageValue);
