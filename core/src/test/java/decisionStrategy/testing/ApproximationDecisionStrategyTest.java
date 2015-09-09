@@ -53,7 +53,7 @@ public class ApproximationDecisionStrategyTest extends DecisionStrategyTestCase<
     }
 
     @Test
-    public void shouldReturnPositionForMinCandlesLength() {
+    public void shouldReturnNoneDirectionForMinCandlesLength() {
 
         decisionStrategy.getCandlesStorage().setCandles(new ArrayList<Candle>());
 
@@ -65,7 +65,7 @@ public class ApproximationDecisionStrategyTest extends DecisionStrategyTestCase<
         decisionStrategy.getCandlesStorage().add(newCandles);
         Position position = decisionStrategy.computeNewPositionFor(depth, volume);
 
-        assertThat(position.getDirection(), is(equalTo(Direction.sell)));
+        assertThat(position.getDirection(), is(equalTo(Direction.neutral)));
     }
 
     @Override

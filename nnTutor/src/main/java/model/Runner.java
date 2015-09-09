@@ -13,7 +13,9 @@ import java.util.*;
  */
 public class Runner {
 
-    public static String resultPath = "F:/Teddy/Alfa/java/v1.0/tradeFramework/nnTutor/data/results/";
+    //public static String resultPath = "F:/Teddy/Alfa/java/v1.0/tradeFramework/nnTutor/data/results/";
+    public static String resultPath = "d:/Projects/Alfa/java/tradeFramework/nnTutor/data/results/";
+    //public static String resultPath  = "./";
 
     public static void main(String[] args) throws Throwable {
 
@@ -28,7 +30,7 @@ public class Runner {
         CandlesStorage allDataStorage = new CandlesStorage(siftStrategy, Arrays.asList(candles.toArray(new Candle[candles.size()])));
         CandlesStorage storage = new CandlesStorage(siftStrategy);
 
-        NeuronTrainingDecisionStrategy strategy = NeuronTrainingDecisionStrategyFactory.createStrategy();
+        NeuronTrainingDecisionStrategy strategy = new ApproximationNeuronTrainingDecisionStrategy();
         strategy.setAllDataStorage(allDataStorage);
         strategy.setCandlesStorage(storage);
 
@@ -36,7 +38,8 @@ public class Runner {
 
         Candle lastCandle = null;
         List<TrainingResult> results = new ArrayList<TrainingResult>();
-        while (iterator.hasNextCandles()) {
+
+        for (int i = 1; iterator.hasNextCandles(); i++) {
             List<Candle> newCandles = iterator.getNextCandles();
 
             storage.add(newCandles);
@@ -45,7 +48,8 @@ public class Runner {
             if (result.getNormalizedValueIncrements().size() < depth - 1)
                 break;
 
-            results.add(result);
+            if (i % 10 == 0)
+                results.add(result);
 
             if (lastCandle == null || !lastCandle.hasSameDay(newCandles.get(0))) {
                 Log.info("processing candle - " + newCandles.get(0).print());

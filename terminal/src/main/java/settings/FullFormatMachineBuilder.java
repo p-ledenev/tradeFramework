@@ -12,7 +12,7 @@ import tools.*;
  */
 
 @Data
-public class MachineBuilder {
+public class FullFormatMachineBuilder {
 
     private int depth;
     private double currentMoney;
@@ -25,7 +25,7 @@ public class MachineBuilder {
     @Getter
     private Machine machine;
 
-    public MachineBuilder(String line) throws Throwable {
+    public FullFormatMachineBuilder(String line) throws Throwable {
         String[] params = line.split("\\t");
 
         depth = Integer.parseInt(params[0]);
@@ -37,11 +37,11 @@ public class MachineBuilder {
         volume = Integer.parseInt(params[6]);
     }
 
-    public MachineBuilder(Machine machine) {
+    public FullFormatMachineBuilder(Machine machine) {
         this.machine = machine;
     }
 
-    public void create() {
+    public void build() {
 
         Candle candle = new Candle(date, value);
         Position position = Position.opening(direction, volume, candle);

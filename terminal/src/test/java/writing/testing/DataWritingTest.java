@@ -51,6 +51,11 @@ public class DataWritingTest {
             public boolean initFileWasModified() {
                 return false;
             }
+
+            @Override
+            public IPortfolioBuilder createBuilder() {
+                return new FullFormatPortfolioBuilder();
+            }
         };
     }
 

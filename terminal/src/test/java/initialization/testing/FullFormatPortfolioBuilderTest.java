@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 /**
  * Created by ledenev.p on 24.06.2015.
  */
-public class PortfolioBuilderTest {
+public class FullFormatPortfolioBuilderTest {
 
     List<Portfolio> portfolios;
 
@@ -39,6 +39,11 @@ public class PortfolioBuilderTest {
                         "125\t0\t0\t01.01.2000 00:00:00\tN\t0\t0";
 
                 return new BufferedReader(new StringReader(content));
+            }
+
+            @Override
+            public IPortfolioBuilder createBuilder() {
+                return new FullFormatPortfolioBuilder();
             }
         };
 

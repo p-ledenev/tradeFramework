@@ -14,13 +14,17 @@ public class PortfoliosInitializer {
 
     public static String initFile = "init.dat";
 
-    private List<PortfolioBuilder> builders;
+    private List<IPortfolioBuilder> builders;
     private DateTime lastUpdate;
 
     public PortfoliosInitializer() throws Throwable {
-        builders = new ArrayList<PortfolioBuilder>();
+        builders = new ArrayList<IPortfolioBuilder>();
         lastUpdate = DateTime.now();
         initialize();
+    }
+
+    public IPortfolioBuilder createBuilder() {
+        return new ConciseFormatPortfolioBuilder();
     }
 
     private void initialize() throws Throwable {
@@ -34,8 +38,8 @@ public class PortfoliosInitializer {
             if (line.isEmpty())
                 continue;
 
-            PortfolioBuilder builder = new PortfolioBuilder(line);
-            builder.create();
+            IPortfolioBuilder builder = createBuilder();
+            builder.build(line.trim());
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
 
@@ -62,7 +66,7 @@ public class PortfoliosInitializer {
                 continue;
 
             int k = 0;
-            PortfolioBuilder builder = builders.get(i++);
+            IPortfolioBuilder builder = builders.get(i++);
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
 
@@ -79,7 +83,7 @@ public class PortfoliosInitializer {
     public List<Portfolio> getPortfolios() {
 
         List<Portfolio> portfolios = new ArrayList<Portfolio>();
-        for (PortfolioBuilder builder : builders)
+        for (IPortfolioBuilder builder : builders)
             portfolios.add(builder.getPortfolio());
 
         return portfolios;
@@ -89,7 +93,7 @@ public class PortfoliosInitializer {
 
         PrintWriter writer = getWriter();
 
-        for (PortfolioBuilder builder : builders)
+        for (IPortfolioBuilder builder : builders)
             writer.print(builder.serialize() + "\n");
 
         writer.close();

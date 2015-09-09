@@ -18,8 +18,8 @@ import java.util.*;
 @NoArgsConstructor
 public class InitialSettings {
 
-    public static String settingPath = "F:/Teddy/Alfa/java/v1.0/tradeFramework/tryOut/data/";
-    //public static String settingPath = "d:/Projects/Alfa/java/v1.0/tradeFramework/tryOut/data/";
+    //public static String settingPath = "F:/Teddy/Alfa/java/v1.0/tradeFramework/tryOut/data/";
+    public static String settingPath = "d:/Projects/Alfa/java/tradeFramework/tryOut/data/";
     //public static String settingPath = "./";
 
     private String security;
