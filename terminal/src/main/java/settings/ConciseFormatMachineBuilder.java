@@ -1,11 +1,9 @@
 package settings;
 
-import commissionStrategies.*;
 import decisionStrategies.*;
 import lombok.*;
 import model.*;
 import org.joda.time.*;
-import tools.*;
 
 /**
  * Created by ledenev.p on 19.06.2015.
@@ -33,24 +31,18 @@ public class ConciseFormatMachineBuilder {
         this.machine = machine;
     }
 
-    public void build() {
+    public void build(Portfolio portfolio, DecisionStrategy decisionStrategy, double commission) {
+
+        machine = Machine.with(portfolio, decisionStrategy, commission, depth);
 
         Candle candle = Candle.empty(new DateTime());
         Position position = Position.opening(direction, 1, candle);
 
-        machine = new Machine(position, depth, 0, isBlocked);
-    }
-
-    public void init(Portfolio portfolio, DecisionStrategy decisionStrategy, ICommissionStrategy commissionStrategy) {
-        machine.setPortfolio(portfolio);
-        machine.setDecisionStrategy(decisionStrategy);
-        machine.setCommissionStrategy(commissionStrategy);
+        machine.setPosition(position);
     }
 
     public String serialize() {
-        return machine.getDepth() + "\t" + Round.toDecadeAmount(machine.getCurrentMoney()) + "\t" +
-                (machine.isBlocked() ? "1" : "0") + "\t" + Format.asString(machine.getPositionDate()) + "\t" +
-                machine.getPositionDirection().getName() + "\t"
-                + Round.toDecadeAmount(machine.getPositionValue()) + "\t" + machine.getPositionVolume();
+        return machine.getDepth() + ";" + machine.getPositionDirection().getName() + ";" +
+                (machine.isBlocked() ? "1" : "0");
     }
 }

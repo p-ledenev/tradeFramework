@@ -59,4 +59,9 @@ public class ApproximationDecisionStrategy extends DecisionStrategy {
     public int getInitialStorageSizeFor(int depth) {
         return depth + 2;
     }
+
+    @Override
+    public boolean hasCurrentState() {
+        return ap != null;
+    }
 }

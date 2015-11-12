@@ -1,6 +1,8 @@
 package decisionStrategies.neuron;
 
 import decisionStrategies.*;
+import decisionStrategies.algorithmic.*;
+import lombok.*;
 import org.encog.neural.networks.*;
 import org.encog.persist.*;
 
@@ -9,9 +11,12 @@ import java.io.*;
 /**
  * Created by ledenev.p on 21.08.2015.
  */
+
+@Data
 public abstract class NeuronDecisionStrategy extends DecisionStrategy {
 
     protected BasicNetwork network;
+    protected AveragingDecisionStrategy averagingStrategy;
 
     @Override
     public String[] getStateParamsHeader() {
@@ -33,4 +38,9 @@ public abstract class NeuronDecisionStrategy extends DecisionStrategy {
     }
 
     public abstract String getNetworkName();
+
+    @Override
+    public boolean hasCurrentState() {
+        return averagingStrategy.hasCurrentState();
+    }
 }

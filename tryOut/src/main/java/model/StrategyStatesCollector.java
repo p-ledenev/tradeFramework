@@ -29,7 +29,8 @@ public class StrategyStatesCollector {
     }
 
     public void addCurrentState() {
-        add(strategy.getCurrentState());
+        if (strategy.hasCurrentState())
+            add(strategy.getCurrentState());
     }
 
     public StrategyState getLastState() {

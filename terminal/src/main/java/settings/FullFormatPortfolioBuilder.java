@@ -1,11 +1,9 @@
 package settings;
 
-import commissionStrategies.*;
 import decisionStrategies.*;
 import lombok.*;
 import model.*;
 import siftStrategies.*;
-import takeProfitStrategies.*;
 
 /**
  * Created by ledenev.p on 01.04.2015.
@@ -37,19 +35,16 @@ public class FullFormatPortfolioBuilder implements IPortfolioBuilder {
     public void build(String line) {
         init(line);
 
-        ISiftCandlesStrategy siftStrategy = new MinMaxSiftStrategy(sieveParam);
+        ISiftCandlesStrategy siftStrategy = SiftCandlesStrategyFactory.createSiftStrategy(sieveParam);
         portfolio = new Portfolio(title, security, lot, new CandlesStorage(siftStrategy));
     }
 
     public void addMachine(String line) throws Throwable {
 
-        ITakeProfitStrategy profitStrategy = new NoTakeProfitStrategy();
-        ICommissionStrategy commissionStrategy = new ScalpingCommissionStrategy(commission);
-        DecisionStrategy decisionStrategy = DecisionStrategy.createFor(decisionStrategyName, profitStrategy, portfolio.getCandlesStorage());
+        DecisionStrategy decisionStrategy = DecisionStrategy.createFor(decisionStrategyName,  portfolio.getCandlesStorage());
 
         FullFormatMachineBuilder builder = new FullFormatMachineBuilder(line);
-        builder.build();
-        builder.init(portfolio, decisionStrategy, commissionStrategy);
+        builder.build(portfolio, decisionStrategy, commission);
 
         portfolio.addMachine(builder.getMachine());
     }

@@ -29,7 +29,7 @@ public class CandlesStorage {
     }
 
 
-    public void add(List<Candle> newCandles) {
+    public boolean add(List<Candle> newCandles) {
 
         List<Candle> sifted = siftStrategy.sift(newCandles);
 
@@ -38,6 +38,8 @@ public class CandlesStorage {
                 Log.debug("Added to candle storage: " + candle.print());
 
         candles.addAll(sifted);
+
+        return sifted.size() > 0;
     }
 
     public int size() {
@@ -71,7 +73,21 @@ public class CandlesStorage {
         return last().before(newCandles.get(0));
     }
 
-    public List<Candle> getAfter(Candle candle, int depth) {
+    public List<Candle> last(int depth) {
+
+        List<Candle> range = new ArrayList<Candle>();
+        int size = candles.size();
+
+        if (size < depth)
+            return range;
+
+        for (int i = 0; i < depth; i++)
+            range.add(candles.get(size - depth + i));
+
+        return range;
+    }
+
+    public int findIndexFor(Candle candle) {
 
         int index = (candles.size() - 1) / 2;
         int section = candles.size();
@@ -89,8 +105,17 @@ public class CandlesStorage {
             }
 
             if (index < 0 || index >= candles.size())
-                return new ArrayList<Candle>();
+                return -1;
         }
+
+        return index;
+    }
+
+    public List<Candle> getAfter(Candle candle, int depth) {
+
+        int index = findIndexFor(candle);
+        if (index < 0)
+            return new ArrayList<Candle>();
 
         List<Candle> response = new ArrayList<Candle>();
         int length = candles.size() > index + depth ? index + depth : candles.size() - 1;
@@ -99,6 +124,4 @@ public class CandlesStorage {
 
         return response;
     }
-
-
 }

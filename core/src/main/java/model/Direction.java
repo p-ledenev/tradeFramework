@@ -9,7 +9,7 @@ import lombok.*;
 
 public enum Direction {
 
-    buy("B", 1), sell("S", -1), neutral("N", 0);
+    buy("B", 1), sell("S", -1), neutral("N", 0), hold("H", 0);
 
     @Getter
     private String name;

@@ -1,12 +1,12 @@
 package settings;
 
-import commissionStrategies.*;
 import decisionStrategies.*;
+import decisionStrategies.algorithmic.*;
 import decisionStrategies.neuron.*;
+import decisionStrategies.neuronTraining.*;
 import lombok.*;
 import model.*;
 import siftStrategies.*;
-import takeProfitStrategies.*;
 
 import java.util.*;
 
@@ -61,14 +61,11 @@ public class InitialSettings {
         Portfolio portfolio = new Portfolio(strategyName, security, candlesStorage);
 
         for (int depth : depths) {
-            ITakeProfitStrategy profitStrategy = TakeProfitStrategyFactory.createTakeProfitStrategy();
-
-            DecisionStrategy decisionStrategy = DecisionStrategy.createFor(strategyName, profitStrategy, candlesStorage);
-            ICommissionStrategy commissionStrategy = new ScalpingCommissionStrategy(commission);
+            DecisionStrategy decisionStrategy = DecisionStrategy.createFor(strategyName, candlesStorage);
 
             setSpecificParamsFor(decisionStrategy, allData, siftStrategy);
 
-            Machine machine = new Machine(portfolio, decisionStrategy, commissionStrategy, depth);
+            Machine machine = Machine.with(portfolio, decisionStrategy, commission, depth);
             portfolio.addMachine(machine);
         }
 
@@ -86,6 +83,20 @@ public class InitialSettings {
         if (strategy instanceof NeuronDecisionStrategy) {
             NeuronDecisionStrategy neuronStrategy = (NeuronDecisionStrategy) strategy;
             neuronStrategy.readNetwork(settingPath + neuronStrategy.getNetworkName() + ".eg");
+
+            AveragingDecisionStrategy averagingStrategy = new AveragingDecisionStrategy();
+            averagingStrategy.setCandlesStorage(strategy.getCandlesStorage());
+
+            neuronStrategy.setAveragingStrategy(averagingStrategy);
+        }
+
+        if (strategy instanceof NeuronTrainingDecisionStrategy) {
+            NeuronTrainingDecisionStrategy neuronStrategy = (NeuronTrainingDecisionStrategy) strategy;
+
+            AveragingDecisionStrategy averagingStrategy = new AveragingDecisionStrategy();
+            averagingStrategy.setCandlesStorage(strategy.getCandlesStorage());
+
+            neuronStrategy.setAveragingStrategy(averagingStrategy);
         }
     }
 }

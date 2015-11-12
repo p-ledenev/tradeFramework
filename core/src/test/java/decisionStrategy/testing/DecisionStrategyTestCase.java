@@ -5,7 +5,6 @@ import model.*;
 import org.joda.time.*;
 import org.junit.*;
 import siftStrategies.*;
-import takeProfitStrategies.*;
 
 import java.util.*;
 
@@ -43,9 +42,6 @@ public abstract class DecisionStrategyTestCase<TStrategy extends DecisionStrateg
         decisionStrategy = createStrategy();
 
         decisionStrategy.setCandlesStorage(new CandlesStorage(new NoSiftStrategy(), candlesForStorage));
-
-        ITakeProfitStrategy profitStrategy = new NoTakeProfitStrategy();
-        decisionStrategy.setProfitStrategy(profitStrategy);
     }
 
     @Test

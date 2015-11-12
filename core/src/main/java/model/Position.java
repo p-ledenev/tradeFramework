@@ -8,7 +8,7 @@ import org.joda.time.*;
  */
 
 @Data
-public class Position {
+public class Position implements Cloneable {
 
     private Candle candle;
     private Direction direction;
@@ -36,7 +36,7 @@ public class Position {
         return direction.getSign() * volume * (value - getValue());
     }
 
-    public boolean hasSameDirection(Position position) {
+    public boolean hasSameDirectionAs(Position position) {
         return direction.equals(position.getDirection());
     }
 
@@ -64,6 +64,10 @@ public class Position {
         return Direction.sell.equals(direction);
     }
 
+    public boolean isHold() {
+        return Direction.hold.equals(direction);
+    }
+
     public boolean isNeutral() {
         return Direction.neutral.equals(direction);
     }
@@ -89,5 +93,13 @@ public class Position {
 
     public String printCSV() {
         return candle.printTitleCSV();
+    }
+
+    public void neutral() {
+        direction = Direction.neutral;
+    }
+
+    public Position copy() throws CloneNotSupportedException {
+        return (Position) this.clone();
     }
 }

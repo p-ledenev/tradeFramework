@@ -4,7 +4,6 @@ import exceptions.*;
 import lombok.*;
 import model.*;
 import org.reflections.*;
-import takeProfitStrategies.*;
 import tools.*;
 
 import java.util.*;
@@ -16,9 +15,8 @@ import java.util.*;
 public abstract class DecisionStrategy {
 
     protected CandlesStorage candlesStorage;
-    private ITakeProfitStrategy profitStrategy;
 
-    public static DecisionStrategy createFor(String name, ITakeProfitStrategy profitStrategy, CandlesStorage candlesStorage)
+    public static DecisionStrategy createFor(String name, CandlesStorage candlesStorage)
             throws Throwable {
         Reflections reflections = new Reflections("decisionStrategies");
         Set<Class<?>> strategyClasses = reflections.getTypesAnnotatedWith(Strategy.class);
@@ -31,7 +29,6 @@ public abstract class DecisionStrategy {
 
             if (DecisionStrategy.class.isAssignableFrom(strategyClass) && strategyName.equals(name)) {
                 DecisionStrategy strategy = (DecisionStrategy) strategyClass.newInstance();
-                strategy.setProfitStrategy(profitStrategy);
                 strategy.setCandlesStorage(candlesStorage);
 
                 return strategy;
@@ -44,10 +41,8 @@ public abstract class DecisionStrategy {
     public DecisionStrategy() {
     }
 
-    public DecisionStrategy(ITakeProfitStrategy profitStrategy, CandlesStorage candlesStorage) {
+    public DecisionStrategy(CandlesStorage candlesStorage) {
         this();
-
-        this.profitStrategy = profitStrategy;
         this.candlesStorage = candlesStorage;
     }
 
@@ -57,9 +52,6 @@ public abstract class DecisionStrategy {
             Log.debug("CandlesStorage size less than initial size: " + getInitialStorageSizeFor(depth));
             return Position.begining();
         }
-
-        if (profitStrategy.shouldTakeProfit())
-            return Position.closing(candlesStorage.last());
 
         Candle[] candles = createCandleArray(depth);
         Direction direction = computeOrderDirection(candles);
@@ -89,6 +81,10 @@ public abstract class DecisionStrategy {
         return array;
     }
 
+    public boolean couldOpenPosition(int depth, Position previousPosition) {
+        return true;
+    }
+
     public StrategyState getCurrentState() {
         return new StrategyState(candlesStorage.last(), collectCurrentStateParams());
     }
@@ -102,4 +98,8 @@ public abstract class DecisionStrategy {
     public Candle getLastCandle() {
         return candlesStorage.last();
     }
+
+    public abstract boolean hasCurrentState();
+
+
 }

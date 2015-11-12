@@ -41,4 +41,8 @@ public class CandlesIterator {
     public boolean hasNextCandles() {
         return currentIndex < candles.size();
     }
+
+    public int size() {
+        return candles.size();
+    }
 }

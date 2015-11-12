@@ -1,1 +1,1 @@
-usd~&~1min~&~ApproximationNeuronTrainingStrategy~&~0.25~&~0.0145~&~2010~&~51
+usd~&~1min~&~AveragingStrategy~&~0.25~&~0.0145~&~2010~&~100;

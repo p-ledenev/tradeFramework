@@ -1,6 +1,5 @@
 package settings;
 
-import commissionStrategies.*;
 import decisionStrategies.*;
 import lombok.*;
 import model.*;
@@ -41,18 +40,16 @@ public class FullFormatMachineBuilder {
         this.machine = machine;
     }
 
-    public void build() {
+    public void build(Portfolio portfolio, DecisionStrategy decisionStrategy, double commission) {
+
+        machine = Machine.with(portfolio, decisionStrategy, commission, depth);
 
         Candle candle = new Candle(date, value);
         Position position = Position.opening(direction, volume, candle);
 
-        machine = new Machine(position, depth, currentMoney, isBlocked);
-    }
-
-    public void init(Portfolio portfolio, DecisionStrategy decisionStrategy, ICommissionStrategy commissionStrategy) {
-        machine.setPortfolio(portfolio);
-        machine.setDecisionStrategy(decisionStrategy);
-        machine.setCommissionStrategy(commissionStrategy);
+        machine.setPosition(position);
+        machine.setBlocked(isBlocked);
+        machine.setCurrentMoney(currentMoney);
     }
 
     public String serialize() {

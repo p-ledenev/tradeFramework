@@ -27,9 +27,6 @@ public class Trader implements Runnable {
             List<Order> orders = new ArrayList<Order>();
             portfolio.addOrderTo(orders, candles);
 
-            if (orders.size() <= 0)
-                continue;
-
             orderExecutor.execute(orders);
 
             for (Order order : orders)
@@ -38,7 +35,7 @@ public class Trader implements Runnable {
             dataCollector.collect(orders);
 
             if (lastCandle == null || !lastCandle.hasSameDay(candles.get(0))) {
-                Log.info("Portfolio: " + orders.get(0).getPortfolioTitle() + "; processing candle - " + candles.get(0).print());
+                Log.info("Portfolio: " + portfolio.getTitle() + "; processing candle - " + candles.get(0).print());
                 lastCandle = candles.get(0);
             }
         }

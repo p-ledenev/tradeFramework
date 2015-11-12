@@ -37,7 +37,7 @@ public class Portfolio implements IMoneyStateSupport {
         machines.add(machine);
     }
 
-    public void addOrderTo(List<Order> orders, List<Candle> candles) {
+    public void addOrderTo(List<Order> orders, List<Candle> candles) throws Throwable {
 
         if (candlesStorage.validateTimeSequence(candles))
             candlesStorage.add(candles);

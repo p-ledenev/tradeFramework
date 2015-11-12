@@ -1,7 +1,8 @@
 package model;
 
 import dataSources.*;
-import decisionStrategies.neuron.*;
+import decisionStrategies.algorithmic.*;
+import decisionStrategies.neuronTraining.*;
 import settings.*;
 import siftStrategies.*;
 import tools.*;
@@ -20,36 +21,60 @@ public class Runner {
     public static void main(String[] args) throws Throwable {
 
         String ticket = "usd";
-        String year = "2010";
-        int depth = 51;
+        int year = 2011;
+        String timeFrame = "1min";
+        int depth = 200;
 
         IDataSource dataSource = DataSourceFactory.createDataSource();
-        List<TryOutCandle> candles = dataSource.readCandlesFrom(InitialSettings.settingPath + "sources/" + year + "/" + ticket + "_1min.txt");
+        List<TryOutCandle> candles = dataSource.readCandlesFrom(InitialSettings.settingPath + "sources/" + year + "/" + ticket + "_" + timeFrame + ".txt");
 
         ISiftCandlesStrategy siftStrategy = SiftCandlesStrategyFactory.createSiftStrategy(0.0145);
         CandlesStorage allDataStorage = new CandlesStorage(siftStrategy, Arrays.asList(candles.toArray(new Candle[candles.size()])));
         CandlesStorage storage = new CandlesStorage(siftStrategy);
 
-        NeuronTrainingDecisionStrategy strategy = new ApproximationNeuronTrainingDecisionStrategy();
+        NeuronTrainingDecisionStrategy strategy = NeuronTrainingDecisionStrategyFactory.createStrategy();
         strategy.setAllDataStorage(allDataStorage);
         strategy.setCandlesStorage(storage);
+
+        AveragingDecisionStrategy averageDecisionStrategy = new AveragingDecisionStrategy();
+        averageDecisionStrategy.setCandlesStorage(storage);
+
+        strategy.setAveragingStrategy(averageDecisionStrategy);
 
         CandlesIterator iterator = new CandlesIterator(candles);
 
         Candle lastCandle = null;
         List<TrainingResult> results = new ArrayList<TrainingResult>();
 
+        //int maxRows = 1000;
+        int maxRows = iterator.size();
+        int j = 0;
         for (int i = 1; iterator.hasNextCandles(); i++) {
             List<Candle> newCandles = iterator.getNextCandles();
 
-            storage.add(newCandles);
+            boolean newCandleAdded = storage.add(newCandles);
+            if (!newCandleAdded)
+                continue;
+
             TrainingResult result = strategy.computeTrainingResult(depth);
 
-            if (result.getNormalizedValueIncrements().size() < depth - 1)
-                break;
+            if (!newCandles.get(0).hasYearAs(year))
+                continue;
 
-            if (i % 10 == 0)
-                results.add(result);
+            if (j >= maxRows) {
+                Log.info(newCandles.get(0).print());
+                break;
+            }
+
+            if (!result.isHold() && !result.isNeutral()) {
+                if (j % 5 == 0)
+                    results.add(result);
+                j++;
+            }
+//            else if (i % 10 == 0) {
+//                results.add(result);
+//                j++;
+//            }
 
             if (lastCandle == null || !lastCandle.hasSameDay(newCandles.get(0))) {
                 Log.info("processing candle - " + newCandles.get(0).print());
@@ -62,8 +87,8 @@ public class Runner {
 
         Log.info("Preparation finished");
 
-        //hasSameIncrements(results);
-        //Log.info("Comparison finished");
+//        hasSameIncrements(results);
+//        Log.info("Comparison finished");
     }
 
     public static void hasSameIncrements(List<TrainingResult> results) throws Throwable {

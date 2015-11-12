@@ -1,9 +1,8 @@
 package model;
 
-import siftStrategies.ISiftCandlesStrategy;
-import tools.Format;
+import siftStrategies.*;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by DiKey on 07.08.2015.
@@ -15,7 +14,7 @@ public class TryOutCandlesStorage extends CandlesStorage {
     }
 
     @Override
-    public void add(List<Candle> newCandles) {
+    public boolean add(List<Candle> newCandles) {
 
         List<Candle> sifted = siftStrategy.sift(newCandles);
 
@@ -24,5 +23,7 @@ public class TryOutCandlesStorage extends CandlesStorage {
             ((TryOutCandle) candle).setIndex(index++);
 
         candles.addAll(sifted);
+
+        return sifted.size() > 0;
     }
 }

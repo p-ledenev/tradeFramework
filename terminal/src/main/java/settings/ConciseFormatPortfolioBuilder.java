@@ -1,11 +1,9 @@
 package settings;
 
-import commissionStrategies.*;
 import decisionStrategies.*;
 import lombok.*;
 import model.*;
 import siftStrategies.*;
-import takeProfitStrategies.*;
 
 /**
  * Created by ledenev.p on 01.04.2015.
@@ -35,14 +33,10 @@ public class ConciseFormatPortfolioBuilder implements IPortfolioBuilder {
     }
 
     public void addMachine(String line) throws Throwable {
-
-        ITakeProfitStrategy profitStrategy = new NoTakeProfitStrategy();
-        ICommissionStrategy commissionStrategy = new ScalpingCommissionStrategy(0.5);
-        DecisionStrategy decisionStrategy = DecisionStrategy.createFor(decisionStrategyName, profitStrategy, portfolio.getCandlesStorage());
+        DecisionStrategy decisionStrategy = DecisionStrategy.createFor(decisionStrategyName,  portfolio.getCandlesStorage());
 
         ConciseFormatMachineBuilder builder = new ConciseFormatMachineBuilder(line);
-        builder.build();
-        builder.init(portfolio, decisionStrategy, commissionStrategy);
+        builder.build(portfolio, decisionStrategy, 0.5);
 
         portfolio.addMachine(builder.getMachine());
     }

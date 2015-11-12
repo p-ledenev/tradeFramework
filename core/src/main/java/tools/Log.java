@@ -10,7 +10,7 @@ public class Log {
 
     private static final Logger logger = Logger.getLogger(Log.class);
 
-    public static void configureLogger() {
+    public static void hello(){
         logger.info("Hello!!!");
         printJavaRuntimeInfo();
     }

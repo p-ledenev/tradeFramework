@@ -1,12 +1,14 @@
 package takeProfitStrategies;
 
+import model.*;
+
 /**
  * Created by ledenev.p on 09.04.2015.
  */
 public class NoTakeProfitStrategy implements ITakeProfitStrategy {
 
     @Override
-    public boolean shouldTakeProfit() {
+    public boolean shouldTakeProfit(CandlesStorage storage, Position currentPosition) {
         return false;
     }
 }

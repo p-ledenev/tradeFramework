@@ -8,7 +8,6 @@ import tools.*;
  */
 public class LinearApproximationConstructor implements IApproximationConstructor {
 
-    @Override
     public Approximation approximate(IApproximationSupport[] values) {
 
         OLSMultipleLinearRegression regression = new OLSMultipleLinearRegression();

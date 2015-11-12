@@ -47,9 +47,15 @@ public class AveragingDecisionStrategy extends DecisionStrategy {
     }
 
     @Override
+    public boolean couldOpenPosition(int depth, Position previousPosition) {
+        return Math.abs(getLastAverageDerivative()) * 100000 > depth * 0.05;
+    }
+
+    @Override
     public String[] getStateParamsHeader() {
         return new String[]{
-                "average", "derivative", "averageDerivative"
+                // "average", "derivative", "averageDerivative"
+                "average", "averageDerivative"
         };
     }
 
@@ -57,7 +63,7 @@ public class AveragingDecisionStrategy extends DecisionStrategy {
     protected String[] collectCurrentStateParams() {
         return new String[]{
                 Double.toString((int) getLastAverageValue()),
-                Double.toString(Round.toSignificant(getLastDerivativeValue() * 10000)),
+                //Double.toString(Round.toSignificant(getLastDerivativeValue() * 10000)),
                 Double.toString(Round.toSignificant(getLastAverageDerivative() * 100000))
         };
     }
@@ -93,7 +99,7 @@ public class AveragingDecisionStrategy extends DecisionStrategy {
         return derivatives.toArray(new Derivative[derivatives.size()]);
     }
 
-    private double getLastAverageValue() {
+    public double getLastAverageValue() {
 
         if (averageValues.size() == 0)
             return 0;
@@ -101,7 +107,7 @@ public class AveragingDecisionStrategy extends DecisionStrategy {
         return averageValues.get(averageValues.size() - 1);
     }
 
-    private double getLastAverageDerivative() {
+    public double getLastAverageDerivative() {
 
         if (averageDerivatives.size() == 0)
             return 0;
@@ -115,5 +121,24 @@ public class AveragingDecisionStrategy extends DecisionStrategy {
             return 0.;
 
         return derivatives.get(derivatives.size() - 1).getValue();
+    }
+
+    public List<Double> getAverageValues(int depth) {
+
+        int size = averageValues.size();
+
+        List<Double> result = new ArrayList<Double>();
+        if (size < depth)
+            return result;
+
+        for (int i = 0; i < depth; i++)
+            result.add(averageValues.get(size - depth + i));
+
+        return result;
+    }
+
+    @Override
+    public boolean hasCurrentState() {
+        return averageDerivatives.size() != 0;
     }
 }
