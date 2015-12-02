@@ -5,8 +5,14 @@ package siftStrategies;
  */
 public class SiftCandlesStrategyFactory {
 
+    private static int noGapsFilling = 2000;
+
     public static ISiftCandlesStrategy createSiftStrategy(double sieveParam) {
-        return new MinMaxSiftStrategy(sieveParam);
+        return createSiftStrategy(sieveParam, noGapsFilling);
+    }
+
+    public static ISiftCandlesStrategy createSiftStrategy(double sieveParam, int fillingGapsNumber) {
+        return new MinMaxSiftStrategy(sieveParam, fillingGapsNumber);
         //return new NoSiftStrategy();
     }
 }

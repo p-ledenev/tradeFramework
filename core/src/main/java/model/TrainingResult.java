@@ -13,8 +13,15 @@ import java.util.*;
 @AllArgsConstructor
 public class TrainingResult {
 
-    List<Double> inputs;
+    List<Double> normalizeIncrements;
+    List<Double> rowIncrements;
     Direction direction;
+
+    public TrainingResult() {
+        direction = Direction.neutral;
+        normalizeIncrements = new ArrayList<Double>();
+        rowIncrements = new ArrayList<Double>();
+    }
 
     public static TrainingResult empty() {
         return createForCandles(new ArrayList<Candle>(), Direction.neutral);
@@ -26,29 +33,28 @@ public class TrainingResult {
 
     public static TrainingResult createFor(List<Double> values, Direction direction) {
 
-        List<Double> valueIncrements = new ArrayList<Double>();
+        List<Double> rowIncrements = new ArrayList<Double>();
         for (int i = 0; i < values.size() - 1; i++) {
             double increment = (values.get(i + 1) - values.get(i)) / values.get(i);
-            valueIncrements.add(increment);
+            rowIncrements.add(increment * 100);
         }
 
-        if (valueIncrements.size() > 1) {
-            valueIncrements = normalize(valueIncrements);
-            valueIncrements = centralize(valueIncrements);
-            valueIncrements = normalize(valueIncrements);
+        List<Double> normalizeIncrements = new ArrayList<Double>();
+        if (rowIncrements.size() > 1) {
+            normalizeIncrements = centralizeWithTanh(rowIncrements);
+            //normalizeIncrements = normalize(rowIncrements);
         }
 
-        return new TrainingResult(round(valueIncrements), direction);
+        return new TrainingResult(round(normalizeIncrements), rowIncrements, direction);
     }
 
     public static TrainingResult createWithParams(Direction direction, Double... params) {
-        List<Double> inputs = Arrays.asList(params);
 
-        inputs = normalize(inputs);
-        inputs = centralize(inputs);
-        inputs = normalize(inputs);
+        List<Double> rowIncrements = Arrays.asList(params);
 
-        return new TrainingResult(round(inputs), direction);
+        List<Double> normalizeIncrements = centralizeWithTanh(rowIncrements);
+
+        return new TrainingResult(round(normalizeIncrements), rowIncrements, direction);
     }
 
     public static TrainingResult createForCandles(List<Candle> candles, Direction direction) {
@@ -60,7 +66,22 @@ public class TrainingResult {
         return createFor(values, direction);
     }
 
+    public static List<Double> centralizeWithTanh(List<Double> values) {
+
+        List<Double> centralized = centralize(values);
+
+        List<Double> result = new ArrayList<Double>();
+        for (Double value : centralized)
+            result.add(Math.tanh(value));
+
+        return result;
+    }
+
     public static List<Double> normalize(List<Double> values) {
+        return normalize(values, -0.8, 0.8);
+    }
+
+    public static List<Double> normalize(List<Double> values, double minPeriod, double maxPeriod) {
 
         double max = Double.MIN_VALUE;
         double min = Double.MAX_VALUE;
@@ -69,9 +90,6 @@ public class TrainingResult {
             max = (each > max) ? each : max;
             min = (each < min) ? each : min;
         }
-
-        double minPeriod = -0.8;
-        double maxPeriod = 0.8;
 
         List<Double> normalizedValues = new ArrayList<Double>();
         for (Double each : values) {
@@ -158,7 +176,7 @@ public class TrainingResult {
     public String print() {
         String result = "";
 
-        for (double value : inputs)
+        for (double value : normalizeIncrements)
             result += value + ";";
 
         String signal = "0;0;1";
@@ -174,11 +192,11 @@ public class TrainingResult {
 
     public boolean hasSameIncrements(TrainingResult result) {
 
-        if (inputs.size() != result.getInputs().size())
+        if (normalizeIncrements.size() != result.getNormalizeIncrements().size())
             return false;
 
-        for (int i = 0; i < inputs.size(); i++)
-            if (inputs.get(i) != result.getInputs().get(i))
+        for (int i = 0; i < normalizeIncrements.size(); i++)
+            if (normalizeIncrements.get(i) != result.getNormalizeIncrements().get(i))
                 return false;
 
         return true;
@@ -186,17 +204,17 @@ public class TrainingResult {
 
     public double[] getNormalizedValueIncrementsAsArray() {
 
-        double[] result = new double[inputs.size()];
+        double[] result = new double[normalizeIncrements.size()];
 
         int i = 0;
-        for (Double item : inputs)
+        for (Double item : normalizeIncrements)
             result[i++] = item;
 
         return result;
     }
 
     public int incrementsLength() {
-        return inputs.size();
+        return normalizeIncrements.size();
     }
 
     public boolean isHold() {
@@ -205,5 +223,56 @@ public class TrainingResult {
 
     public boolean isNeutral() {
         return direction.equals(Direction.neutral);
+    }
+
+    public int getIntDirection() {
+        if (direction.equals(Direction.sell))
+            return -1;
+
+        if (direction.equals(Direction.buy))
+            return 1;
+
+        return 0;
+    }
+
+    public Map<Double, Double> buildHistogram() {
+
+        List<Double> xAxis = new ArrayList<Double>();
+        int steps = 4;
+        for (int i = 0; i < steps + 1; i++)
+            xAxis.add(-1 + 2. / steps * i);
+
+        Map<Double, Double> result = new TreeMap();
+        for (int i = 0; i < steps; i++) {
+            Double key = countMean(xAxis.get(i), xAxis.get(i + 1));
+            result.put(key, 0.);
+        }
+
+        for (double input : normalizeIncrements) {
+
+            Double leftBorder = xAxis.get(0);
+            Double rightBorder = xAxis.get(xAxis.size() - 1);
+            for (double x : xAxis) {
+                if (input > x)
+                    leftBorder = x;
+
+                if (input <= x) {
+                    rightBorder = x;
+                    break;
+                }
+            }
+
+            if (input == -1)
+                rightBorder = xAxis.get(1);
+
+            Double inputKey = countMean(leftBorder, rightBorder);
+            result.put(inputKey, result.get(inputKey) + 1.);
+        }
+
+        return result;
+    }
+
+    private Double countMean(Double x1, double x2) {
+        return Round.toThree((x1 + x2) / 2.);
     }
 }

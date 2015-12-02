@@ -10,9 +10,12 @@ import siftStrategies.*;
  */
 public class ConciseFormatPortfolioBuilder implements IPortfolioBuilder {
 
+    private static double standardCommission = 0.5;
+
     private String security;
     private String decisionStrategyName;
     private double sieveParam;
+    private int fillingGapsNumber;
 
     @Getter
     private Portfolio portfolio;
@@ -23,26 +26,27 @@ public class ConciseFormatPortfolioBuilder implements IPortfolioBuilder {
         security = params[0];
         decisionStrategyName = params[1];
         sieveParam = Double.parseDouble(params[2]);
+        fillingGapsNumber = Integer.parseInt(params[3]);
     }
 
     public void build(String line) {
         init(line);
 
-        ISiftCandlesStrategy siftStrategy = new MinMaxSiftStrategy(sieveParam);
+        ISiftCandlesStrategy siftStrategy = SiftCandlesStrategyFactory.createSiftStrategy(sieveParam, fillingGapsNumber);
         portfolio = new Portfolio(decisionStrategyName + "_" + security, security, 1, new CandlesStorage(siftStrategy));
     }
 
     public void addMachine(String line) throws Throwable {
-        DecisionStrategy decisionStrategy = DecisionStrategy.createFor(decisionStrategyName,  portfolio.getCandlesStorage());
+        DecisionStrategy decisionStrategy = DecisionStrategy.createFor(decisionStrategyName, portfolio.getCandlesStorage());
 
         ConciseFormatMachineBuilder builder = new ConciseFormatMachineBuilder(line);
-        builder.build(portfolio, decisionStrategy, 0.5);
+        builder.build(portfolio, decisionStrategy, standardCommission);
 
         portfolio.addMachine(builder.getMachine());
     }
 
     public String serialize() {
-        String result = security + ";" + decisionStrategyName + ";" + sieveParam + "\n";
+        String result = security + ";" + decisionStrategyName + ";" + sieveParam + ";" + fillingGapsNumber + "\n";
 
         for (Machine machine : portfolio.getMachines()) {
             ConciseFormatMachineBuilder builder = new ConciseFormatMachineBuilder(machine);

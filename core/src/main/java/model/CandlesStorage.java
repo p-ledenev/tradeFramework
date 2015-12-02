@@ -124,4 +124,8 @@ public class CandlesStorage {
 
         return response;
     }
+
+    public Candle backTo(int depth) {
+        return last(depth).get(0);
+    }
 }

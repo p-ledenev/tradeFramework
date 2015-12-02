@@ -26,7 +26,7 @@ public class FullFormatMachineBuilderTest {
             @Override
             public BufferedReader getReader() throws FileNotFoundException {
 
-                String content = "USD-9.15\tFORTS_USD_DEV_1\tAveragingStrategy\t1\t0.0145\t0.5\n" +
+                String content = "USD-9.15\tFORTS_USD_DEV_1\tAveragingStrategy\t1\t0.0145\t1\t0.5\n" +
                         "50\t11.23\t0\t11.06.2006 10:10:56\tN\t0\t0\n" +
                         "75\t0.0\t1\t01.05.2011 12:33:35\tN\t0\t0\n" +
                         "100\t343.2\t0\t01.01.2000 00:00:00\tN\t0\t0\n" +
@@ -34,7 +34,7 @@ public class FullFormatMachineBuilderTest {
                         "150\t10.0\t1\t18.01.2008 10:45:12\tN\t0\t0\n" +
                         "175\t760.98\t1\t22.01.2009 22:22:12\tN\t0\t0\n" +
                         "\n" +
-                        "USD-9.15\tFORTS_USD_APP_1\tApproximationStrategy\t1\t0.0145\t0.5\n" +
+                        "USD-9.15\tFORTS_USD_APP_1\tApproximationStrategy\t1\t0.0145\t27\t0.5\n" +
                         "50\t50.5\t1\t14.01.2004 00:00:00\tN\t0\t0\n" +
                         "100\t78.8\t0\t02.04.2012 00:00:00\tN\t0\t0\n" +
                         "125\t91.3\t1\t01.05.2015 00:00:00\tN\t0\t0";

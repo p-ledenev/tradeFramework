@@ -25,6 +25,7 @@ public class InitialSettings {
     private String security;
     private String timeFrame;
     private double sieveParam;
+    private int fillingGapsNumber;
     private List<Integer> depths;
     private List<String> years;
     private String strategyName;
@@ -40,12 +41,13 @@ public class InitialSettings {
         settings.setSecurity(data[0]);
         settings.setTimeFrame(data[1]);
         settings.setSieveParam(Double.parseDouble(data[4]));
+        settings.setFillingGapsNumber(Integer.parseInt(data[5]));
         settings.setCommission(Double.parseDouble(data[3]));
 
-        settings.setYears(Arrays.asList(data[5].split(";")));
+        settings.setYears(Arrays.asList(data[6].split(";")));
 
         List<Integer> depths = new ArrayList<Integer>();
-        String[] strDepths = data[6].split(";");
+        String[] strDepths = data[7].split(";");
         for (String depth : strDepths)
             depths.add(Integer.parseInt(depth));
 
@@ -56,7 +58,7 @@ public class InitialSettings {
 
     public Portfolio initPortfolio(List<TryOutCandle> allData) throws Throwable {
 
-        ISiftCandlesStrategy siftStrategy = SiftCandlesStrategyFactory.createSiftStrategy(sieveParam);
+        ISiftCandlesStrategy siftStrategy = SiftCandlesStrategyFactory.createSiftStrategy(sieveParam, fillingGapsNumber);
         CandlesStorage candlesStorage = new TryOutCandlesStorage(siftStrategy);
         Portfolio portfolio = new Portfolio(strategyName, security, candlesStorage);
 

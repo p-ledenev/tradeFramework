@@ -25,7 +25,7 @@ public class ConciseFormatPortfolioBuilderTest {
             @Override
             public BufferedReader getReader() throws FileNotFoundException {
 
-                String content = "USD-9.15;AveragingStrategy;0.0145\n" +
+                String content = "USD-9.15;AveragingStrategy;0.0145;1\n" +
                         "50;N;0\n" +
                         "75;N;0\n" +
                         "150;N;0\n" +
@@ -34,7 +34,7 @@ public class ConciseFormatPortfolioBuilderTest {
                         "150;N;0\n" +
                         "125;N;0\n" +
                         "\n" +
-                        "USD-9.15;ApproximationStrategy;0.0145\n" +
+                        "USD-9.15;ApproximationStrategy;0.0145;27\n" +
                         "250;N;0\n" +
                         "275;N;0\n" +
                         "275;N;0";
@@ -80,6 +80,11 @@ public class ConciseFormatPortfolioBuilderTest {
     @Test
     public void shouldReadSieveParam() throws Throwable {
         assertThat(((MinMaxSiftStrategy) portfolios.get(0).getCandlesStorage().getSiftStrategy()).getSieveParam(), equalTo(0.0145));
+    }
+
+    @Test
+    public void shouldReadFillingGapsNumber() throws Throwable {
+        assertThat(((MinMaxSiftStrategy) portfolios.get(0).getCandlesStorage().getSiftStrategy()).getFillingGapsNumber(), equalTo(1));
     }
 
     @Test

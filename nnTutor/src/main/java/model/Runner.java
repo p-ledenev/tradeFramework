@@ -21,9 +21,9 @@ public class Runner {
     public static void main(String[] args) throws Throwable {
 
         String ticket = "usd";
-        int year = 2011;
+        int year = 2010;
         String timeFrame = "1min";
-        int depth = 200;
+        int depth = 201;
 
         IDataSource dataSource = DataSourceFactory.createDataSource();
         List<TryOutCandle> candles = dataSource.readCandlesFrom(InitialSettings.settingPath + "sources/" + year + "/" + ticket + "_" + timeFrame + ".txt");
@@ -67,8 +67,7 @@ public class Runner {
             }
 
             if (!result.isHold() && !result.isNeutral()) {
-                if (j % 5 == 0)
-                    results.add(result);
+                results.add(result);
                 j++;
             }
 //            else if (i % 10 == 0) {

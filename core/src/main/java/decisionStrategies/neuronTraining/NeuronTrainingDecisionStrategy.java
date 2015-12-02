@@ -5,7 +5,10 @@ import decisionStrategies.*;
 import decisionStrategies.algorithmic.*;
 import lombok.*;
 import model.*;
+import org.joda.time.*;
+import tools.*;
 
+import java.io.*;
 import java.util.*;
 
 /**
@@ -25,16 +28,32 @@ public abstract class NeuronTrainingDecisionStrategy extends DecisionStrategy {
     @Override
     protected Direction computeOrderDirection(Candle[] candles) {
 
-        TrainingResult result = computeTrainingResult(candles.length);
-        return result.getDirection();
+        try {
+            TrainingResult result = computeTrainingResult(candles.length);
+
+            return result.getDirection();
+        } catch (IOException e) {
+            Log.error("", e);
+        }
+
+        return Direction.neutral;
     }
 
-    public TrainingResult computeTrainingResult(int depth) {
+    public TrainingResult computeTrainingResult(int depth) throws IOException {
 
         //List<Candle> futureData = getVariableDataForPrediction(depth);
         List<Candle> futureData = getConstantDataForPrediction(depth);
 
         if (futureData.size() < depth - 1)
+            return TrainingResult.empty();
+
+        if (candlesStorage.lessThan(depth))
+            return TrainingResult.empty();
+
+        if (!candlesStorage.backTo(depth).hasSameDay(candlesStorage.last()))
+            return TrainingResult.empty();
+
+        if (!futureData.get(0).hasSameDay(futureData.get(futureData.size() - 1)))
             return TrainingResult.empty();
 
         Direction direction = computeDirection(futureData);
@@ -48,15 +67,50 @@ public abstract class NeuronTrainingDecisionStrategy extends DecisionStrategy {
         if (directionBeforeNeutral.equals(direction))
             direction = Direction.neutral;
 
-        //return TrainingResult.createFor(getAverageValues(depth), direction);
-        //return TrainingResult.createStatisticalForCandles(candlesStorage.last(depth), direction);
+       //TrainingResult result = TrainingResult.createFor(getAverageValues(depth), direction);
+        TrainingResult result = buildStatisticalResult(depth, direction);
+
+        //checkHistogram(result, depth);
+
+        return result;
+    }
+
+    private void checkHistogram(TrainingResult result, int depth) throws IOException {
+
+        Map<Double, Double> histogram = result.buildHistogram();
+        FileWriter writer = new FileWriter("D://data.txt");
+        for (Double key : histogram.keySet())
+            writer.write(key + ";" + histogram.get(key) + "\n");
+
+        for (Double value : averagingStrategy.getAverageValues(depth * 10))
+            writer.write(Round.toMoneyAmount(value) + ";\n");
+
+        for (Candle candle : candlesStorage.last(depth * 10))
+            writer.write(candle.getValue() + ";" + Format.asString(candle.getDate()) + "\n");
+
+        for (Double value : result.getNormalizeIncrements())
+            writer.write(Round.toSignificant(value) + ";\n");
+
+        for (Double value : result.getRowIncrements())
+            writer.write(Round.toSignificant(value) + ";\n");
+
+        writer.close();
+
+        for (Double key : histogram.keySet())
+            if (histogram.get(key) > 2 && candlesStorage.last().hasDateGreaterThan(DateTime.parse("2010-01-11"))) {
+                int ll = 1;
+            }
+    }
+
+    private TrainingResult buildStatisticalResult(int depth, Direction direction) {
+
+        getAverageValues(depth);
+
+        if (averagingStrategy.getAverageDerivatives().size() == 0)
+            return TrainingResult.empty();
 
         List<Candle> pastData = candlesStorage.last(depth);
         double last = candlesStorage.last().getValue();
-
-        averagingStrategy.computeNewPositionFor(depth, 1);
-        if (averagingStrategy.getAverageDerivatives().size() == 0)
-            return TrainingResult.empty();
 
         Approximation approximation = ApproximationConstructorFactory.createConstructor().approximate(pastData.toArray(new Candle[pastData.size()]));
 

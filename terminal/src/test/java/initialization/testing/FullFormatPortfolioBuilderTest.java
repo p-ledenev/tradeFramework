@@ -25,7 +25,7 @@ public class FullFormatPortfolioBuilderTest {
             @Override
             public BufferedReader getReader() throws FileNotFoundException {
 
-                String content = "USD-9.15\tFORTS_USD_DEV_1\tAveragingStrategy\t1\t0.0145\t0.5\n" +
+                String content = "USD-9.15\tFORTS_USD_DEV_1\tAveragingStrategy\t1\t0.0145\t1\t0.5\n" +
                         "50\t0\t0\t01.01.2000 00:00:00\tN\t0\t0\n" +
                         "75\t0\t0\t01.01.2000 00:00:00\tN\t0\t0\n" +
                         "100\t0\t0\t01.01.2000 00:00:00\tN\t0\t0\n" +
@@ -33,7 +33,7 @@ public class FullFormatPortfolioBuilderTest {
                         "150\t0\t0\t01.01.2000 00:00:00\tN\t0\t0\n" +
                         "175\t0\t0\t01.01.2000 00:00:00\tN\t0\t0\n" +
                         "\n" +
-                        "USD-9.15\tFORTS_USD_APP_1\tApproximationStrategy\t1\t0.0145\t0.5\n" +
+                        "USD-9.15\tFORTS_USD_APP_1\tApproximationStrategy\t1\t0.0145\t27\t0.5\n" +
                         "50\t0\t0\t01.01.2000 00:00:00\tN\t0\t0\n" +
                         "100\t0\t0\t01.01.2000 00:00:00\tN\t0\t0\n" +
                         "125\t0\t0\t01.01.2000 00:00:00\tN\t0\t0";
@@ -82,12 +82,17 @@ public class FullFormatPortfolioBuilderTest {
     }
 
     @Test
-    public void shouldReadSeiveParam() throws Throwable {
+    public void shouldReadSieveParam() throws Throwable {
         assertThat(((MinMaxSiftStrategy) portfolios.get(0).getCandlesStorage().getSiftStrategy()).getSieveParam(), equalTo(0.0145));
     }
 
     @Test
-    public void shouldSetPortolioToMachine() throws Throwable {
+    public void shouldReadFillingGapsNumber() throws Throwable {
+        assertThat(((MinMaxSiftStrategy) portfolios.get(0).getCandlesStorage().getSiftStrategy()).getFillingGapsNumber(), equalTo(1));
+    }
+
+    @Test
+    public void shouldSetPortfolioToMachine() throws Throwable {
         assertThat(portfolios.get(0), equalTo(portfolios.get(0).getMachines().get(3).getPortfolio()));
     }
 }

@@ -15,6 +15,7 @@ public class FullFormatPortfolioBuilder implements IPortfolioBuilder {
     private String decisionStrategyName;
     private int lot;
     private double sieveParam;
+    private int fillingGapsNumber;
     private double commission;
 
     @Getter
@@ -29,19 +30,20 @@ public class FullFormatPortfolioBuilder implements IPortfolioBuilder {
         decisionStrategyName = params[2];
         lot = Integer.parseInt(params[3]);
         sieveParam = Double.parseDouble(params[4]);
-        commission = Double.parseDouble(params[5]);
+        fillingGapsNumber = Integer.parseInt(params[5]);
+        commission = Double.parseDouble(params[6]);
     }
 
     public void build(String line) {
         init(line);
 
-        ISiftCandlesStrategy siftStrategy = SiftCandlesStrategyFactory.createSiftStrategy(sieveParam);
+        ISiftCandlesStrategy siftStrategy = SiftCandlesStrategyFactory.createSiftStrategy(sieveParam, fillingGapsNumber);
         portfolio = new Portfolio(title, security, lot, new CandlesStorage(siftStrategy));
     }
 
     public void addMachine(String line) throws Throwable {
 
-        DecisionStrategy decisionStrategy = DecisionStrategy.createFor(decisionStrategyName,  portfolio.getCandlesStorage());
+        DecisionStrategy decisionStrategy = DecisionStrategy.createFor(decisionStrategyName, portfolio.getCandlesStorage());
 
         FullFormatMachineBuilder builder = new FullFormatMachineBuilder(line);
         builder.build(portfolio, decisionStrategy, commission);
@@ -50,7 +52,8 @@ public class FullFormatPortfolioBuilder implements IPortfolioBuilder {
     }
 
     public String serialize() {
-        String result = security + "\t" + title + "\t" + decisionStrategyName + "\t" + lot + "\t" + sieveParam + "\t" + commission + "\n";
+        String result = security + "\t" + title + "\t" + decisionStrategyName + "\t" + lot +
+                "\t" + sieveParam + "\t" + fillingGapsNumber + "\t" + commission + "\n";
 
         for (Machine machine : portfolio.getMachines()) {
             FullFormatMachineBuilder builder = new FullFormatMachineBuilder(machine);

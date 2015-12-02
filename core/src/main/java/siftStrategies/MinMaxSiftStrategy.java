@@ -13,15 +13,21 @@ public class MinMaxSiftStrategy implements ISiftCandlesStrategy {
 
     @Getter
     private double sieveParam;
+    @Getter
+    private int fillingGapsNumber;
+
 
     private double minValue;
     private double maxValue;
     private Candle last;
 
-    public MinMaxSiftStrategy(double sieveParam) {
+    public MinMaxSiftStrategy(double sieveParam, int fillingGapsNumber) {
         this.sieveParam = sieveParam;
+        this.fillingGapsNumber = fillingGapsNumber;
+
         minValue = Double.MAX_VALUE;
         maxValue = Double.MIN_VALUE;
+
         last = null;
     }
 
@@ -54,7 +60,7 @@ public class MinMaxSiftStrategy implements ISiftCandlesStrategy {
         List<Candle> sifted = new ArrayList<Candle>();
 
         double sign = Math.signum(newCandle.getValue() - last.getValue());
-        if (last.computeVariance(newCandle) > 20000 * sieveParam) {
+        if (last.computeVariance(newCandle) > fillingGapsNumber * sieveParam) {
             double value = last.getValue() * (1 + sign * sieveParam / 100.);
             while (sign * value < sign * newCandle.getValue()) {
                 Candle clone = newCandle.clone();

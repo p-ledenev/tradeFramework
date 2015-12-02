@@ -126,4 +126,14 @@ public class Candle implements IAveragingSupport, IApproximationSupport, Cloneab
     public boolean before(Candle candle) {
         return date.isBefore(candle.getDate());
     }
+
+    public boolean hasTimeGreaterThan(LocalTime time) {
+
+        return date.toLocalTime().compareTo(time) > 0;
+    }
+
+    public boolean hasDateGreaterThan(DateTime date) {
+
+        return this.date.compareTo(date) > 0;
+    }
 }
