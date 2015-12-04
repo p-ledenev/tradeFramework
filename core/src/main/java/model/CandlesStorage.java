@@ -128,4 +128,12 @@ public class CandlesStorage {
     public Candle backTo(int depth) {
         return last(depth).get(0);
     }
+
+    public Double getSieveParam() {
+        return siftStrategy.getSieveParam();
+    }
+
+    public Integer getFillingGapsNumber() {
+        return siftStrategy.getFillingGapsNumber();
+    }
 }

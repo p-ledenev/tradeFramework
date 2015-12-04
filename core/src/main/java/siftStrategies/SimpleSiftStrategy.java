@@ -10,8 +10,8 @@ import java.util.*;
 
 public class SimpleSiftStrategy implements ISiftCandlesStrategy {
 
-    private double sieveParam;
-    private double lastValue;
+    private Double sieveParam;
+    private Double lastValue;
 
     public SimpleSiftStrategy(double sieveParam) {
         this.sieveParam = sieveParam;
@@ -31,5 +31,15 @@ public class SimpleSiftStrategy implements ISiftCandlesStrategy {
         }
 
         return sifted;
+    }
+
+    @Override
+    public Integer getFillingGapsNumber() {
+        return noGapsFilling;
+    }
+
+    @Override
+    public Double getSieveParam() {
+        return sieveParam;
     }
 }

@@ -101,5 +101,11 @@ public abstract class DecisionStrategy {
 
     public abstract boolean hasCurrentState();
 
+    public Double getSieveParam() {
+        return candlesStorage.getSieveParam();
+    }
 
+    public Integer getFillingGapsNumber() {
+        return candlesStorage.getFillingGapsNumber();
+    }
 }

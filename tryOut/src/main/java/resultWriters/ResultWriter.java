@@ -35,11 +35,17 @@ public abstract class ResultWriter {
     private PrintWriter createPrintWriterFor() throws Throwable {
 
         String security = getPortfolio().getSecurity();
-        String title = getPortfolio().getTitle();
+        String strategy = getPortfolio().getDecisonStrategyName();
+        Double sieveParam = getPortfolio().getSieveParam();
+        Integer fillingGapsNumber = getPortfolio().getFillingGapsNumber();
         int year = getYear();
 
-        Log.info("Open file to write: " + resultPath + "/" + fileName + "_" + security + "_" + year + "_" + title + ".csv");
-        return new PrintWriter(resultPath + "/" + fileName + "_" + security + "_" + year + "_" + title + ".csv", "utf-8");
+        String filePath = resultPath + "/" + fileName + "_" + security + "_" + year + "_" +
+                sieveParam + "_" + fillingGapsNumber + "_" + strategy + ".csv";
+
+        Log.info("Open file to write: " + filePath);
+
+        return new PrintWriter(filePath, "utf-8");
     }
 
     protected abstract Portfolio getPortfolio();

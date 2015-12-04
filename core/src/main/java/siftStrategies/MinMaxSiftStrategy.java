@@ -12,9 +12,9 @@ import java.util.*;
 public class MinMaxSiftStrategy implements ISiftCandlesStrategy {
 
     @Getter
-    private double sieveParam;
+    private Double sieveParam;
     @Getter
-    private int fillingGapsNumber;
+    private Integer fillingGapsNumber;
 
 
     private double minValue;

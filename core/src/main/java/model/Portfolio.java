@@ -118,4 +118,12 @@ public class Portfolio implements IMoneyStateSupport {
     public Machine getMachine(int i) {
         return machines.get(i);
     }
+
+    public Double getSieveParam() {
+        return machines.get(0).getDecisionStrategy().getSieveParam();
+    }
+
+    public Integer getFillingGapsNumber() {
+        return machines.get(0).getDecisionStrategy().getFillingGapsNumber();
+    }
 }

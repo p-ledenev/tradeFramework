@@ -9,5 +9,12 @@ import java.util.*;
  */
 public interface ISiftCandlesStrategy {
 
+    Integer noGapsFilling = 2000;
+    Double noSieve = 0.;
+
     List<Candle> sift(List<Candle> newCandles);
+
+    Integer getFillingGapsNumber();
+
+    Double getSieveParam();
 }

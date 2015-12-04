@@ -5,10 +5,8 @@ package siftStrategies;
  */
 public class SiftCandlesStrategyFactory {
 
-    private static int noGapsFilling = 2000;
-
     public static ISiftCandlesStrategy createSiftStrategy(double sieveParam) {
-        return createSiftStrategy(sieveParam, noGapsFilling);
+        return createSiftStrategy(sieveParam, ISiftCandlesStrategy.noGapsFilling);
     }
 
     public static ISiftCandlesStrategy createSiftStrategy(double sieveParam, int fillingGapsNumber) {
