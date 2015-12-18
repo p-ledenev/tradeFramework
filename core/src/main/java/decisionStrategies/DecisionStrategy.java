@@ -4,6 +4,7 @@ import exceptions.*;
 import lombok.*;
 import model.*;
 import org.reflections.*;
+import siftStrategies.*;
 import tools.*;
 
 import java.util.*;
@@ -105,7 +106,16 @@ public abstract class DecisionStrategy {
         return candlesStorage.getSieveParam();
     }
 
+    public ISiftCandlesStrategy getSiftStrategy() {
+        return candlesStorage.getSiftStrategy();
+    }
+
     public Integer getFillingGapsNumber() {
         return candlesStorage.getFillingGapsNumber();
+    }
+
+    @Override
+    public void finalize() {
+        Log.info(this.getClass().getSimpleName() + " finalized");
     }
 }

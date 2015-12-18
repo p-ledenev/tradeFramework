@@ -16,6 +16,7 @@ public class FinamDataSource implements IDataSource {
     public List<TryOutCandle> readCandlesFrom(String fileName) throws Throwable {
 
         List<TryOutCandle> candles = new ArrayList<TryOutCandle>();
+
         BufferedReader reader = new BufferedReader(new FileReader(new File(fileName)));
 
         String errorMessage = "";

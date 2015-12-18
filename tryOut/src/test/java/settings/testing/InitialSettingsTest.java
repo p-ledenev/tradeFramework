@@ -23,7 +23,7 @@ public class InitialSettingsTest {
         String line = "usd~&~1min~&~AveragingStrategy~&~0.25~&~0.0342~&~27~&~2014;2015~&~50;75";
         InitialSettings settings = InitialSettings.createFrom(line);
 
-        portfolio = settings.initPortfolio(new ArrayList<TryOutCandle>());
+        portfolio = settings.initPortfolio(new ArrayList<TryOutCandle>(), 27);
     }
 
     @Test

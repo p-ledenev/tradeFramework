@@ -126,4 +126,13 @@ public class Portfolio implements IMoneyStateSupport {
     public Integer getFillingGapsNumber() {
         return machines.get(0).getDecisionStrategy().getFillingGapsNumber();
     }
+
+    public String getDescription() {
+        return getDecisonStrategyName() + " " + getSecurity() + " " + getSieveParam() + " " + getFillingGapsNumber();
+    }
+
+    @Override
+    public void finalize() {
+        Log.info(this.getClass().getSimpleName() + " finalized");
+    }
 }

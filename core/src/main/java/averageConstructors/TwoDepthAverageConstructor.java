@@ -1,7 +1,5 @@
 package averageConstructors;
 
-import tools.*;
-
 /**
  * Created by ledenev.p on 16.04.2015.
  */
@@ -16,11 +14,15 @@ public class TwoDepthAverageConstructor extends AverageConstructor {
     @Override
     protected double nativeAverage(IAveragingSupport[] values) {
 
-        IAveragingSupport[] halfValues = Format.copyFromEnd(values, values.length / 2);
+        IAveragingSupport[] halfValues = fromEnd(values, values.length / 2);
 
         double fast = averageConstructor.average(halfValues);
         double slow = averageConstructor.average(values);
 
         return 2 * fast - slow;
+    }
+
+    public static IAveragingSupport[] fromEnd(IAveragingSupport[] array, int depth) {
+        return java.util.Arrays.copyOfRange(array, array.length - depth, array.length);
     }
 }

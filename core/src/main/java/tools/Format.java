@@ -17,14 +17,6 @@ public class Format {
         return days * (14 * 60 - 10) + minutesOfDay;
     }
 
-    public static <T> T[] copyFromEnd(T[] array, int depth) {
-        return java.util.Arrays.copyOfRange(array, array.length - depth, array.length);
-    }
-
-    public static <T> List<T> copyFromEnd(List<T> list, int depth) {
-        return list.subList(list.size() - depth, list.size());
-    }
-
     public static String asString(DateTime date) {
         return asString(date, "dd.MM.yyyy HH:mm:ss");
     }

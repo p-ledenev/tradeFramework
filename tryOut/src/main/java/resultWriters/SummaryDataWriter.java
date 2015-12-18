@@ -22,7 +22,7 @@ public class SummaryDataWriter extends ResultWriter {
 
         summary = new ArrayList<String>() {
             {
-                add(" ;");
+                add(portfolioCollector.getYear() + ";");
                 add("maxLossesPercent;");
                 add("maxMoneyPercent;");
                 add("endPeriodMoneyPercent;");

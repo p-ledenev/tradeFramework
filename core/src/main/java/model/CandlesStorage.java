@@ -136,4 +136,9 @@ public class CandlesStorage {
     public Integer getFillingGapsNumber() {
         return siftStrategy.getFillingGapsNumber();
     }
+
+    @Override
+    public void finalize() {
+        Log.info(this.getClass().getSimpleName() + " finalized");
+    }
 }

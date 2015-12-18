@@ -99,6 +99,10 @@ public class Candle implements IAveragingSupport, IApproximationSupport, Cloneab
         return date.getDayOfYear();
     }
 
+    public int getDateMonth() {
+        return date.getMonthOfYear();
+    }
+
     public boolean hasYearAs(int year) {
         return date.getYear() == year;
     }
@@ -135,5 +139,9 @@ public class Candle implements IAveragingSupport, IApproximationSupport, Cloneab
     public boolean hasDateGreaterThan(DateTime date) {
 
         return this.date.compareTo(date) > 0;
+    }
+
+    public boolean hasSameMonth(Candle candle) {
+        return getDateMonth() == candle.getDateMonth();
     }
 }

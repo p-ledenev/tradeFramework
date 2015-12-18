@@ -22,7 +22,7 @@ public class CandlesIterator {
         return nextCandles;
     }
 
-    public double countMeanDeviation(int year) {
+    public double computeMeanDeviation(int year) {
         double mean = 0;
 
         for (int i = 1; i < candles.size(); i++) {
@@ -33,6 +33,32 @@ public class CandlesIterator {
                 continue;
 
             mean += Math.abs(c1.getValue() - c2.getValue()) / c1.getValue();
+        }
+
+        return mean / candles.size();
+    }
+
+    public double computeSigma(int year) {
+
+        double mean = computeMean(year);
+        double mean2 = 0;
+
+        for (Candle candle : candles)
+            mean2 += Math.pow(candle.getValue(), 2);
+        mean2 /= candles.size();
+
+        return Math.pow(mean2 - Math.pow(mean, 2), 0.5) / mean;
+    }
+
+    public double computeMean(int year) {
+
+        double mean = 0;
+        for (Candle candle : candles) {
+
+            if (!candle.hasYearAs(year))
+                continue;
+
+            mean += candle.getValue();
         }
 
         return mean / candles.size();

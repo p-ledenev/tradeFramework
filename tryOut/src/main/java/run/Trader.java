@@ -13,6 +13,7 @@ import java.util.*;
 
 @AllArgsConstructor
 public class Trader implements Runnable {
+
     private CandlesIterator candlesIterator;
     private TradeDataCollector dataCollector;
     private IOrdersExecutor orderExecutor;
@@ -35,7 +36,7 @@ public class Trader implements Runnable {
             dataCollector.collect(orders);
 
             if (lastCandle == null || !lastCandle.hasSameDay(candles.get(0))) {
-                Log.info("Portfolio: " + portfolio.getTitle() + "; processing candle - " + candles.get(0).print());
+                Log.info("Portfolio: " + portfolio.getDescription() + "\n processing candle - " + candles.get(0).print());
                 lastCandle = candles.get(0);
             }
         }
@@ -50,5 +51,10 @@ public class Trader implements Runnable {
         } catch (Throwable e) {
             Log.error("", e);
         }
+    }
+
+    @Override
+    public void finalize() {
+        Log.info(this.getClass().getSimpleName() + " finalized");
     }
 }

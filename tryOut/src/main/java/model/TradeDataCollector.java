@@ -41,4 +41,12 @@ public abstract class TradeDataCollector {
     protected double computeInitialAmount(Order order) {
         return order.getValue() * portfolioCollector.getLot();
     }
+
+    public double computeMaxLossesPercent() {
+        return portfolioCollector.computeMaxLossesPercent();
+    }
+
+    public double computeEndPeriodMoneyPercent() {
+        return portfolioCollector.computeEndPeriodMoneyPercent();
+    }
 }

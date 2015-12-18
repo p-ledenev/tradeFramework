@@ -10,7 +10,8 @@ import java.util.*;
  */
 public interface IDataSource {
 
-    String sourcePath = InitialSettings.settingPath + "sources";
+    String sourceFolder = "sources";
+    String sourcePath = InitialSettings.settingPath + sourceFolder;
 
     List<TryOutCandle> readCandlesFrom(String fileName) throws Throwable;
 }

@@ -59,6 +59,9 @@ public class MinMaxSiftStrategy implements ISiftCandlesStrategy {
     private List<Candle> extraBetween(Candle last, Candle newCandle) {
         List<Candle> sifted = new ArrayList<Candle>();
 
+        if (sieveParam == 0)
+            return sifted;
+
         double sign = Math.signum(newCandle.getValue() - last.getValue());
         if (last.computeVariance(newCandle) > fillingGapsNumber * sieveParam) {
             double value = last.getValue() * (1 + sign * sieveParam / 100.);
