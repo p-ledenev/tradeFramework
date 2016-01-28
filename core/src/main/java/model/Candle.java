@@ -42,7 +42,7 @@ public class Candle implements IAveragingSupport, IApproximationSupport, Cloneab
     }
 
     public String print() {
-        return "date: " + Format.asString(date) + "; value: " + value;
+        return "date: " + Format.asString(date) + "; value: " + Round.toMoneyAmount(value);
     }
 
     public double computeVariance(double value) {

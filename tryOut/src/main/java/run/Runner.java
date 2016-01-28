@@ -30,7 +30,7 @@ public class Runner {
 
                     CandlesIterator candlesIterator = new CandlesIterator(candles);
 
-                    Portfolio portfolio = settings.initPortfolio(fillingGapsNumber);
+                    Portfolio portfolio = settings.initPortfolio(candles, fillingGapsNumber);
                     TradeDataCollector dataCollector = createDataCollector(portfolio);
 
                     Trader trader = new Trader(candlesIterator, dataCollector, ordersExecutor, portfolio);

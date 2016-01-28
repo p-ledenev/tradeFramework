@@ -14,6 +14,15 @@ public class TryOutCandle extends Candle {
     private double nextValue;
     private int index;
 
+    public static TryOutCandle with(double value, double nextValue, int index, DateTime date) throws Throwable {
+
+        TryOutCandle candle = new TryOutCandle(date, value);
+        candle.setIndex(index);
+        candle.setNextValue(nextValue);
+
+        return candle;
+    }
+
     public TryOutCandle(DateTime date, double value) {
         super(date, value);
     }

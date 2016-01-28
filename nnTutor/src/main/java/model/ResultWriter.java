@@ -1,7 +1,7 @@
 package model;
 
-import java.io.PrintWriter;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 /**
  * Created by DiKey on 11.08.2015.

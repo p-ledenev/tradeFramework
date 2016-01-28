@@ -30,8 +30,8 @@ public abstract class NeuronTrainingDecisionStrategy extends DecisionStrategy {
 
         try {
             TrainingResult result = computeTrainingResult(candles.length);
-
             return result.getDirection();
+
         } catch (IOException e) {
             Log.error("", e);
         }
@@ -53,6 +53,12 @@ public abstract class NeuronTrainingDecisionStrategy extends DecisionStrategy {
         if (!candlesStorage.backTo(depth).hasSameDay(candlesStorage.last()))
             return TrainingResult.empty();
 
+        if (!futureData.get(0).hasTimeGreaterThan(new LocalTime(10, 1)))
+            return TrainingResult.empty();
+
+        if (!candlesStorage.backTo(depth).hasTimeGreaterThan(new LocalTime(10, 1)))
+            return TrainingResult.empty();
+
         if (!futureData.get(0).hasSameDay(futureData.get(futureData.size() - 1)))
             return TrainingResult.empty();
 
@@ -67,15 +73,16 @@ public abstract class NeuronTrainingDecisionStrategy extends DecisionStrategy {
         if (directionBeforeNeutral.equals(direction))
             direction = Direction.neutral;
 
-       //TrainingResult result = TrainingResult.createFor(getAverageValues(depth), direction);
-        TrainingResult result = buildStatisticalResult(depth, direction);
+        TrainingResult result = TrainingResult.createFor(getAverageValues(depth), direction);
+        //TrainingResult result = buildStatisticalResult(depth, direction);
 
-        //checkHistogram(result, depth);
+        if (!validateHistogram(result, depth))
+            return TrainingResult.empty();
 
         return result;
     }
 
-    private void checkHistogram(TrainingResult result, int depth) throws IOException {
+    private boolean validateHistogram(TrainingResult result, int depth) throws IOException {
 
         Map<Double, Double> histogram = result.buildHistogram();
         FileWriter writer = new FileWriter("D://data.txt");
@@ -96,10 +103,17 @@ public abstract class NeuronTrainingDecisionStrategy extends DecisionStrategy {
 
         writer.close();
 
-        for (Double key : histogram.keySet())
-            if (histogram.get(key) > 2 && candlesStorage.last().hasDateGreaterThan(DateTime.parse("2010-01-11"))) {
+        for (Double key : histogram.keySet()) {
+            if (histogram.get(key) > 15 && candlesStorage.last().hasDateGreaterThan(DateTime.parse("2010-02-11"))) {
                 int ll = 1;
+
+                Log.info("Validation failed");
+
+                return false;
             }
+        }
+
+        return true;
     }
 
     private TrainingResult buildStatisticalResult(int depth, Direction direction) {

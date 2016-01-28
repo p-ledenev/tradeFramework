@@ -7,6 +7,7 @@ import settings.*;
 import siftStrategies.*;
 import tools.*;
 
+import java.io.*;
 import java.util.*;
 
 /**
@@ -23,13 +24,13 @@ public class Runner {
         String ticket = "usd";
         int year = 2010;
         String timeFrame = "1min";
-        int depth = 201;
+        int depth = 101;
 
         IDataSource dataSource = DataSourceFactory.createDataSource();
         List<TryOutCandle> candles = dataSource.readCandlesFrom(InitialSettings.settingPath + "sources/" + year + "/" + ticket + "_" + timeFrame + ".txt");
 
-        ISiftCandlesStrategy siftStrategy = SiftCandlesStrategyFactory.createSiftStrategy(0.0145);
-        CandlesStorage allDataStorage = new CandlesStorage(siftStrategy, Arrays.asList(candles.toArray(new Candle[candles.size()])));
+        ISiftCandlesStrategy siftStrategy = SiftCandlesStrategyFactory.createSiftStrategy(0.022, 7);
+        CandlesStorage allDataStorage = new CandlesStorage(new NoSiftStrategy(), Arrays.asList(candles.toArray(new Candle[candles.size()])));
         CandlesStorage storage = new CandlesStorage(siftStrategy);
 
         NeuronTrainingDecisionStrategy strategy = NeuronTrainingDecisionStrategyFactory.createStrategy();
@@ -45,6 +46,15 @@ public class Runner {
 
         Candle lastCandle = null;
         List<TrainingResult> results = new ArrayList<TrainingResult>();
+
+        PrintWriter allDataWriter = new PrintWriter(resultPath + ticket + "_" + year + "_allData.txt");
+        for (TryOutCandle candle : candles) {
+            allDataWriter.write(Format.asString(candle.getDate()) + ";" + candle.getIndex() + ";" +
+                    candle.getValue() + "\n");
+        }
+        allDataWriter.close();
+
+        PrintWriter tutorWatchWriter = new PrintWriter(resultPath + ticket + "_" + year + "_tutorWatch.txt");
 
         //int maxRows = 1000;
         int maxRows = iterator.size();
@@ -66,10 +76,15 @@ public class Runner {
                 break;
             }
 
-            if (!result.isHold() && !result.isNeutral()) {
-                results.add(result);
-                j++;
-            }
+            TryOutCandle candle = (TryOutCandle) newCandles.get(0);
+            tutorWatchWriter.write(Format.asString(candle.getDate()) + ";" + candle.getIndex() +
+                    ";" + result.getDirectionSign() + "\n");
+
+
+            //if (result.isActive()) {
+            results.add(result);
+            j++;
+            //          }
 //            else if (i % 10 == 0) {
 //                results.add(result);
 //                j++;
@@ -81,13 +96,38 @@ public class Runner {
             }
         }
 
+        tutorWatchWriter.close();
+
         ResultWriter writer = new ResultWriter(resultPath + ticket + "_" + year + ".txt");
-        writer.write(results);
+        writer.write(filter(results));
 
         Log.info("Preparation finished");
 
 //        hasSameIncrements(results);
 //        Log.info("Comparison finished");
+    }
+
+    public static List<TrainingResult> filter(List<TrainingResult> results) throws Throwable {
+
+        List<TrainingResult> response = new ArrayList<>();
+
+        List<TrainingResult> inARow = new ArrayList<>();
+        for (TrainingResult result : results) {
+
+            if (result.isActive()) {
+                inARow.add(result);
+
+            } else {
+
+                if (inARow.size() > 50)
+                    response.addAll(inARow);
+
+                inARow = new ArrayList<>();
+            }
+        }
+
+        return response;
+
     }
 
     public static void hasSameIncrements(List<TrainingResult> results) throws Throwable {

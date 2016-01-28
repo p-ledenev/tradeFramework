@@ -238,7 +238,7 @@ public class TrainingResult {
     public Map<Double, Double> buildHistogram() {
 
         List<Double> xAxis = new ArrayList<Double>();
-        int steps = 4;
+        int steps = 40;
         for (int i = 0; i < steps + 1; i++)
             xAxis.add(-1 + 2. / steps * i);
 
@@ -274,5 +274,13 @@ public class TrainingResult {
 
     private Double countMean(Double x1, double x2) {
         return Round.toThree((x1 + x2) / 2.);
+    }
+
+    public int getDirectionSign() {
+        return direction.getSign();
+    }
+
+    public boolean isActive() {
+        return !isHold() && !isNeutral();
     }
 }

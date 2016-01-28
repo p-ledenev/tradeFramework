@@ -1,5 +1,7 @@
 package settings;
 
+import model.*;
+
 /**
  * Created by ledenev.p on 09.09.2015.
  */
@@ -13,5 +15,5 @@ public interface IPortfolioBuilder {
 
     boolean isMachineBlocked(String line) throws Throwable;
 
-    model.Portfolio getPortfolio();
+    Portfolio getPortfolio();
 }

@@ -1,36 +1,35 @@
 package model;
 
+import writers.*;
+
 import java.util.*;
 
 /**
  * Created by ledenev.p on 16.12.2015.
  */
+
 public class ResearcherDataCollector {
 
-    List<ResearchResult> results;
+	List<ResearchResult> results;
 
-    public ResearcherDataCollector() {
-        results = new ArrayList<>();
-    }
+	public ResearcherDataCollector() {
+		results = new ArrayList<>();
+	}
 
-    public void add(double sieveParam, int gapsNumber, double tradeCoefficient) {
-        results.add(new ResearchResult(sieveParam, gapsNumber, tradeCoefficient));
-    }
+	public void add(ResearchResult result) {
+		results.add(result);
+	}
 
-    public String printHeader() {
-        return ResearchResult.header;
-    }
+	public String print(DataWriterStrategy writerStrategy) throws Throwable {
+		String response = "";
 
-    public String print() {
-        String response = "";
+		for (ResearchResult result : results)
+			response += writerStrategy.print(result) + "\n";
 
-        for (ResearchResult result : results)
-            response += result.print() + "\n";
+		return response;
+	}
 
-        return response;
-    }
-
-    public String printLast() {
-        return results.get(results.size() - 1).print() + "\n";
-    }
+	public ResearchResult getLast() throws Throwable {
+		return results.get(results.size() - 1);
+	}
 }

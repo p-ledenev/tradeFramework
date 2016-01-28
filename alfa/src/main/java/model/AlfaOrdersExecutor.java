@@ -42,13 +42,18 @@ public class AlfaOrdersExecutor implements IOrdersExecutor {
             Log.info(order.toString() + " " + order.printStatus());
     }
 
-    public void checkVolumeFor(String security, int volume) throws Throwable {
+    public void checkVolumeFor(String security, int volume) {
 
-        int alfaVolume = gateway.loadSecurityVolume(security);
-        if (alfaVolume == volume)
-            return;
+        try {
+            int alfaVolume = gateway.loadSecurityVolume(security);
+            if (alfaVolume == volume)
+                return;
 
-        Log.info("For security " + security + " Alfa Terminal has " + alfaVolume + ", but portfolios have " + volume);
+            Log.info("For security " + security + " Alfa Terminal has " + alfaVolume + ", but portfolios have " + volume);
+
+        } catch (AlfaGatewayFailure e) {
+            Log.info(e.getMessage());
+        }
     }
 
     private boolean hasOrdersToProcess(List<AlfaOrder> alfaOrders) {

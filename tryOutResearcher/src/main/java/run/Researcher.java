@@ -11,78 +11,99 @@ import java.util.*;
  */
 public class Researcher {
 
-    public static String settingPath = "d:/Projects/Alfa/java/tradeFramework/tryOutResearcher/data/";
-    //public static String settingPath = "./";
+	public static String settingPath = "d:/Projects/Alfa/java/tradeFramework/tryOutResearcher/data/";
+	//public static String settingPath = "./";
 
-    public static void main(String[] args) throws Throwable {
+	public static void main(String[] args) throws Throwable {
 
-        List<InitialSettings> settingsList = Runner.readSettings(settingPath);
+		List<InitialSettings> settingsList = Runner.readSettings(settingPath);
 
-        for (InitialSettings settings : settingsList) {
+		for (InitialSettings settings : settingsList) {
 
-            ResearcherDataCollector researcherDataCollector = new ResearcherDataCollector();
-            ResearcherDataWriter researcherDataWriter = new ResearcherDataWriter(researcherDataCollector, settings.getStrategyName());
+			ResearcherDataWriter researcherDataWriter = new ResearcherDataWriter(settings.getStrategyName(), getFillGapsNumbers().size(), getSieveParams().size());
 
-            for (Double sieveParam : getSieveParams()) {
-                for (Integer gapsNumber : getFillGapsNumbers()) {
+			for (Double sieveParam : getSieveParams()) {
+				for (Integer gapsNumber : getFillGapsNumbers()) {
 
-                    double tradeCoefficient = 0;
+					List<ResearchResult> yearResults = new ArrayList<>();
 
-                    for (String year : settings.getYears()) {
+					for (String year : settings.getYears()) {
 
-                        List<TryOutCandle> candles = DataSourceFactory.createDataSource().readCandlesFrom(
-                                settingPath + IDataSource.sourceFolder + "/" + year + "/" + settings.getSecurity() + "_" + settings.getTimeFrame() + ".txt");
+						List<TryOutCandle> candles = DataSourceFactory.createDataSource().readCandlesFrom(
+								settingPath + IDataSource.sourceFolder + "/" + year + "/" + settings.getSecurity() + "_" + settings.getTimeFrame() + ".txt");
 
-//                        IOrdersExecutor ordersExecutor = new TryOutOrdersExecutor(Integer.parseInt(year));
-//
-//                        CandlesIterator candlesIterator = new CandlesIterator(candles);
-//
-//                        Portfolio portfolio = settings.initPortfolio(sieveParam, gapsNumber);
-//                        TradeDataCollector tradeDataCollector = new NoWritingTradeDataCollector(portfolio);
-//
-//                        Trader trader = new Trader(candlesIterator, tradeDataCollector, ordersExecutor, portfolio);
-//                        trader.trade();
-//
-//                        double losses = tradeDataCollector.computeMaxLossesPercent();
-//                        double profit = tradeDataCollector.computeEndPeriodMoneyPercent();
-//
-//                        tradeCoefficient += profit / losses;
+						IOrdersExecutor ordersExecutor = new TryOutOrdersExecutor(Integer.parseInt(year));
 
-                        candles = null;
+						CandlesIterator candlesIterator = new CandlesIterator(candles);
 
-                        int s = 1;
-                    }
+						Portfolio portfolio = settings.initPortfolio(sieveParam, gapsNumber);
+						TradeDataCollector tradeDataCollector = new NoWritingTradeDataCollector(portfolio);
 
-                    tradeCoefficient /= settings.getYears().size();
-                    researcherDataCollector.add(sieveParam, gapsNumber, tradeCoefficient);
+						Trader trader = new Trader(candlesIterator, tradeDataCollector, ordersExecutor, portfolio);
+						trader.trade();
 
-                    researcherDataWriter.append();
-                }
-            }
+						double loss = tradeDataCollector.computeMaxLossesPercent();
+						double profit = tradeDataCollector.computeEndPeriodMoneyPercent();
 
-            int k = 1;
-        }
-    }
+						yearResults.add(new ResearchResult(sieveParam, gapsNumber, profit, loss, profit / loss));
+					}
 
-    private static List<Double> getSieveParams() {
-        List<Double> sieveParams = new ArrayList<>();
+					yearResults = removeMaxProfitYear(yearResults);
+					researcherDataWriter.addResearchResult(computeAverage(yearResults, sieveParam, gapsNumber));
+					researcherDataWriter.appendToFile();
+				}
+			}
+		}
+	}
 
-        double maxSieve = 0.2;
-        int steps = 50;
+	private static List<ResearchResult> removeMaxProfitYear(List<ResearchResult> results) {
 
-        for (int i = 1; i < steps; i++)
-            sieveParams.add(i * maxSieve / steps);
+		if (results.size() < 2)
+			return results;
 
-        return sieveParams;
-    }
+		ResearchResult maxResult = results.get(0);
+		for (ResearchResult result : results)
+			if (result.greater(maxResult))
+				maxResult = result;
 
-    private static List<Integer> getFillGapsNumbers() {
+		results.remove(maxResult);
 
-        List<Integer> gapsNumbers = new ArrayList<>();
+		return results;
+	}
 
-        for (int i = 1; i < 51; i++)
-            gapsNumbers.add(i);
+	private static ResearchResult computeAverage(List<ResearchResult> results, double sieveParam, int gapsNumber) {
 
-        return gapsNumbers;
-    }
+		double averageCoefficient = 0;
+		double averageProfit = 0;
+		double averageLosses = 0;
+
+		for (ResearchResult result : results) {
+
+			averageCoefficient += result.getTradeCoefficient();
+			averageProfit += result.getProfit();
+			averageLosses += result.getLoss();
+		}
+
+		int size = results.size();
+		return new ResearchResult(sieveParam, gapsNumber, averageProfit / size, averageLosses / size, averageCoefficient / size);
+	}
+
+	private static List<Double> getSieveParams() {
+		List<Double> sieveParams = new ArrayList<>();
+
+		for (double param = 0.01; param < 0.142; param += 0.002)
+			sieveParams.add(param);
+
+		return sieveParams;
+	}
+
+	private static List<Integer> getFillGapsNumbers() {
+
+		List<Integer> gapsNumbers = new ArrayList<>();
+
+		for (int i = 1; i < 31; i++)
+			gapsNumbers.add(i);
+
+		return gapsNumbers;
+	}
 }

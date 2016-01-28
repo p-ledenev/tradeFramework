@@ -35,7 +35,8 @@ public class CandlesStorage {
 
         if (Log.isDebugEnabled())
             for (Candle candle : sifted)
-                Log.debug("Added to candle storage: " + candle.print());
+                Log.debug("Added to candle storage (" + getSieveParam() + ", " +
+                        getFillingGapsNumber() + ") " + candle.print());
 
         candles.addAll(sifted);
 
@@ -135,10 +136,5 @@ public class CandlesStorage {
 
     public Integer getFillingGapsNumber() {
         return siftStrategy.getFillingGapsNumber();
-    }
-
-    @Override
-    public void finalize() {
-        Log.info(this.getClass().getSimpleName() + " finalized");
     }
 }

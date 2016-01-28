@@ -6,7 +6,6 @@ import exceptions.*;
 import lombok.*;
 import org.joda.time.*;
 import takeProfitStrategies.*;
-import tools.*;
 
 import java.util.*;
 
@@ -114,6 +113,10 @@ public class Machine implements IMoneyStateSupport {
         return decisionStrategy.getName();
     }
 
+    public String printDecisionStrategy() {
+        return decisionStrategy.printDescription();
+    }
+
     public MoneyState getCurrentState() {
         return new MoneyState(position.getDate(), currentMoney);
     }
@@ -160,10 +163,5 @@ public class Machine implements IMoneyStateSupport {
 
     public int getSignVolume() {
         return position.getSignVolume();
-    }
-
-    @Override
-    public void finalize() {
-        Log.info(this.getClass().getSimpleName() + " finalized");
     }
 }

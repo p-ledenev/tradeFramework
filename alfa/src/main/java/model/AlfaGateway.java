@@ -158,6 +158,9 @@ public class AlfaGateway {
 
         String[] volume = response.getString().split("\\|");
 
+        if (volume[0].isEmpty())
+            throw new AlfaGatewayFailure("LoadSecurityVolume: no data received");
+
         return Integer.parseInt(volume[0]);
     }
 

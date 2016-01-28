@@ -114,8 +114,7 @@ public abstract class DecisionStrategy {
         return candlesStorage.getFillingGapsNumber();
     }
 
-    @Override
-    public void finalize() {
-        Log.info(this.getClass().getSimpleName() + " finalized");
+    public String printDescription() {
+        return getName() + " " + getSieveParam() + " " + getFillingGapsNumber();
     }
 }

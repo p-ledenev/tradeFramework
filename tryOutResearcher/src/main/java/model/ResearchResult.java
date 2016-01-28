@@ -1,23 +1,23 @@
 package model;
 
 import lombok.*;
-import tools.*;
 
 /**
  * Created by ledenev.p on 16.12.2015.
  */
 
+@Data
 @AllArgsConstructor
 public class ResearchResult {
 
-    public static String header = "sieveParam;gapsNumber;tradeCoefficient";
+	private double sieveParam;
+	private int gapsNumber;
 
-    private double sieveParam;
-    private int gapsNumber;
-    private double tradeCoefficient;
+	private double profit;
+	private double loss;
+	private double tradeCoefficient;
 
-    public String print() {
-        return Round.toSignificant(sieveParam) + ";" + gapsNumber + ";" + Round.toMoneyAmount(tradeCoefficient);
-    }
-
+	public boolean greater(ResearchResult maxResult) {
+		return this.profit > maxResult.profit;
+	}
 }

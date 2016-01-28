@@ -95,7 +95,7 @@ public class Order {
 
     @Override
     public String toString() {
-        return Format.asString(newPosition.getDate()) + " " + machine.getPortfolioTitle() + " " + machine.getDepth() + " " +
+        return Format.asString(newPosition.getDate()) + " " + machine.printDecisionStrategy() + " " + machine.getDepth() + " " +
                 newPosition.getDirection() + " " + getValue() + " " + getVolume() + " " + (isExecuted() ? "executed" : "not executed");
     }
 

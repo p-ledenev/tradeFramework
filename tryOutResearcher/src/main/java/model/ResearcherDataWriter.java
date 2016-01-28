@@ -2,6 +2,7 @@ package model;
 
 import run.*;
 import tools.*;
+import writers.*;
 
 import java.io.*;
 
@@ -10,49 +11,57 @@ import java.io.*;
  */
 public class ResearcherDataWriter {
 
-    public static String resultPath = Researcher.settingPath + "results";
+	public static String resultPath = Researcher.settingPath + "results";
 
-    private ResearcherDataCollector dataCollector;
-    private String strategyName;
+	private DataWriterStrategy writerStrategy;
+	private ResearcherDataCollector dataCollector;
+	private String strategyName;
 
-    public ResearcherDataWriter(ResearcherDataCollector dataCollector, String strategyName) throws Throwable {
-        this.dataCollector = dataCollector;
-        this.strategyName = strategyName;
+	public ResearcherDataWriter(String strategyName, int xPoints, int yPoints) throws Throwable {
 
-        clean();
-    }
+		this.strategyName = strategyName;
 
-    public void clean() throws Throwable {
+		dataCollector = new ResearcherDataCollector();
+		writerStrategy = DataWriterStrategyFactory.create(strategyName, xPoints, yPoints);
 
-        Log.info("Clean file: " + getFileName());
-        PrintWriter writer = new PrintWriter(getFileName(), "utf-8");
-        writer.write(dataCollector.printHeader() + "\n");
-        writer.close();
-    }
+		clean();
+	}
 
-    public void write() throws Throwable {
+	public void addResearchResult(ResearchResult result) {
+		dataCollector.add(result);
+	}
 
-        Log.info("Open file to write: " + getFileName());
+	public void clean() throws Throwable {
 
-        PrintWriter writer = new PrintWriter(getFileName());
+		Log.info("Clean file: " + getFileName());
+		PrintWriter writer = new PrintWriter(getFileName(), "utf-8");
+		writer.write(writerStrategy.printHeader() + "\n");
+		writer.close();
+	}
 
-        writer.write(dataCollector.print());
+	public void write() throws Throwable {
 
-        writer.close();
-    }
+		Log.info("Open file to write: " + getFileName());
 
-    public void append() throws Throwable {
+		PrintWriter writer = new PrintWriter(getFileName());
 
-        Log.info("Open file to append: " + getFileName());
+		writer.write(dataCollector.print(writerStrategy));
 
-        PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(getFileName(), true)));
+		writer.close();
+	}
 
-        writer.write(dataCollector.printLast());
+	public void appendToFile() throws Throwable {
 
-        writer.close();
-    }
+		Log.info("Open file to append: " + getFileName());
 
-    private String getFileName() {
-        return resultPath + "/" + strategyName + "_params_field.csv";
-    }
+		PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(getFileName(), true)));
+
+		writer.write(writerStrategy.print(dataCollector.getLast()) + "\n");
+
+		writer.close();
+	}
+
+	private String getFileName() {
+		return resultPath + "/" + strategyName + "_field_params." + writerStrategy.getFileExtension();
+	}
 }
