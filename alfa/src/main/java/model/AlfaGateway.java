@@ -138,8 +138,12 @@ public class AlfaGateway {
                 variant(date.toDate()), variant(""), variant("RUR"), variant(direction.name()), variant(volume), variant(value),
                 nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, variant(11));
 
-        if (!isLastOperationSucceed())
-            throw new AlfaGatewayFailure(logMessage("CreateLimitOrder"));
+        if (!isLastOperationSucceed()) {
+            if (getLastOperationMessage().contains("Время ожидания ответа сервера истекло"))
+                throw new OrderSubmissionFailure(logMessage("CreateLimitOrder"));
+            else
+                throw new AlfaGatewayFailure(logMessage("CreateLimitOrder"));
+        }
 
         if (response == null || response.getInt() <= 0)
             throw new OrderSubmissionFailure("CreateLimitOrder: no data received");
