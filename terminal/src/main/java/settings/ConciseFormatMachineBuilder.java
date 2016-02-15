@@ -34,11 +34,7 @@ public class ConciseFormatMachineBuilder {
     public void build(Portfolio portfolio, DecisionStrategy decisionStrategy, double commission) {
 
         machine = Machine.with(portfolio, decisionStrategy, commission, depth);
-
-        Candle candle = Candle.empty(new DateTime());
-        Position position = Position.opening(direction, 1, candle);
-
-        machine.setPosition(position);
+        machine.setPosition(Position.opening(direction));
     }
 
     public String serialize() {

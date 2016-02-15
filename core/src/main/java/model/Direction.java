@@ -31,6 +31,10 @@ public enum Direction {
         return neutral;
     }
 
+    public boolean isActive() {
+        return sign != 0;
+    }
+
     public boolean isOppositeTo(Direction direction) {
         if (buy.equals(this) && sell.equals(direction))
             return true;

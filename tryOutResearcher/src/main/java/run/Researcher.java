@@ -91,7 +91,7 @@ public class Researcher {
 	private static List<Double> getSieveParams() {
 		List<Double> sieveParams = new ArrayList<>();
 
-		for (double param = 0.01; param < 0.142; param += 0.002)
+		for (double param = 0.01; param < 0.062; param += 0.002)
 			sieveParams.add(param);
 
 		return sieveParams;
@@ -101,7 +101,7 @@ public class Researcher {
 
 		List<Integer> gapsNumbers = new ArrayList<>();
 
-		for (int i = 1; i < 31; i++)
+		for (int i = 1; i < 16; i++)
 			gapsNumbers.add(i);
 
 		return gapsNumbers;

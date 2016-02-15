@@ -26,6 +26,12 @@ public class Position implements Cloneable {
         return new Position(direction, volume, candle);
     }
 
+    public static Position opening(Direction direction) {
+        int volume = direction.isActive() ? 1 : 0;
+
+        return opening(direction, volume, Candle.empty());
+    }
+
     private Position(Direction direction, int volume, Candle candle) {
         this.volume = volume;
         this.direction = direction;
