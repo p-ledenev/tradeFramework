@@ -35,7 +35,7 @@ public class Trader implements Runnable {
 
             dataCollector.collect(orders);
 
-            if (lastCandle == null || !lastCandle.hasSameDay(candles.get(0))) {
+            if (lastCandle == null || !lastCandle.hasSameMonth(candles.get(0))) {
                 Log.info("Portfolio: " + portfolio.getDescription() + "\n processing candle - " + candles.get(0).print());
                 lastCandle = candles.get(0);
             }

@@ -16,6 +16,7 @@
         <module>alfa</module>
         <module>nnTutor</module>
         <module>tryOutResearcher</module>
+        <module>quik</module>
     </modules>
 
     <dependencyManagement>

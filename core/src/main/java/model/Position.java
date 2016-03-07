@@ -28,7 +28,6 @@ public class Position implements Cloneable {
 
     public static Position opening(Direction direction) {
         int volume = direction.isActive() ? 1 : 0;
-
         return opening(direction, volume, Candle.empty());
     }
 

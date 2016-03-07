@@ -1,6 +1,7 @@
 package model;
 
 import exceptions.*;
+import lombok.AllArgsConstructor;
 import tools.*;
 
 import java.util.*;
@@ -8,13 +9,11 @@ import java.util.*;
 /**
  * Created by ledenev.p on 01.04.2015.
  */
+
+@AllArgsConstructor
 public class AlfaOrdersExecutor implements IOrdersExecutor {
 
     private AlfaGateway gateway;
-
-    public AlfaOrdersExecutor(AlfaGateway gateway) {
-        this.gateway = gateway;
-    }
 
     public void execute(List<Order> orders) throws InterruptedException {
 
