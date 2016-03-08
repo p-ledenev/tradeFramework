@@ -15,6 +15,10 @@ public class RegisterOrderStatusCallbackRequest extends QuikRequest {
 
     @Override
     protected NativeLong executeNativeRequest() throws Throwable {
-        return library.TRANS2QUIK_SET_TRANSACTIONS_REPLY_CALLBACK(orderStatusCallback, errorCode, errorMessage, errorMessage.length);
+        return library.TRANS2QUIK_SET_TRANSACTIONS_REPLY_CALLBACK(
+                orderStatusCallback,
+                errorCode,
+                errorMessage,
+                errorMessage.length);
     }
 }
