@@ -11,12 +11,12 @@ import java.util.*;
  */
 public class Researcher {
 
-	public static String settingPath = "d:/Projects/Alfa/java/tradeFramework/tryOutResearcher/data/";
-	//public static String settingPath = "./";
+	//public static String settingPath = "d:/Projects/Alfa/java/tradeFramework/tryOutResearcher/data/";
+	public static String settingPath = "./";
 
 	public static void main(String[] args) throws Throwable {
 
-		List<InitialSettings> settingsList = Runner.readSettings(settingPath);
+		List<InitialSettings> settingsList = Runner.readSettings(settingPath, "settings.researcher.txt");
 
 		for (InitialSettings settings : settingsList) {
 

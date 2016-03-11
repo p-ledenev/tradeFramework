@@ -16,6 +16,7 @@
         <module>alfa</module>
         <module>nnTutor</module>
         <module>tryOutResearcher</module>
+        <module>quik</module>
     </modules>
 
     <dependencyManagement>
@@ -156,5 +157,27 @@
             </plugins>
         </pluginManagement>
     </build>
+
+    <repositories>
+        <repository>
+            <id>thirdparty</id>
+            <name>3rd party</name>
+            <url>http://itsvn.vpb.local:8081/nexus/content/repositories/thirdparty/</url>
+        </repository>
+
+        <repository>
+            <id>central</id>
+            <name>Central</name>
+            <url>http://itsvn.vpb.local:8081/nexus/content/repositories/central/</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>central</id>
+            <name>Central</name>
+            <url>http://itsvn.vpb.local:8081/nexus/content/repositories/central/</url>
+        </pluginRepository>
+    </pluginRepositories>
 
 </project>
