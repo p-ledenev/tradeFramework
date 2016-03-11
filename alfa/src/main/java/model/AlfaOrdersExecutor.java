@@ -10,107 +10,107 @@ import java.util.*;
  */
 public class AlfaOrdersExecutor implements IOrdersExecutor {
 
-    private AlfaGateway gateway;
+	private AlfaGateway gateway;
 
-    public AlfaOrdersExecutor(AlfaGateway gateway) {
-        this.gateway = gateway;
-    }
+	public AlfaOrdersExecutor(AlfaGateway gateway) {
+		this.gateway = gateway;
+	}
 
-    public void execute(List<Order> orders) throws InterruptedException {
+	public void execute(List<Order> orders) throws Throwable {
 
-        List<AlfaOrder> alfaOrders = wrap(orders);
+		List<AlfaOrder> alfaOrders = wrap(orders);
 
-        Log.info("Trying execute opposite orders");
-        executeOppositeOrders(alfaOrders);
+		Log.info("Trying execute opposite orders");
+		executeOppositeOrders(alfaOrders);
 
-        Log.info("Trying execute all other orders");
-        while (hasOrdersToProcess(alfaOrders)) {
+		Log.info("Trying execute all other orders");
+		while (hasOrdersToProcess(alfaOrders)) {
 
-            if (submit(alfaOrders))
-                Thread.sleep(11 * 1000);
+			if (submit(alfaOrders))
+				Thread.sleep(11 * 1000);
 
-            for (AlfaOrder order : alfaOrders)
-                order.loadStatus();
+			for (AlfaOrder order : alfaOrders)
+				order.loadStatus();
 
-            Thread.sleep(2 * 1000);
-        }
+			Thread.sleep(2 * 1000);
+		}
 
-        for (AlfaOrder order : alfaOrders)
-            order.dropIfNecessary();
+		for (AlfaOrder order : alfaOrders)
+			order.dropIfNecessary();
 
-        for (AlfaOrder order : alfaOrders)
-            Log.info(order.toString() + " " + order.printStatus());
-    }
+		for (AlfaOrder order : alfaOrders)
+			Log.info(order.toString() + " " + order.printStatus());
+	}
 
-    public void checkVolumeFor(String security, int volume) {
+	public void checkVolumeFor(String security, int volume) {
 
-        try {
-            int alfaVolume = gateway.loadSecurityVolume(security);
-            if (alfaVolume == volume)
-                return;
+		try {
+			int alfaVolume = gateway.loadSecurityVolume(security);
+			if (alfaVolume == volume)
+				return;
 
-            Log.info("For security " + security + " Alfa Terminal has " + alfaVolume + ", but portfolios have " + volume);
+			Log.info("For security " + security + " Alfa Terminal has " + alfaVolume + ", but portfolios have " + volume);
 
-        } catch (AlfaGatewayFailure e) {
-            Log.info(e.getMessage());
-        }
-    }
+		} catch (AlfaGatewayFailure e) {
+			Log.info(e.getMessage());
+		}
+	}
 
-    private boolean hasOrdersToProcess(List<AlfaOrder> alfaOrders) {
-        for (AlfaOrder order : alfaOrders)
-            if (order.executionAllowed())
-                return true;
+	private boolean hasOrdersToProcess(List<AlfaOrder> alfaOrders) {
+		for (AlfaOrder order : alfaOrders)
+			if (order.executionAllowed())
+				return true;
 
-        return false;
-    }
+		return false;
+	}
 
-    private boolean submit(List<AlfaOrder> alfaOrders) {
+	private boolean submit(List<AlfaOrder> alfaOrders) {
 
-        boolean isAnySubmitted = false;
-        for (AlfaOrder order : alfaOrders) {
-            order.loadLastValue();
-            order.submit();
+		boolean isAnySubmitted = false;
+		for (AlfaOrder order : alfaOrders) {
+			order.loadLastValue();
+			order.submit();
 
-            if (order.isSubmissionSucceed())
-                isAnySubmitted = true;
-        }
+			if (order.isSubmissionSucceed())
+				isAnySubmitted = true;
+		}
 
-        return isAnySubmitted;
-    }
+		return isAnySubmitted;
+	}
 
-    private List<AlfaOrder> wrap(List<Order> orders) {
-        List<AlfaOrder> alfaOrders = new ArrayList<AlfaOrder>();
+	private List<AlfaOrder> wrap(List<Order> orders) {
+		List<AlfaOrder> alfaOrders = new ArrayList<AlfaOrder>();
 
-        for (Order order : orders)
-            alfaOrders.add(new AlfaOrder(order, gateway));
+		for (Order order : orders)
+			alfaOrders.add(new AlfaOrder(order, gateway));
 
-        return alfaOrders;
-    }
+		return alfaOrders;
+	}
 
-    private void executeOppositeOrders(List<AlfaOrder> alfaOrders) {
-        for (AlfaOrder order : alfaOrders) {
-            for (AlfaOrder opposite : alfaOrders) {
-                if (order.isOppositeTo(opposite)) {
-                    try {
-                        Log.info("Mutual execution opposite orders: ");
-                        Log.info(order.toString());
-                        Log.info(opposite.toString());
+	private void executeOppositeOrders(List<AlfaOrder> alfaOrders) {
+		for (AlfaOrder order : alfaOrders) {
+			for (AlfaOrder opposite : alfaOrders) {
+				if (order.isOppositeTo(opposite)) {
+					try {
+						Log.info("Mutual execution opposite orders: ");
+						Log.info(order.toString());
+						Log.info(opposite.toString());
 
-                        double lastValue = gateway.loadLastValueFor(order.getSecurity());
-                        order.executedWith(lastValue);
-                        opposite.executedWith(lastValue);
+						double lastValue = gateway.loadLastValueFor(order.getSecurity());
+						order.executedWith(lastValue);
+						opposite.executedWith(lastValue);
 
-                    } catch (LoadLastValueFailure e) {
-                        Log.info(order.toString() + " " + e.getMessage());
+					} catch (LoadLastValueFailure e) {
+						Log.info(order.toString() + " " + e.getMessage());
 
-                        order.blockSubmission();
-                        opposite.blockSubmission();
+						order.blockSubmission();
+						opposite.blockSubmission();
 
-                    } catch (AlfaGatewayFailure e) {
-                        Log.info(order.toString() + " " + e.getMessage());
-                    }
-                }
-            }
-        }
-    }
+					} catch (AlfaGatewayFailure e) {
+						Log.info(order.toString() + " " + e.getMessage());
+					}
+				}
+			}
+		}
+	}
 }

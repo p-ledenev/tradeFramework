@@ -1,5 +1,7 @@
 package orders.model;
 
+import lombok.Getter;
+
 import java.util.*;
 
 /**
@@ -7,6 +9,7 @@ import java.util.*;
  */
 public class TransactionsQueue {
 
+	@Getter
 	private List<Transaction> transactions;
 
 	public TransactionsQueue() {
@@ -23,5 +26,14 @@ public class TransactionsQueue {
 
 	public void add(Transaction transaction) {
 		transactions.add(transaction);
+	}
+
+	public boolean hasUnfinished() {
+
+		for (Transaction transaction : transactions)
+			if (!transaction.isFinished())
+				return true;
+
+		return false;
 	}
 }

@@ -1,8 +1,10 @@
 package orders.model;
 
+import exceptions.PositionAlreadySetFailure;
 import lombok.Setter;
 import model.Order;
 import orders.dictionary.*;
+import tools.Log;
 
 import java.util.*;
 
@@ -74,10 +76,36 @@ public abstract class Transaction {
 	}
 
 	public boolean isSubmissionSucceed() {
-		return status == TransactionStatus.SubmissionSucceed;
+		return TransactionStatus.SubmissionSucceed.equals(status);
 	}
 
 	public boolean hasId(Integer id) {
 		return this.id != null && this.id.equals(id);
+	}
+
+	public void submitionSucceed() {
+		status = TransactionStatus.SubmissionSucceed;
+	}
+
+	public boolean isExecutionSucceed() {
+		return TransactionStatus.ExecutionSucceed.equals(status);
+	}
+
+	public boolean isFinished() {
+		return !TransactionStatus.Submitted.equals(status) &&
+				!TransactionStatus.Deleted.equals(status) &&
+				!TransactionStatus.ExecutedPartly.equals(status);
+	}
+
+	public void finalizeOrder() {
+
+		if (isExecutionSucceed())
+			order.executed();
+
+		try {
+			order.applyToMachine();
+		} catch (PositionAlreadySetFailure e) {
+			Log.error("", e);
+		}
 	}
 }

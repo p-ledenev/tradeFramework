@@ -3,7 +3,7 @@ package orders.model;
 import com.sun.jna.NativeLong;
 import com.sun.jna.ptr.NativeLongByReference;
 import lombok.*;
-import orders.dictionary.ReturnCodes;
+import orders.dictionary.ResponseCode;
 
 /**
  * Created by dlede on 05.03.2016.
@@ -28,14 +28,14 @@ public class QuikResponse {
 	String errorMessage;
 
 	public boolean isSuccess() {
-		return ReturnCodes.TRANS2QUIK_SUCCESS.equals(returnCode);
+		return ResponseCode.isSucceed(returnCode);
 	}
 
 	public boolean isQuikConnected() {
-		return ReturnCodes.TRANS2QUIK_QUIK_CONNECTED.equals(returnCode) || isSuccess();
+		return ResponseCode.isQuikConnected(returnCode) || isSuccess();
 	}
 
 	public boolean isDllConnected() {
-		return ReturnCodes.TRANS2QUIK_DLL_CONNECTED.equals(returnCode) || isSuccess();
+		return ResponseCode.isDlLConnected(returnCode) || isSuccess();
 	}
 }

@@ -4,7 +4,7 @@ import com.sun.jna.NativeLong;
 import lombok.AllArgsConstructor;
 import orders.dictionary.OrderStatus;
 import orders.model.*;
-import protocols.QuikOrdersGateway;
+import protocols.QuikTransactionsGateway;
 import tools.Log;
 
 /**
@@ -14,7 +14,7 @@ import tools.Log;
 @AllArgsConstructor
 public class OrderStatusCallback implements Trans2QuikLibrary.OrderStatusCallback {
 
-	private QuikOrdersGateway gateway;
+	private QuikTransactionsGateway gateway;
 
 	@Override
 	public void callback(NativeLong mode,

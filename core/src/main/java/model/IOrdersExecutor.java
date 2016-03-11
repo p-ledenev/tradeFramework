@@ -7,7 +7,7 @@ import java.util.*;
  */
 public interface IOrdersExecutor {
 
-    void execute(List<Order> orders) throws InterruptedException;
+    void execute(List<Order> orders) throws Throwable;
 
     void checkVolumeFor(String security, int volume) throws Throwable;
 }

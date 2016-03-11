@@ -2,9 +2,9 @@ package orders.callbacks;
 
 import com.sun.jna.NativeLong;
 import lombok.AllArgsConstructor;
-import orders.dictionary.ReturnCodes;
+import orders.dictionary.ResponseCode;
 import orders.model.*;
-import protocols.QuikOrdersGateway;
+import protocols.QuikTransactionsGateway;
 import tools.Log;
 
 /**
@@ -14,7 +14,7 @@ import tools.Log;
 @AllArgsConstructor
 public class TransactionReplyCallback implements Trans2QuikLibrary.TransactionReplyCallback {
 
-	private QuikOrdersGateway gateway;
+	private QuikTransactionsGateway gateway;
 
 	@Override
 	public void callback(NativeLong resultCode,
@@ -23,13 +23,23 @@ public class TransactionReplyCallback implements Trans2QuikLibrary.TransactionRe
 						 int transactionId,
 						 double orderNumber,
 						 String replyMessage) {
+		// TODO according to specification there should be transReplyDescriptor as last param
 
 		Log.info("Order submission callback received for transactionId " + transactionId);
 
 		try {
 			Transaction transaction = gateway.findTransactionBy(transactionId);
 
-			if (ReturnCodes.)
+			if (ResponseCode.isSucceed(resultCode.longValue())) {
+				transaction.submitionSucceed();
+				return;
+			}
+
+			Log.error("Submission failed with status " +
+					ResponseCode.getBy(resultCode.longValue()).getValue() +
+					" and message " + replyMessage);
+
+			transaction.submissionFailed();
 
 		} catch (TransactionNotFound e) {
 			Log.error("", e);

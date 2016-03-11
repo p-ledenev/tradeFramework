@@ -6,10 +6,12 @@ import orders.callbacks.*;
 import orders.model.*;
 import orders.requests.*;
 
+import java.util.List;
+
 /**
- * Created by dlede on 05.03.2016.
+ * Created by pledenev on 05.03.2016.
  */
-public class QuikOrdersGateway {
+public class QuikTransactionsGateway {
 
 	private TransactionsQueue queue;
 
@@ -18,16 +20,20 @@ public class QuikOrdersGateway {
 	@Setter
 	private String pathToQuik;
 
-	public QuikOrdersGateway() {
+	public QuikTransactionsGateway() {
 		queue = new TransactionsQueue();
 	}
 
-	public void delete(int orderId) {
-
+	public void submitTransactionsBy(List<Order> orders) {
+		for (Order order : orders)
+			submitTransactionBy(order);
 	}
 
-	public void submit(Order order) throws Throwable {
+	public void drop(Transaction transaction) {
+		//TODO
+	}
 
+	public void submitTransactionBy(Order order) {
 		Transaction transaction = new NewOrderTransaction(order, classCode);
 		queue.add(transaction);
 
@@ -98,5 +104,23 @@ public class QuikOrdersGateway {
 
 	public Transaction findTransactionBy(int id) throws TransactionNotFound {
 		return queue.findBy(id);
+	}
+
+	public boolean hasUnfinishedTransactions() {
+		return queue.hasUnfinished();
+	}
+
+	public void dropUnfinishedTransactions() {
+		for (Transaction transaction : queue.getTransactions())
+			drop(transaction);
+	}
+
+	public void finalizeOrders() {
+		for (Transaction transaction : queue.getTransactions())
+			transaction.finalizeOrder();
+	}
+
+	public void cleanOrdersQueue() {
+		queue = new TransactionsQueue();
 	}
 }
