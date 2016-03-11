@@ -42,6 +42,7 @@ public class QuikOrdersGateway {
 	public void registerCallbacks() throws Throwable {
 		registerSubmissionCallback();
 		registerExecutionCallback();
+		registerConnectionCallback();
 	}
 
 	private void registerExecutionCallback() throws Throwable {
@@ -70,7 +71,7 @@ public class QuikOrdersGateway {
 		return 0;
 	}
 
-	private void connect() throws Throwable {
+	public void connect() throws Throwable {
 
 		CheckTerminalConnectionRequest quikConnection = new CheckTerminalConnectionRequest();
 		QuikResponse response = quikConnection.execute();
@@ -93,5 +94,9 @@ public class QuikOrdersGateway {
 			throw new Exception(response.getErrorMessage());
 
 		return response;
+	}
+
+	public Transaction findTransactionBy(int id) throws TransactionNotFound {
+		return queue.findBy(id);
 	}
 }

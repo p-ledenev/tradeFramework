@@ -2,8 +2,10 @@ package orders.callbacks;
 
 import com.sun.jna.NativeLong;
 import lombok.AllArgsConstructor;
-import orders.model.Trans2QuikLibrary;
+import orders.dictionary.ReturnCodes;
+import orders.model.*;
 import protocols.QuikOrdersGateway;
+import tools.Log;
 
 /**
  * Created by dlede on 07.03.2016.
@@ -22,6 +24,15 @@ public class TransactionReplyCallback implements Trans2QuikLibrary.TransactionRe
 						 double orderNumber,
 						 String replyMessage) {
 
+		Log.info("Order submission callback received for transactionId " + transactionId);
 
+		try {
+			Transaction transaction = gateway.findTransactionBy(transactionId);
+
+			if (ReturnCodes.)
+
+		} catch (TransactionNotFound e) {
+			Log.error("", e);
+		}
 	}
 }

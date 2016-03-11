@@ -13,8 +13,8 @@ import java.util.*;
 @Setter
 public abstract class Transaction {
 
+	private Integer id;
 	private String classCode;
-	private Integer transactionId;
 	private Map<String, Object> requisites;
 	private TransactionStatus status;
 
@@ -32,7 +32,7 @@ public abstract class Transaction {
 		fillRequisites();
 
 		return "CLASSCODE=" + classCode + ";" +
-				"TRANS_ID=" + transactionId + ";" +
+				"TRANS_ID=" + id + ";" +
 				"ACTION=" + getAction().getValue() + ";" +
 				formatRequisites();
 	}
@@ -59,5 +59,25 @@ public abstract class Transaction {
 
 	public void submissionFailed() {
 		status = TransactionStatus.SubmissionFailed;
+	}
+
+	public void executed() {
+		status = TransactionStatus.ExecutionSucceed;
+	}
+
+	public void executedPartly() {
+		status = TransactionStatus.ExecutedPartly;
+	}
+
+	public void deletionSucceed() {
+		status = TransactionStatus.DeletionSucceed;
+	}
+
+	public boolean isSubmissionSucceed() {
+		return status == TransactionStatus.SubmissionSucceed;
+	}
+
+	public boolean hasId(Integer id) {
+		return this.id != null && this.id.equals(id);
 	}
 }
