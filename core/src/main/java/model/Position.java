@@ -15,11 +15,11 @@ public class Position implements Cloneable {
     private int volume;
 
     public static Position begining() {
-        return new Position(Direction.neutral, 0, Candle.empty());
+        return new Position(Direction.Neutral, 0, Candle.empty());
     }
 
     public static Position closing(Candle candle) {
-        return new Position(Direction.neutral, 0, candle);
+        return new Position(Direction.Neutral, 0, candle);
     }
 
     public static Position opening(Direction direction, int volume, Candle candle) {
@@ -57,19 +57,19 @@ public class Position implements Cloneable {
     }
 
     public boolean isBuy() {
-        return Direction.buy.equals(direction);
+        return Direction.Buy.equals(direction);
     }
 
     public boolean isSell() {
-        return Direction.sell.equals(direction);
+        return Direction.Sell.equals(direction);
     }
 
     public boolean isHold() {
-        return Direction.hold.equals(direction);
+        return Direction.Hold.equals(direction);
     }
 
     public boolean isNeutral() {
-        return Direction.neutral.equals(direction);
+        return Direction.Neutral.equals(direction);
     }
 
     public boolean equalTo(Position position) {
@@ -96,7 +96,7 @@ public class Position implements Cloneable {
     }
 
     public void neutral() {
-        direction = Direction.neutral;
+        direction = Direction.Neutral;
     }
 
     public Position copy() throws CloneNotSupportedException {

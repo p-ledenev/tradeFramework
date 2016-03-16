@@ -4,7 +4,6 @@ import com.sun.jna.NativeLong;
 import lombok.AllArgsConstructor;
 import orders.dictionary.ResponseCode;
 import orders.model.*;
-import protocols.QuikTransactionsGateway;
 import tools.Log;
 
 /**
@@ -14,7 +13,7 @@ import tools.Log;
 @AllArgsConstructor
 public class TransactionReplyCallback implements Trans2QuikLibrary.TransactionReplyCallback {
 
-	private QuikTransactionsGateway gateway;
+	private TransactionsQueue queue;
 
 	@Override
 	public void callback(NativeLong resultCode,
@@ -25,19 +24,18 @@ public class TransactionReplyCallback implements Trans2QuikLibrary.TransactionRe
 						 String replyMessage) {
 		// TODO according to specification there should be transReplyDescriptor as last param
 
-		Log.info("Order submission callback received for transactionId " + transactionId);
+		Log.info("Order submission callback received for transactionId " + transactionId +
+				" with status " + ResponseCode.getBy(resultCode.longValue()));
 
 		try {
-			Transaction transaction = gateway.findTransactionBy(transactionId);
+			Transaction transaction = queue.findBy(transactionId);
 
 			if (ResponseCode.isSucceed(resultCode.longValue())) {
-				transaction.submitionSucceed();
+				transaction.submissionSucceed();
 				return;
 			}
 
-			Log.error("Submission failed with status " +
-					ResponseCode.getBy(resultCode.longValue()).getValue() +
-					" and message " + replyMessage);
+			Log.error("Submission failed with message " + replyMessage);
 
 			transaction.submissionFailed();
 

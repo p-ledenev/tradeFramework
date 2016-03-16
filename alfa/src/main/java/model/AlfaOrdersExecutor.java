@@ -16,14 +16,12 @@ public class AlfaOrdersExecutor implements IOrdersExecutor {
 		this.gateway = gateway;
 	}
 
+	@Override
 	public void execute(List<Order> orders) throws Throwable {
 
 		List<AlfaOrder> alfaOrders = wrap(orders);
 
-		Log.info("Trying execute opposite orders");
-		executeOppositeOrders(alfaOrders);
-
-		Log.info("Trying execute all other orders");
+		Log.info("Trying execute orders");
 		while (hasOrdersToProcess(alfaOrders)) {
 
 			if (submit(alfaOrders))
@@ -42,6 +40,7 @@ public class AlfaOrdersExecutor implements IOrdersExecutor {
 			Log.info(order.toString() + " " + order.printStatus());
 	}
 
+	@Override
 	public void checkVolumeFor(String security, int volume) {
 
 		try {
@@ -85,32 +84,5 @@ public class AlfaOrdersExecutor implements IOrdersExecutor {
 			alfaOrders.add(new AlfaOrder(order, gateway));
 
 		return alfaOrders;
-	}
-
-	private void executeOppositeOrders(List<AlfaOrder> alfaOrders) {
-		for (AlfaOrder order : alfaOrders) {
-			for (AlfaOrder opposite : alfaOrders) {
-				if (order.isOppositeTo(opposite)) {
-					try {
-						Log.info("Mutual execution opposite orders: ");
-						Log.info(order.toString());
-						Log.info(opposite.toString());
-
-						double lastValue = gateway.loadLastValueFor(order.getSecurity());
-						order.executedWith(lastValue);
-						opposite.executedWith(lastValue);
-
-					} catch (LoadLastValueFailure e) {
-						Log.info(order.toString() + " " + e.getMessage());
-
-						order.blockSubmission();
-						opposite.blockSubmission();
-
-					} catch (AlfaGatewayFailure e) {
-						Log.info(order.toString() + " " + e.getMessage());
-					}
-				}
-			}
-		}
 	}
 }

@@ -7,26 +7,26 @@ import java.util.*;
  */
 public class TryOutOrdersExecutor implements IOrdersExecutor {
 
-    private int tradeYear;
+	private int tradeYear;
 
-    public TryOutOrdersExecutor(int tradeYear) {
-        this.tradeYear = tradeYear;
-    }
+	public TryOutOrdersExecutor(int tradeYear) {
+		this.tradeYear = tradeYear;
+	}
 
-    public void execute(List<Order> orders) {
+	public void execute(List<Order> orders) {
 
-        for (Order order : orders) {
+		for (Order order : orders) {
 
-            Candle next = order.getLastCandle();
-            if (!next.hasYearAs(tradeYear))
-                continue;
+			Candle next = order.getLastCandle();
+			if (!next.hasYearAs(tradeYear))
+				continue;
 
-            order.setValue(((TryOutCandle)next).getNextValue());
-            order.executed();
-        }
-    }
+			order.setValue(((TryOutCandle) next).getNextValue());
+			order.executed();
+		}
+	}
 
-    public void checkVolumeFor(String security, int volume) throws Throwable {
+	public void checkVolumeFor(String security, int volume) throws Throwable {
 
-    }
+	}
 }

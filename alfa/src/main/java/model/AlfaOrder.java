@@ -186,7 +186,7 @@ public class AlfaOrder {
     public void dropIfNecessary() {
 
         if (shouldBeBlocked())
-            order.blockMachine();
+            order.block();
 
         if (!shouldBeDeleted())
             return;
@@ -195,7 +195,7 @@ public class AlfaOrder {
             gateway.dropOrder(this.getOrderNumber());
 
             status = AlfaOrderStatus.deleted;
-            order.unblockMachine();
+            order.unblock();
 
         } catch (AlfaGatewayFailure e) {
             Log.error("Drop order error: ", e);

@@ -2,9 +2,8 @@ package orders.callbacks;
 
 import com.sun.jna.NativeLong;
 import lombok.AllArgsConstructor;
-import orders.dictionary.OrderStatus;
+import orders.dictionary.*;
 import orders.model.*;
-import protocols.QuikTransactionsGateway;
 import tools.Log;
 
 /**
@@ -14,7 +13,7 @@ import tools.Log;
 @AllArgsConstructor
 public class OrderStatusCallback implements Trans2QuikLibrary.OrderStatusCallback {
 
-	private QuikTransactionsGateway gateway;
+	private TransactionsQueue queue;
 
 	@Override
 	public void callback(NativeLong mode,
@@ -29,10 +28,11 @@ public class OrderStatusCallback implements Trans2QuikLibrary.OrderStatusCallbac
 						 NativeLong status,
 						 NativeLong orderDescriptor) {
 
-		Log.info("Order status callback received for transactionId " + transactionId);
+		Log.info("Order status callback received for transactionId " + transactionId +
+				" with status " + ResponseCode.getBy(status.longValue()));
 
 		try {
-			Transaction transaction = gateway.findTransactionBy(transactionId);
+			Transaction transaction = queue.findBy(transactionId);
 
 			if (isExecuted(status, restVolume))
 				transaction.executed();

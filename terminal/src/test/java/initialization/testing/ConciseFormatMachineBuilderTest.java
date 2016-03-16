@@ -78,7 +78,7 @@ public class ConciseFormatMachineBuilderTest {
 
     @Test
     public void shouldReadPositionDirection() throws Throwable {
-        assertThat(machine.getPositionDirection(), equalTo(Direction.sell));
+        assertThat(machine.getPositionDirection(), equalTo(Direction.Sell));
     }
 
     @Test

@@ -1,10 +1,9 @@
 package run;
 
 import iterators.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
 import model.*;
 import org.joda.time.*;
-import org.joda.time.Period;
 import settings.*;
 import tools.*;
 
@@ -50,14 +49,17 @@ public class Trader {
 		}
 
 		Log.info("Orders to execute");
-		for (Order order : orders)
-			order.print();
+		orders.forEach(Order::print);
 
-		// TODO put in here opposite orders execution (
-		// TODO add to executor method loadLastValue - for opposite execution, to set order value
+		List<Order> opposites = findOppositeOrdersIn(orders);
+
+		Log.info("\nOpposites orders");
+		opposites.forEach(Order::print);
+
+		orders = removeExecuted(orders);
 		executor.execute(orders);
 
-		boolean needSubmitTradeData = false;
+		boolean needSubmitTradeData = opposites.size() > 0;
 		for (Order order : orders) {
 			order.applyToMachine();
 
@@ -66,6 +68,7 @@ public class Trader {
 		}
 
 		OrdersLogger.log(orders);
+		OrdersLogger.log(opposites);
 
 		if (initializer.initFileWasModified()) {
 			initializer.reread();
@@ -109,8 +112,34 @@ public class Trader {
 	}
 
 	private void logBlockedMachines() {
-		for (Portfolio portfolio : initializer.getPortfolios())
-			portfolio.printBlockedMachines();
+		initializer.getPortfolios().forEach(Portfolio::printBlockedMachines);
+	}
+
+	private List<Order> findOppositeOrdersIn(List<Order> orders) {
+
+		List<Order> opposites = new ArrayList<>();
+
+		for (Order order : orders) {
+			for (Order opposite : orders) {
+				if (order.isOppositeTo(opposite)) {
+					opposites.add(opposite);
+					opposites.add(order);
+
+					order.executed();
+					opposite.executed();
+				}
+			}
+		}
+
+		return opposites;
+	}
+
+	private List<Order> removeExecuted(List<Order> orders) {
+		for (Order order : orders)
+			if (order.isExecuted())
+				orders.remove(order);
+
+		return orders;
 	}
 
 	private void suspendProcessing() throws Throwable {

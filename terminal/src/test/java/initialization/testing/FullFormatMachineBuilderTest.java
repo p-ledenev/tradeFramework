@@ -83,7 +83,7 @@ public class FullFormatMachineBuilderTest {
 
     @Test
     public void shouldReadPositionDirection() throws Throwable {
-        assertThat(machine.getPositionDirection(), equalTo(Direction.buy));
+        assertThat(machine.getPositionDirection(), equalTo(Direction.Buy));
     }
 
     @Test

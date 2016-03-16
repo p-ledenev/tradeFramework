@@ -50,8 +50,8 @@ public class MaxMinNeuronTrainingDecisionStrategy extends NeuronTrainingDecision
 
         double profit = 0.004;
         if (rise < profit && fall < profit)
-            return Direction.hold;
+            return Direction.Hold;
 
-        return (rise > fall) ? Direction.buy : Direction.sell;
+        return (rise > fall) ? Direction.Buy : Direction.Sell;
     }
 }

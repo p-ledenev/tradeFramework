@@ -18,17 +18,17 @@ public class TrainingResult {
     Direction direction;
 
     public TrainingResult() {
-        direction = Direction.neutral;
+        direction = Direction.Neutral;
         normalizeIncrements = new ArrayList<Double>();
         rowIncrements = new ArrayList<Double>();
     }
 
     public static TrainingResult empty() {
-        return createForCandles(new ArrayList<Candle>(), Direction.neutral);
+        return createForCandles(new ArrayList<Candle>(), Direction.Neutral);
     }
 
     public static TrainingResult createForCandles(List<Candle> candles) {
-        return createForCandles(candles, Direction.neutral);
+        return createForCandles(candles, Direction.Neutral);
     }
 
     public static TrainingResult createFor(List<Double> values, Direction direction) {
@@ -181,10 +181,10 @@ public class TrainingResult {
 
         String signal = "0;0;1";
 
-        if (Direction.buy.equals(direction))
+        if (Direction.Buy.equals(direction))
             signal = "1;0;0";
 
-        if (Direction.sell.equals(direction))
+        if (Direction.Sell.equals(direction))
             signal = "0;1;0";
 
         return result + signal;
@@ -218,18 +218,18 @@ public class TrainingResult {
     }
 
     public boolean isHold() {
-        return direction.equals(Direction.hold);
+        return direction.equals(Direction.Hold);
     }
 
     public boolean isNeutral() {
-        return direction.equals(Direction.neutral);
+        return direction.equals(Direction.Neutral);
     }
 
     public int getIntDirection() {
-        if (direction.equals(Direction.sell))
+        if (direction.equals(Direction.Sell))
             return -1;
 
-        if (direction.equals(Direction.buy))
+        if (direction.equals(Direction.Buy))
             return 1;
 
         return 0;

@@ -53,8 +53,8 @@ public class StatisticNeuronTrainingDecisionStrategy extends NeuronTrainingDecis
         double profit = 0.0025;
         double deviation = (mean - last) / last;
         if (Math.abs(deviation) < profit)
-            return Direction.neutral;
+            return Direction.Neutral;
 
-        return (deviation > 0) ? Direction.buy : Direction.sell;
+        return (deviation > 0) ? Direction.Buy : Direction.Sell;
     }
 }

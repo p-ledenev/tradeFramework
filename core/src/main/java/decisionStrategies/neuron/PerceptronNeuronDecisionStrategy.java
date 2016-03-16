@@ -20,7 +20,7 @@ public class PerceptronNeuronDecisionStrategy extends NeuronDecisionStrategy {
         TrainingResult result = createTrainingSet(candles);
 
         if (result.incrementsLength() < candles.length - 1)
-            return Direction.neutral;
+            return Direction.Neutral;
 
         MLData input = new BasicMLData(result.getNormalizedValueIncrementsAsArray());
         MLData output = network.compute(input);
@@ -30,12 +30,12 @@ public class PerceptronNeuronDecisionStrategy extends NeuronDecisionStrategy {
 //            return Direction.neutral;
 
         if (output.getData(0) > outputValue)
-            return Direction.buy;
+            return Direction.Buy;
 
         if (output.getData(1) > outputValue)
-            return Direction.sell;
+            return Direction.Sell;
 
-        return Direction.hold;
+        return Direction.Hold;
     }
 
     @Override
@@ -48,7 +48,7 @@ public class PerceptronNeuronDecisionStrategy extends NeuronDecisionStrategy {
         averagingStrategy.computeNewPositionFor(candles.length, 1);
         List<Double> averages = averagingStrategy.getAverageValues(candles.length);
 
-        return TrainingResult.createFor(averages, Direction.neutral);
+        return TrainingResult.createFor(averages, Direction.Neutral);
         //return TrainingResult.createForCandles(Arrays.asList(candles));
     }
 }

@@ -10,8 +10,5 @@ public enum TransactionStatus {
 	SubmissionFailed,
 	ExecutedPartly,
 	ExecutionSucceed,
-	ExecutionFailed,
-	Deleted,
-	DeletionSucceed,
-	DeletionFailed
+	DeletionSucceed
 }

@@ -1,10 +1,8 @@
 package orders.model;
 
-import exceptions.PositionAlreadySetFailure;
 import lombok.Setter;
 import model.Order;
 import orders.dictionary.*;
-import tools.Log;
 
 import java.util.*;
 
@@ -15,12 +13,13 @@ import java.util.*;
 @Setter
 public abstract class Transaction {
 
-	private Integer id;
-	private String classCode;
-	private Map<String, Object> requisites;
-	private TransactionStatus status;
+	protected Integer id;
+	protected String classCode;
+	protected Order order;
 
-	private Order order;
+	private Map<String, Object> requisites;
+
+	private volatile TransactionStatus status;
 
 	public Transaction(Order order, String classCode) {
 		this.order = order;
@@ -30,7 +29,7 @@ public abstract class Transaction {
 		status = TransactionStatus.Newest;
 	}
 
-	public String buildQuikString() {
+	public String buildQuikString() throws Throwable {
 		fillRequisites();
 
 		return "CLASSCODE=" + classCode + ";" +
@@ -51,9 +50,11 @@ public abstract class Transaction {
 		requisites.put(key, value);
 	}
 
-	protected abstract void fillRequisites();
+	protected abstract void fillRequisites() throws Throwable;
 
 	protected abstract Action getAction();
+
+	protected abstract void finalizeSuccessOrder();
 
 	public void submitted() {
 		status = TransactionStatus.Submitted;
@@ -83,7 +84,7 @@ public abstract class Transaction {
 		return this.id != null && this.id.equals(id);
 	}
 
-	public void submitionSucceed() {
+	public void submissionSucceed() {
 		status = TransactionStatus.SubmissionSucceed;
 	}
 
@@ -92,20 +93,18 @@ public abstract class Transaction {
 	}
 
 	public boolean isFinished() {
+		TransactionStatus status = this.status;
+
 		return !TransactionStatus.Submitted.equals(status) &&
-				!TransactionStatus.Deleted.equals(status) &&
 				!TransactionStatus.ExecutedPartly.equals(status);
 	}
 
 	public void finalizeOrder() {
-
-		if (isExecutionSucceed())
-			order.executed();
-
-		try {
-			order.applyToMachine();
-		} catch (PositionAlreadySetFailure e) {
-			Log.error("", e);
+		if (!isExecutionSucceed()) {
+			order.block();
+			return;
 		}
+
+		finalizeSuccessOrder();
 	}
 }

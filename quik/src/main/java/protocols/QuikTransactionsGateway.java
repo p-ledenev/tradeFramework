@@ -1,10 +1,12 @@
 package protocols;
 
-import lombok.Setter;
+import lombok.*;
 import model.Order;
 import orders.callbacks.*;
+import orders.dictionary.ResponseCode;
 import orders.model.*;
 import orders.requests.*;
+import tools.Log;
 
 import java.util.List;
 
@@ -16,12 +18,20 @@ public class QuikTransactionsGateway {
 	private TransactionsQueue queue;
 
 	@Setter
+	private QuikCandlesGateway candlesGateway;
+
+	@Getter
+	@Setter
+	private volatile ResponseCode connectionStatus;
+
+	@Setter
 	private String classCode;
 	@Setter
 	private String pathToQuik;
 
 	public QuikTransactionsGateway() {
 		queue = new TransactionsQueue();
+		connectionStatus = ResponseCode.Success;
 	}
 
 	public void submitTransactionsBy(List<Order> orders) {
@@ -30,11 +40,19 @@ public class QuikTransactionsGateway {
 	}
 
 	public void drop(Transaction transaction) {
-		//TODO
+		Transaction droppedTransaction = KillOrderTransaction.by(transaction);
+		submit(droppedTransaction);
 	}
 
 	public void submitTransactionBy(Order order) {
-		Transaction transaction = new NewOrderTransaction(order, classCode);
+
+		double value = candlesGateway.loadLastValueFor(order.getSecurity());
+		Transaction transaction = new NewOrderTransaction(order, classCode, value);
+
+		submit(transaction);
+	}
+
+	private void submit(Transaction transaction) {
 		queue.add(transaction);
 
 		try {
@@ -49,17 +67,19 @@ public class QuikTransactionsGateway {
 		registerSubmissionCallback();
 		registerExecutionCallback();
 		registerConnectionCallback();
+
+		Log.info("All callbacks registered");
 	}
 
 	private void registerExecutionCallback() throws Throwable {
-		OrderStatusCallback statusCallback = new OrderStatusCallback(this);
+		OrderStatusCallback statusCallback = new OrderStatusCallback(queue);
 		RegisterOrderStatusCallbackRequest request = new RegisterOrderStatusCallbackRequest(statusCallback);
 
 		execute(request);
 	}
 
 	private void registerSubmissionCallback() throws Throwable {
-		TransactionReplyCallback replyCallback = new TransactionReplyCallback(this);
+		TransactionReplyCallback replyCallback = new TransactionReplyCallback(queue);
 		RegisterTransactionReplyCallbackRequest request = new RegisterTransactionReplyCallbackRequest(replyCallback);
 
 		execute(request);
@@ -79,31 +99,29 @@ public class QuikTransactionsGateway {
 
 	public void connect() throws Throwable {
 
-		CheckTerminalConnectionRequest quikConnection = new CheckTerminalConnectionRequest();
-		QuikResponse response = quikConnection.execute();
-
-		if (!response.isQuikConnected())
-			throw new Exception("Quik Terminal doesn't connected to server");
-
 		ConnectDllToTerminalRequest terminalConnection = new ConnectDllToTerminalRequest(pathToQuik);
-		response = terminalConnection.execute();
+		QuikResponse response = terminalConnection.execute();
 
 		if (!response.isDllConnected())
 			throw new Exception("Auto couldn't connect to Quik Terminal\n" + response.getErrorMessage());
+
+		CheckTerminalConnectionRequest quikConnection = new CheckTerminalConnectionRequest();
+		response = quikConnection.execute();
+
+		if (!response.isQuikConnected())
+			throw new Exception("Quik Terminal doesn't connected to server");
 	}
 
 	private QuikResponse execute(QuikRequest request) throws Throwable {
 
 		QuikResponse response = request.execute();
 
+		Log.info("Request " + request.getClass().getCanonicalName() + " executed");
+
 		if (!response.isSuccess())
 			throw new Exception(response.getErrorMessage());
 
 		return response;
-	}
-
-	public Transaction findTransactionBy(int id) throws TransactionNotFound {
-		return queue.findBy(id);
 	}
 
 	public boolean hasUnfinishedTransactions() {
@@ -116,10 +134,10 @@ public class QuikTransactionsGateway {
 	}
 
 	public void finalizeOrders() {
-		for (Transaction transaction : queue.getTransactions())
-			transaction.finalizeOrder();
+		queue.getTransactions().forEach(Transaction::finalizeOrder);
 	}
 
+	// TODO possible memory leak if callback (which has reference on queue) never be invoked?
 	public void cleanOrdersQueue() {
 		queue = new TransactionsQueue();
 	}

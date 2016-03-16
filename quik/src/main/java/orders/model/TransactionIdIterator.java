@@ -2,11 +2,14 @@ package orders.model;
 
 import org.encog.util.file.FileUtil;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.io.*;
 
 /**
  * Created by dlede on 08.03.2016.
  */
+
+@ThreadSafe // more or less
 public class TransactionIdIterator {
 
 	private static TransactionIdIterator iterator;

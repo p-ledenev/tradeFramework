@@ -46,11 +46,11 @@ public class ApproximationNeuronTrainingDecisionStrategy extends NeuronTrainingD
         Candle future = data.get(data.size() - 1);
 
         if (highestDegreeParam > 0)
-            return Direction.buy;
+            return Direction.Buy;
 
         if (highestDegreeParam < 0)
-            return Direction.sell;
+            return Direction.Sell;
 
-        return Direction.neutral;
+        return Direction.Neutral;
     }
 }

@@ -29,7 +29,7 @@ public class MachineTest {
         commission = 1.5;
         date = DateTime.now();
 
-        Position position = Position.opening(Direction.sell, volume, Candle.empty(new DateTime()));
+        Position position = Position.opening(Direction.Sell, volume, Candle.empty(new DateTime()));
         position.setValue(value);
         position.setDate(date);
 
@@ -58,7 +58,7 @@ public class MachineTest {
         double newValue = 100.3;
         int newVolume = 20;
 
-        Position newPosition = Position.opening(Direction.buy, newVolume, Candle.empty(new DateTime()));
+        Position newPosition = Position.opening(Direction.Buy, newVolume, Candle.empty(new DateTime()));
         newPosition.setValue(newValue);
         newPosition.setDate(date);
 
@@ -70,7 +70,7 @@ public class MachineTest {
     @Test
     public void applyForSameDirection() throws Throwable {
 
-        Position newPosition = Position.opening(Direction.sell, 1, Candle.empty(new DateTime()));
+        Position newPosition = Position.opening(Direction.Sell, 1, Candle.empty(new DateTime()));
 
         Portfolio portfolio = mock(Portfolio.class);
         machine.setPortfolio(portfolio);

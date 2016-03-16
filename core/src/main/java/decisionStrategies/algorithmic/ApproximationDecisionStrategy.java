@@ -24,19 +24,19 @@ public class ApproximationDecisionStrategy extends DecisionStrategy {
     protected Direction computeOrderDirection(Candle[] candles) {
 
         if (candlesStorage.size() < candles.length)
-            return Direction.neutral;
+            return Direction.Neutral;
 
         ap = constructor.approximate(candles);
 
         double highestDegreeParam = ap.getHighestDegreeParameter();
 
         if (highestDegreeParam > 0)
-            return Direction.buy;
+            return Direction.Buy;
 
         if (highestDegreeParam < 0)
-            return Direction.sell;
+            return Direction.Sell;
 
-        return Direction.neutral;
+        return Direction.Neutral;
     }
 
     @Override

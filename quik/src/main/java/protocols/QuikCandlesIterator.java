@@ -1,6 +1,8 @@
 package protocols;
 
 import lombok.AllArgsConstructor;
+import model.Candle;
+import model.ICandlesIterator;
 import org.joda.time.DateTime;
 
 import java.util.List;

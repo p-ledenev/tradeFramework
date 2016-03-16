@@ -21,7 +21,7 @@ public class AverageDecisionStrategyTest extends DecisionStrategyTestCase<Averag
     public void shouldComputeOrderDirection() {
         Position position = decisionStrategy.computeNewPositionFor(depth, volume);
 
-        assertThat(position.getDirection(), is(equalTo(Direction.buy)));
+        assertThat(position.getDirection(), is(equalTo(Direction.Buy)));
         assertThat(position.getVolume(), is(equalTo(volume)));
     }
 
@@ -93,7 +93,7 @@ public class AverageDecisionStrategyTest extends DecisionStrategyTestCase<Averag
         decisionStrategy.getCandlesStorage().add(newCandles);
         Position position = decisionStrategy.computeNewPositionFor(depth, volume);
 
-        assertThat(position.getDirection(), is(equalTo(Direction.neutral)));
+        assertThat(position.getDirection(), is(equalTo(Direction.Neutral)));
     }
 
     @Override

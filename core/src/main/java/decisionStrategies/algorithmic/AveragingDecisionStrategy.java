@@ -38,12 +38,12 @@ public class AveragingDecisionStrategy extends DecisionStrategy {
         double averageDerivative = getLastAverageDerivative();
 
         if (averageDerivative > 0)
-            return Direction.buy;
+            return Direction.Buy;
 
         if (averageDerivative < 0)
-            return Direction.sell;
+            return Direction.Sell;
 
-        return Direction.neutral;
+        return Direction.Neutral;
     }
 
     @Override

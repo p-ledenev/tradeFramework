@@ -19,8 +19,8 @@ public abstract class NeuronTrainingDecisionStrategy extends DecisionStrategy {
     @Setter
     protected CandlesStorage allDataStorage;
 
-    protected Direction directionBeforeNeutral = Direction.neutral;
-    protected Direction previousDirection = Direction.neutral;
+    protected Direction directionBeforeNeutral = Direction.Neutral;
+    protected Direction previousDirection = Direction.Neutral;
 
     @Setter
     protected AveragingDecisionStrategy averagingStrategy;
@@ -36,7 +36,7 @@ public abstract class NeuronTrainingDecisionStrategy extends DecisionStrategy {
             Log.error("", e);
         }
 
-        return Direction.neutral;
+        return Direction.Neutral;
     }
 
     public TrainingResult computeTrainingResult(int depth) throws IOException {
@@ -64,14 +64,14 @@ public abstract class NeuronTrainingDecisionStrategy extends DecisionStrategy {
 
         Direction direction = computeDirection(futureData);
 
-        if (!direction.equals(Direction.neutral))
+        if (!direction.equals(Direction.Neutral))
             previousDirection = direction;
 
-        if (direction.equals(Direction.neutral))
+        if (direction.equals(Direction.Neutral))
             directionBeforeNeutral = previousDirection;
 
         if (directionBeforeNeutral.equals(direction))
-            direction = Direction.neutral;
+            direction = Direction.Neutral;
 
         TrainingResult result = TrainingResult.createFor(getAverageValues(depth), direction);
         //TrainingResult result = buildStatisticalResult(depth, direction);

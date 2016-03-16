@@ -54,7 +54,7 @@ public abstract class DecisionStrategyTestCase<TStrategy extends DecisionStrateg
 
         Position position = decisionStrategy.computeNewPositionFor(depth, volume);
 
-        assertThat(position.getDirection(), is(equalTo(Direction.neutral)));
+        assertThat(position.getDirection(), is(equalTo(Direction.Neutral)));
     }
 
     protected abstract TStrategy createStrategy();
