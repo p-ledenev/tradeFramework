@@ -13,49 +13,58 @@ import static org.mockito.Mockito.*;
  */
 public class RealRequestTest {
 
-	private QuikTransactionsGateway gateway;
-	QuikCandlesGateway candlesGateway;
+    private QuikTransactionsGateway gateway;
+    QuikCandlesGateway candlesGateway;
 
-	@Before
-	public void setUp() throws Throwable {
+    @Before
+    public void setUp() throws Throwable {
 
-		gateway = new QuikTransactionsGateway();
-		gateway.setClassCode("SPBFUT");
-		gateway.setPathToQuik("c:\\Program Files\\QUIK\\Quik\\");
+        gateway = new QuikTransactionsGateway();
 
-		candlesGateway = mock(QuikCandlesGateway.class);
-		gateway.setCandlesGateway(candlesGateway);
-	}
+        gateway.setClassCode("SPBFUT");
+        gateway.setAccount("SPBFUT002Y6");
+        //gateway.setClientCode("");
 
-	@Test
-	public void connect() throws Throwable {
-		gateway.connect();
-	}
+        gateway.setPathToQuik("c:\\Program Files\\QUIK\\Quik\\");
 
-	@Test
-	public void registerCallbacks() throws Throwable {
+        candlesGateway = mock(QuikCandlesGateway.class);
+        gateway.setCandlesGateway(candlesGateway);
+    }
 
-		gateway.connect();
-		gateway.registerCallbacks();
+    @Test
+    public void connect() throws Throwable {
+        gateway.connect();
+    }
 
-		Thread.sleep(30 * 1000);
+    @Test
+    public void registerCallbacks() throws Throwable {
 
-		Log.info("Connection status " + gateway.getConnectionStatus());
-	}
+        gateway.connect();
+        gateway.registerCallbacks();
 
-	@Test
-	public void submitOrder() throws Throwable {
+        Thread.sleep(30 * 1000);
 
-		when(candlesGateway.loadLastValueFor(any(String.class))).thenReturn(74000.);
+        Log.info("Connection status " + gateway.getConnectionStatus());
+    }
 
-		gateway.connect();
-		gateway.registerCallbacks();
+    @Test
+    public void submitOrder() throws Throwable {
 
-		Order order = new BuyOrderStub();
+        when(candlesGateway.loadLastValueFor(any(String.class))).thenReturn(69000.);
 
-		gateway.submitTransactionBy(order);
+        gateway.connect();
+        gateway.submitTransactionBy(new FailOrderStub());
+        gateway.registerCallbacks();
 
-		Thread.sleep(30 * 1000);
-		Log.info("Are all orders executed? " + !gateway.hasUnfinishedTransactions());
-	}
+        Order order = new BuyOrderStub();
+        gateway.submitTransactionBy(order);
+
+        Thread.sleep(30 * 1000);
+
+        gateway.submitTransactionBy(order);
+
+        Thread.sleep(60 * 1000);
+
+        Log.info("Are all orders executed? " + !gateway.hasUnfinishedTransactions());
+    }
 }

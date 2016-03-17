@@ -11,31 +11,31 @@ import orders.dictionary.Action;
 @Setter
 public class KillOrderTransaction extends Transaction {
 
-	public static Transaction by(Transaction transaction) {
-		KillOrderTransaction droppedTransaction = new KillOrderTransaction(transaction.order, transaction.classCode);
-		droppedTransaction.setSourceTransactionId(transaction.id);
+    public static Transaction by(Transaction transaction) throws Throwable {
+        KillOrderTransaction droppedTransaction = new KillOrderTransaction(transaction.order, transaction.classCode);
+        droppedTransaction.setSourceTransactionId(transaction.id);
 
-		return droppedTransaction;
-	}
+        return droppedTransaction;
+    }
 
-	private Integer sourceTransactionId;
+    private Integer sourceTransactionId;
 
-	public KillOrderTransaction(Order order, String classCode) {
-		super(order, classCode);
-	}
+    public KillOrderTransaction(Order order, String classCode) throws Throwable {
+        super(order, classCode);
+    }
 
-	@Override
-	protected Action getAction() {
-		return Action.KillOrder;
-	}
+    @Override
+    protected Action getAction() {
+        return Action.KillOrder;
+    }
 
-	@Override
-	protected void finalizeSuccessOrder() {
-		// order.unblock();
-	}
+    @Override
+    protected void finalizeSuccessOrder() {
+        // order.unblock();
+    }
 
-	@Override
-	protected void fillRequisites() {
-		addRequisite("ORDER_KEY", sourceTransactionId);
-	}
+    @Override
+    protected void fillRequisites() {
+        addRequisite("ORDER_KEY", sourceTransactionId);
+    }
 }

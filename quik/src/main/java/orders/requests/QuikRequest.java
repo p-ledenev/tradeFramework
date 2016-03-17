@@ -3,6 +3,7 @@ package orders.requests;
 import com.sun.jna.NativeLong;
 import com.sun.jna.ptr.NativeLongByReference;
 import orders.model.*;
+import orders.jnative.*;
 
 /**
  * Created by dlede on 07.03.2016.

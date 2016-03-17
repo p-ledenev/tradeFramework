@@ -1,4 +1,4 @@
-package orders.model;
+package orders.jnative;
 
 import com.sun.jna.Function;
 import com.sun.jna.Library;

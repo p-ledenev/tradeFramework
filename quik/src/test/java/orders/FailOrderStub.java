@@ -1,19 +1,20 @@
 package orders;
 
-import model.*;
+import model.Machine;
+import model.Order;
 
 /**
  * Created by ledenev.p on 16.03.2016.
  */
-public class BuyOrderStub extends Order {
+public class FailOrderStub extends Order {
 
-	public BuyOrderStub() {
+	public FailOrderStub() {
 		super(new Machine());
 	}
 
 	@Override
 	public String getSecurity() {
-		return "SiM6";
+		return "Установление соединения";
 	}
 
 	@Override

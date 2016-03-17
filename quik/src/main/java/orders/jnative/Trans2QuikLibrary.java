@@ -1,4 +1,4 @@
-package orders.model;
+package orders.jnative;
 
 import com.sun.jna.*;
 import com.sun.jna.ptr.*;
@@ -73,6 +73,7 @@ public interface Trans2QuikLibrary extends StdCallLibrary {
                 int dwTransId,
                 double dOrderNum,
                 String lpcstrTransactionReplyMessage
+                //NativeLong transReplyDescriptor
         );
     }
 
@@ -98,7 +99,7 @@ public interface Trans2QuikLibrary extends StdCallLibrary {
 
     /**
      * Функция используется для установления связи библиотеки Trans2QUIK.dll с Рабочим местом QUIK
-     * <p/>
+     * <p>
      * long TRANS2QUIK_API __stdcall TRANS2QUIK_CONNECT (LPSTR
      * lpstConnectionParamsString, long* pnExtendedErrorCode, LPSTR
      * lpstrErrorMessage, DWORD dwErrorMessageSize);
@@ -124,7 +125,7 @@ public interface Trans2QuikLibrary extends StdCallLibrary {
 
     /**
      * Функция используется для разрыва связи библиотеки Trans2QUIK.dll с терминалом QUIK
-     * <p/>
+     * <p>
      * long TRANS2QUIK_API __stdcall TRANS2QUIK_DISCONNECT
      * (long* pnExtendedErrorCode, LPSTR lpstrErrorMessage, DWORD dwErrorMessageSize);
      *

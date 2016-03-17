@@ -13,98 +13,102 @@ import java.util.*;
 @Setter
 public abstract class Transaction {
 
-	protected Integer id;
-	protected String classCode;
-	protected Order order;
+    protected Integer id;
+    protected String classCode;
+    protected Order order;
 
-	private Map<String, Object> requisites;
+    private Map<String, Object> requisites;
 
-	private volatile TransactionStatus status;
+    private volatile TransactionStatus status;
 
-	public Transaction(Order order, String classCode) {
-		this.order = order;
-		this.classCode = classCode;
+    public Transaction(Order order, String classCode) throws Throwable {
 
-		requisites = new HashMap<>();
-		status = TransactionStatus.Newest;
-	}
+        this.id = TransactionIdIterator.getNext();
 
-	public String buildQuikString() throws Throwable {
-		fillRequisites();
+        this.order = order;
+        this.classCode = classCode;
 
-		return "CLASSCODE=" + classCode + ";" +
-				"TRANS_ID=" + id + ";" +
-				"ACTION=" + getAction().getValue() + ";" +
-				formatRequisites();
-	}
+        requisites = new HashMap<>();
+        status = TransactionStatus.Newest;
+    }
 
-	private String formatRequisites() {
-		String query = "";
-		for (String key : requisites.keySet())
-			query += key + "=" + requisites.get(key) + ";";
+    public String buildQuikString() throws Throwable {
+        fillRequisites();
 
-		return query;
-	}
+        return "CLASSCODE=" + classCode + ";" +
+                "TRANS_ID=" + id + ";" +
+                "ACTION=" + getAction().getValue() + ";" +
+                formatRequisites();
+    }
 
-	protected void addRequisite(String key, Object value) {
-		requisites.put(key, value);
-	}
+    private String formatRequisites() {
+        String query = "";
+        for (String key : requisites.keySet())
+            query += key + "=" + requisites.get(key) + ";";
 
-	protected abstract void fillRequisites() throws Throwable;
+        return query;
+    }
 
-	protected abstract Action getAction();
+    protected void addRequisite(String key, Object value) {
+        requisites.put(key, value);
+    }
 
-	protected abstract void finalizeSuccessOrder();
+    protected abstract void fillRequisites() throws Throwable;
 
-	public void submitted() {
-		status = TransactionStatus.Submitted;
-	}
+    protected abstract Action getAction();
 
-	public void submissionFailed() {
-		status = TransactionStatus.SubmissionFailed;
-	}
+    protected abstract void finalizeSuccessOrder();
 
-	public void executed() {
-		status = TransactionStatus.ExecutionSucceed;
-	}
+    public void submitted() {
+        status = TransactionStatus.Submitted;
+    }
 
-	public void executedPartly() {
-		status = TransactionStatus.ExecutedPartly;
-	}
+    public void submissionFailed() {
+        status = TransactionStatus.SubmissionFailed;
+    }
 
-	public void deletionSucceed() {
-		status = TransactionStatus.DeletionSucceed;
-	}
+    public void executed() {
+        status = TransactionStatus.ExecutionSucceed;
+    }
 
-	public boolean isSubmissionSucceed() {
-		return TransactionStatus.SubmissionSucceed.equals(status);
-	}
+    public void executedPartly() {
+        status = TransactionStatus.ExecutedPartly;
+    }
 
-	public boolean hasId(Integer id) {
-		return this.id != null && this.id.equals(id);
-	}
+    public void deletionSucceed() {
+        status = TransactionStatus.DeletionSucceed;
+    }
 
-	public void submissionSucceed() {
-		status = TransactionStatus.SubmissionSucceed;
-	}
+    public boolean isSubmissionSucceed() {
+        return TransactionStatus.SubmissionSucceed.equals(status);
+    }
 
-	public boolean isExecutionSucceed() {
-		return TransactionStatus.ExecutionSucceed.equals(status);
-	}
+    public boolean hasId(Integer id) {
+        return this.id != null && this.id.equals(id);
+    }
 
-	public boolean isFinished() {
-		TransactionStatus status = this.status;
+    public void submissionSucceed() {
+        status = TransactionStatus.SubmissionSucceed;
+    }
 
-		return !TransactionStatus.Submitted.equals(status) &&
-				!TransactionStatus.ExecutedPartly.equals(status);
-	}
+    public boolean isExecutionSucceed() {
+        return TransactionStatus.ExecutionSucceed.equals(status);
+    }
 
-	public void finalizeOrder() {
-		if (!isExecutionSucceed()) {
-			order.block();
-			return;
-		}
+    public boolean isFinished() {
+        TransactionStatus status = this.status;
 
-		finalizeSuccessOrder();
-	}
+        return !TransactionStatus.Submitted.equals(status) &&
+                !TransactionStatus.SubmissionSucceed.equals(status) &&
+                !TransactionStatus.ExecutedPartly.equals(status);
+    }
+
+    public void finalizeOrder() {
+        if (!isExecutionSucceed()) {
+            order.block();
+            return;
+        }
+
+        finalizeSuccessOrder();
+    }
 }

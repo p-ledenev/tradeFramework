@@ -2,7 +2,7 @@ package orders.requests;
 
 import com.sun.jna.NativeLong;
 import lombok.AllArgsConstructor;
-import orders.model.Trans2QuikLibrary.TransactionReplyCallback;
+import orders.jnative.Trans2QuikLibrary.TransactionReplyCallback;
 
 /**
  * Created by pledenev on 07.03.2016.

@@ -2,7 +2,7 @@ package orders.callbacks;
 
 import com.sun.jna.NativeLong;
 import orders.dictionary.ResponseCode;
-import orders.model.Trans2QuikLibrary;
+import orders.jnative.Trans2QuikLibrary;
 import protocols.QuikTransactionsGateway;
 import tools.Log;
 
@@ -19,7 +19,8 @@ public class ConnectionStatusCallback implements Trans2QuikLibrary.ConnectionSta
 
     @Override
     public void callback(NativeLong eventCode, NativeLong extendedErrorCode, String errorMessage) {
-        Log.info("Dll connection status callback received with event code " + eventCode);
+        Log.info("Dll connection status callback received event " + ResponseCode.getBy(eventCode.longValue()));
+
         gateway.setConnectionStatus(ResponseCode.getBy(eventCode.longValue()));
 
         if (ResponseCode.isDllDisconnected(eventCode.longValue())) {

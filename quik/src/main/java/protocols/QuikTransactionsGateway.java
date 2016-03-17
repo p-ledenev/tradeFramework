@@ -13,132 +13,148 @@ import java.util.List;
 /**
  * Created by pledenev on 05.03.2016.
  */
+
+@Setter
 public class QuikTransactionsGateway {
 
-	private TransactionsQueue queue;
+    private TransactionsQueue queue;
 
-	@Setter
-	private QuikCandlesGateway candlesGateway;
+    private QuikCandlesGateway candlesGateway;
 
-	@Getter
-	@Setter
-	private volatile ResponseCode connectionStatus;
+    @Getter
+    private volatile ResponseCode connectionStatus;
 
-	@Setter
-	private String classCode;
-	@Setter
-	private String pathToQuik;
+    // need to be declared here for correct callbacks calls
+    private OrderStatusCallback orderStatusCallback;
+    private ConnectionStatusCallback connectionStatusCallback;
+    private TransactionReplyCallback transactionReplyCallback;
 
-	public QuikTransactionsGateway() {
-		queue = new TransactionsQueue();
-		connectionStatus = ResponseCode.Success;
-	}
 
-	public void submitTransactionsBy(List<Order> orders) {
-		for (Order order : orders)
-			submitTransactionBy(order);
-	}
+    private String classCode;
+    private String account;
 
-	public void drop(Transaction transaction) {
-		Transaction droppedTransaction = KillOrderTransaction.by(transaction);
-		submit(droppedTransaction);
-	}
+    private String pathToQuik;
 
-	public void submitTransactionBy(Order order) {
+    public QuikTransactionsGateway() {
+        queue = new TransactionsQueue();
+        connectionStatus = ResponseCode.Success;
 
-		double value = candlesGateway.loadLastValueFor(order.getSecurity());
-		Transaction transaction = new NewOrderTransaction(order, classCode, value);
+        connectionStatusCallback = new ConnectionStatusCallback(this);
 
-		submit(transaction);
-	}
+        orderStatusCallback = new OrderStatusCallback(queue);
+        transactionReplyCallback = new TransactionReplyCallback(queue);
+    }
 
-	private void submit(Transaction transaction) {
-		queue.add(transaction);
+    public void submitTransactionsBy(List<Order> orders) throws Throwable {
+        for (Order order : orders)
+            submitTransactionBy(order);
+    }
 
-		try {
-			execute(new SubmitOrderRequest(transaction));
-			transaction.submitted();
-		} catch (Throwable e) {
-			transaction.submissionFailed();
-		}
-	}
+    public void drop(Transaction transaction) throws Throwable {
+        Transaction droppedTransaction = KillOrderTransaction.by(transaction);
+        submit(droppedTransaction);
+    }
 
-	public void registerCallbacks() throws Throwable {
-		registerSubmissionCallback();
-		registerExecutionCallback();
-		registerConnectionCallback();
+    public void submitTransactionBy(Order order) throws Throwable {
 
-		Log.info("All callbacks registered");
-	}
+        double value = candlesGateway.loadLastValueFor(order.getSecurity());
+        Transaction transaction = new NewOrderTransaction(order, classCode, value, account);
 
-	private void registerExecutionCallback() throws Throwable {
-		OrderStatusCallback statusCallback = new OrderStatusCallback(queue);
-		RegisterOrderStatusCallbackRequest request = new RegisterOrderStatusCallbackRequest(statusCallback);
+        submit(transaction);
+    }
 
-		execute(request);
-	}
+    private void submit(Transaction transaction) {
+        queue.add(transaction);
 
-	private void registerSubmissionCallback() throws Throwable {
-		TransactionReplyCallback replyCallback = new TransactionReplyCallback(queue);
-		RegisterTransactionReplyCallbackRequest request = new RegisterTransactionReplyCallbackRequest(replyCallback);
+        try {
+            execute(new SubmitOrderRequest(transaction));
+            transaction.submitted();
+        } catch (Throwable e) {
+            transaction.submissionFailed();
+        }
+    }
 
-		execute(request);
-	}
+    public void registerCallbacks() throws Throwable {
+        registerSubmissionCallback();
+        registerExecutionCallback();
+        registerConnectionCallback();
 
-	private void registerConnectionCallback() throws Throwable {
-		ConnectionStatusCallback statusCallback = new ConnectionStatusCallback(this);
-		RegisterConnectionStatusCallbackRequest request = new RegisterConnectionStatusCallbackRequest(statusCallback);
+        Log.info("All callbacks registered");
+    }
 
-		execute(request);
-	}
+    public void registerExecutionCallback() throws Throwable {
 
-	// TODO might be moved to CandlesGateway
-	public int loadSecurityVolume(String security) {
-		return 0;
-	}
+        subscribeToOrders();
 
-	public void connect() throws Throwable {
+        RegisterOrderStatusCallbackRequest request = new RegisterOrderStatusCallbackRequest(orderStatusCallback);
+        execute(request);
+    }
 
-		ConnectDllToTerminalRequest terminalConnection = new ConnectDllToTerminalRequest(pathToQuik);
-		QuikResponse response = terminalConnection.execute();
+    public void subscribeToOrders() throws Throwable {
+        UnsubscribeOrdersRequest unsubscribeOrdersRequest = new UnsubscribeOrdersRequest();
+        execute(unsubscribeOrdersRequest);
 
-		if (!response.isDllConnected())
-			throw new Exception("Auto couldn't connect to Quik Terminal\n" + response.getErrorMessage());
+        SubscribeOrdersRequest subscribeOrdersRequest = new SubscribeOrdersRequest(classCode);
+        execute(subscribeOrdersRequest);
+    }
 
-		CheckTerminalConnectionRequest quikConnection = new CheckTerminalConnectionRequest();
-		response = quikConnection.execute();
+    private void registerSubmissionCallback() throws Throwable {
+        RegisterTransactionReplyCallbackRequest request = new RegisterTransactionReplyCallbackRequest(transactionReplyCallback);
+        execute(request);
+    }
 
-		if (!response.isQuikConnected())
-			throw new Exception("Quik Terminal doesn't connected to server");
-	}
+    private void registerConnectionCallback() throws Throwable {
+        RegisterConnectionStatusCallbackRequest request = new RegisterConnectionStatusCallbackRequest(connectionStatusCallback);
+        execute(request);
+    }
 
-	private QuikResponse execute(QuikRequest request) throws Throwable {
+    // TODO might be moved to CandlesGateway
+    public int loadSecurityVolume(String security) {
+        return 0;
+    }
 
-		QuikResponse response = request.execute();
+    public void connect() throws Throwable {
 
-		Log.info("Request " + request.getClass().getCanonicalName() + " executed");
+        ConnectDllToTerminalRequest terminalConnection = new ConnectDllToTerminalRequest(pathToQuik);
+        QuikResponse response = terminalConnection.execute();
 
-		if (!response.isSuccess())
-			throw new Exception(response.getErrorMessage());
+        if (!response.isDllConnected())
+            throw new Exception("Auto couldn't connect to Quik Terminal\n" + response.getErrorMessage());
 
-		return response;
-	}
+        CheckTerminalConnectionRequest quikConnection = new CheckTerminalConnectionRequest();
+        response = quikConnection.execute();
 
-	public boolean hasUnfinishedTransactions() {
-		return queue.hasUnfinished();
-	}
+        if (!response.isQuikConnected())
+            throw new Exception("Quik Terminal doesn't connected to server");
+    }
 
-	public void dropUnfinishedTransactions() {
-		for (Transaction transaction : queue.getTransactions())
-			drop(transaction);
-	}
+    private QuikResponse execute(QuikRequest request) throws Throwable {
 
-	public void finalizeOrders() {
-		queue.getTransactions().forEach(Transaction::finalizeOrder);
-	}
+        QuikResponse response = request.execute();
 
-	// TODO possible memory leak if callback (which has reference on queue) never be invoked?
-	public void cleanOrdersQueue() {
-		queue = new TransactionsQueue();
-	}
+        Log.info("Request " + request.getClass().getSimpleName() + " executed");
+
+        if (!response.isSuccess())
+            throw new Exception(response.getErrorMessage());
+
+        return response;
+    }
+
+    public boolean hasUnfinishedTransactions() {
+        return queue.hasUnfinished();
+    }
+
+    public void dropUnfinishedTransactions() throws Throwable {
+        for (Transaction transaction : queue.getTransactions())
+            drop(transaction);
+    }
+
+    public void finalizeOrders() {
+        queue.getTransactions().forEach(Transaction::finalizeOrder);
+    }
+
+    // TODO possible memory leak if callback (which has reference on queue) never be invoked?
+    public void cleanOrdersQueue() {
+        queue = new TransactionsQueue();
+    }
 }

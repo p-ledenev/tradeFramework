@@ -13,19 +13,22 @@ public class NewOrderTransaction extends Transaction {
 
 	private String type = "L";
 	private Double value;
+	private String account;
 
-	public NewOrderTransaction(Order order, String classCode, Double value) {
+	public NewOrderTransaction(Order order, String classCode, Double value, String account) throws Throwable {
 		super(order, classCode);
 		this.value = value;
+		this.account = account;
 	}
 
 	@Override
 	protected void fillRequisites() throws Throwable {
+		addRequisite("ACCOUNT", account);
 		addRequisite("SECCODE", order.getSecurity());
 		addRequisite("TYPE", type);
 		addRequisite("OPERATION", Operation.findFor(order));
 		addRequisite("QUANTITY", order.getVolume());
-		addRequisite("PRICE", value);
+		addRequisite("PRICE", value.intValue());
 	}
 
 	@Override

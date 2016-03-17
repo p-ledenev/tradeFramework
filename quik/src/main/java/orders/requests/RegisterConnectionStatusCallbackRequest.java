@@ -2,7 +2,7 @@ package orders.requests;
 
 import com.sun.jna.*;
 import lombok.AllArgsConstructor;
-import orders.model.Trans2QuikLibrary.ConnectionStatusCallback;
+import orders.jnative.Trans2QuikLibrary.ConnectionStatusCallback;
 
 /**
  * Created by dlede on 07.03.2016.

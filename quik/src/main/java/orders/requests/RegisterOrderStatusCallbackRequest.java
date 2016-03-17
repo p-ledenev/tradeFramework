@@ -1,8 +1,8 @@
 package orders.requests;
 
-import com.sun.jna.*;
+import com.sun.jna.NativeLong;
 import lombok.AllArgsConstructor;
-import orders.model.Trans2QuikLibrary.OrderStatusCallback;
+import orders.callbacks.OrderStatusCallback;
 
 /**
  * Created by dlede on 07.03.2016.
@@ -15,10 +15,6 @@ public class RegisterOrderStatusCallbackRequest extends QuikRequest {
 
     @Override
     protected NativeLong executeNativeRequest() throws Throwable {
-        return library.TRANS2QUIK_SET_TRANSACTIONS_REPLY_CALLBACK(
-                orderStatusCallback,
-                errorCode,
-                errorMessage,
-                errorMessage.length);
+        return library.TRANS2QUIK_START_ORDERS(orderStatusCallback);
     }
 }
