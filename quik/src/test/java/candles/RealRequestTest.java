@@ -10,6 +10,7 @@ import java.util.List;
 /**
  * Created by ledenev.p on 17.03.2016.
  */
+@Ignore
 public class RealRequestTest {
 
 	private QuikCandlesGateway gateway;

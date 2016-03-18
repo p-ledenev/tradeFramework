@@ -4,6 +4,7 @@ import lombok.Setter;
 import model.Order;
 import orders.dictionary.*;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.util.*;
 
 /**
@@ -11,17 +12,19 @@ import java.util.*;
  */
 
 @Setter
+@ThreadSafe
 public abstract class Transaction {
 
     protected Integer id;
     protected String classCode;
     protected Order order;
+    protected Long terminalOrderNumber;
 
     private Map<String, Object> requisites;
 
-    private volatile TransactionStatus status;
+    protected volatile TransactionStatus status;
 
-    public Transaction(Order order, String classCode) throws Throwable {
+    public Transaction(Order order, String classCode) {
 
         this.id = TransactionIdIterator.getNext();
 
@@ -59,23 +62,23 @@ public abstract class Transaction {
 
     protected abstract void finalizeSuccessOrder();
 
-    public void submitted() {
+    public synchronized void submitted() {
         status = TransactionStatus.Submitted;
     }
 
-    public void submissionFailed() {
+    public synchronized void submissionFailed() {
         status = TransactionStatus.SubmissionFailed;
     }
 
-    public void executed() {
+    public synchronized void executed() {
         status = TransactionStatus.ExecutionSucceed;
     }
 
-    public void executedPartly() {
+    public synchronized void executedPartly() {
         status = TransactionStatus.ExecutedPartly;
     }
 
-    public void deletionSucceed() {
+    public synchronized void deletionSucceed() {
         status = TransactionStatus.DeletionSucceed;
     }
 
@@ -87,9 +90,12 @@ public abstract class Transaction {
         return this.id != null && this.id.equals(id);
     }
 
-    public void submissionSucceed() {
-        status = TransactionStatus.SubmissionSucceed;
+    public synchronized void submissionSucceed(long orderNumber) {
+        terminalOrderNumber = orderNumber;
+        onSuccessSubmission();
     }
+
+    protected abstract void onSuccessSubmission();
 
     public boolean isExecutionSucceed() {
         return TransactionStatus.ExecutionSucceed.equals(status);
@@ -110,5 +116,13 @@ public abstract class Transaction {
         }
 
         finalizeSuccessOrder();
+    }
+
+    public String print() {
+        return "transaction id " + id + "; status " + status;
+    }
+
+    public boolean hasSameVolume(int volume) {
+        return order.hasVolume(volume);
     }
 }

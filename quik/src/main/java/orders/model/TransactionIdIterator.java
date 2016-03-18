@@ -2,6 +2,7 @@ package orders.model;
 
 import org.apache.commons.io.FileUtils;
 import org.encog.util.file.FileUtil;
+import tools.Log;
 
 import javax.annotation.concurrent.ThreadSafe;
 import java.io.*;
@@ -20,11 +21,11 @@ public class TransactionIdIterator {
 
     private Integer value;
 
-    public static Integer getNext() throws TransactionIdStorageNotFound {
+    public static Integer getNext() {
         return getIterator().getNextValue();
     }
 
-    private static TransactionIdIterator getIterator() throws TransactionIdStorageNotFound {
+    private static TransactionIdIterator getIterator() {
 
         TransactionIdIterator localInstance = iterator;
         if (localInstance == null) {
@@ -40,30 +41,32 @@ public class TransactionIdIterator {
         return localInstance;
     }
 
-    private TransactionIdIterator() throws TransactionIdStorageNotFound {
+    private TransactionIdIterator() {
         value = readCurrentTransactionId();
     }
 
-    private synchronized Integer getNextValue() throws TransactionIdStorageNotFound {
+    private synchronized Integer getNextValue() {
         writeNewTransactionId(++value);
         return value;
     }
 
-    private Integer readCurrentTransactionId() throws TransactionIdStorageNotFound {
+    private Integer readCurrentTransactionId() {
         try {
             String stringTransactionId = FileUtils.readFileToString(new File(filePath + fileName));
             return Integer.parseInt(stringTransactionId);
 
         } catch (IOException e) {
-            throw new TransactionIdStorageNotFound();
+            Log.debug(e.getMessage());
+
+            return 1;
         }
     }
 
-    private void writeNewTransactionId(Integer transactionId) throws TransactionIdStorageNotFound {
+    private void writeNewTransactionId(Integer transactionId) {
         try {
             FileUtil.writeFileAsString(new File(filePath + fileName), transactionId.toString());
         } catch (IOException e) {
-            throw new TransactionIdStorageNotFound();
+            Log.debug(e.getMessage());
         }
     }
 }

@@ -3,6 +3,7 @@ package orders.model;
 import lombok.Setter;
 import model.Order;
 import orders.dictionary.Action;
+import orders.dictionary.TransactionStatus;
 
 /**
  * Created by ledenev.p on 10.03.2016.
@@ -11,16 +12,16 @@ import orders.dictionary.Action;
 @Setter
 public class KillOrderTransaction extends Transaction {
 
-    public static Transaction by(Transaction transaction) throws Throwable {
+    public static Transaction by(Transaction transaction) {
         KillOrderTransaction droppedTransaction = new KillOrderTransaction(transaction.order, transaction.classCode);
-        droppedTransaction.setSourceTransactionId(transaction.id);
+        droppedTransaction.setSourceTransactionId(transaction.terminalOrderNumber);
 
         return droppedTransaction;
     }
 
-    private Integer sourceTransactionId;
+    private Long sourceTransactionId;
 
-    public KillOrderTransaction(Order order, String classCode) throws Throwable {
+    public KillOrderTransaction(Order order, String classCode) {
         super(order, classCode);
     }
 
@@ -32,6 +33,11 @@ public class KillOrderTransaction extends Transaction {
     @Override
     protected void finalizeSuccessOrder() {
         // order.unblock();
+    }
+
+    @Override
+    protected void onSuccessSubmission() {
+        status = TransactionStatus.ExecutionSucceed;
     }
 
     @Override

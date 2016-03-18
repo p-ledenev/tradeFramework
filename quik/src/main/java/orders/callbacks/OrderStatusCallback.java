@@ -34,35 +34,39 @@ public class OrderStatusCallback implements Trans2QuikLibrary.OrderStatusCallbac
 
         Log.debug("Order status callback received for transactionId " + transactionId +
                 " with status " + OrderStatus.getBy(status.longValue()) +
-                "; orderNumber " + orderNumber + "; classCode " + classCode + "; securityCode " + securityCode +
+                "; orderNumber " + Double.valueOf(orderNumber).longValue() + "; classCode " + classCode + "; securityCode " + securityCode +
                 "; value " + value + "; restVolume " + restVolume + "; totalValue " + totalValue + "; isSell " + isSell + "; mode " + mode);
 
-//		try {
-//			Transaction transaction = queue.findBy(transactionId);
-//
-//			if (isExecuted(status, restVolume))
-//				transaction.executed();
-//
-//			if (isActive(status))
-//				transaction.executedPartly();
-//
-//			if (isDeleted(status, transaction))
-//				transaction.deletionSucceed();
-//
-//		} catch (TransactionNotFound e) {
-//			Log.error("", e);
-//		}
+        try {
+            Transaction transaction = queue.findBy(transactionId);
+
+            if (isExecuted(status, restVolume))
+                transaction.executed();
+
+            if (isExecutedPartly(restVolume, transaction))
+                transaction.executedPartly();
+
+            if (isDeleted(status, transaction))
+                transaction.deletionSucceed();
+
+        } catch (TransactionNotFound e) {
+            Log.error("", e);
+        }
     }
 
     private boolean isDeleted(NativeLong status, Transaction transaction) {
         return OrderStatus.isCancelled(status.longValue()) && transaction.isSubmissionSucceed();
     }
 
-    private boolean isActive(NativeLong status) {
-        return OrderStatus.isActive(status.longValue());
+    private boolean isExecutedPartly(NativeLong restVolume, Transaction transaction) {
+        return !isZero(restVolume) && !transaction.hasSameVolume((int) restVolume.longValue());
     }
 
     private boolean isExecuted(NativeLong status, NativeLong restVolume) {
-        return OrderStatus.isExecuted(status.longValue()) && restVolume.equals(0);
+        return OrderStatus.isExecuted(status.longValue()) && isZero(restVolume);
+    }
+
+    private boolean isZero(NativeLong volume) {
+        return volume.longValue() == 0L;
     }
 }

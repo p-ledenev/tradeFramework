@@ -29,7 +29,7 @@ public class TransactionReplyCallback implements Trans2QuikLibrary.TransactionRe
 
         Log.debug("Order submission callback received for transactionId " + transactionId +
                 " with status " + ResponseCode.getBy(resultCode.longValue()) +
-                "; replyCode " + replyCode.longValue() + "; transactionId " + transactionId + "; orderNumber " + orderNumber +
+                "; replyCode " + replyCode.longValue() + "; orderNumber " + Double.valueOf(orderNumber).longValue() +
                 "; replyMessage " + replyMessage);
 
 
@@ -37,7 +37,7 @@ public class TransactionReplyCallback implements Trans2QuikLibrary.TransactionRe
             Transaction transaction = queue.findBy(transactionId);
 
             if (ResponseCode.isSucceed(resultCode.longValue()) && orderNumber != 0.) {
-                transaction.submissionSucceed();
+                transaction.submissionSucceed(Double.valueOf(orderNumber).longValue());
                 return;
             }
 

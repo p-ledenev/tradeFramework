@@ -2,6 +2,8 @@ package orders.requests;
 
 import com.sun.jna.NativeLong;
 import lombok.AllArgsConstructor;
+import orders.callbacks.ConnectionStatusCallback;
+import orders.jnative.Trans2QuikLibrary;
 import orders.jnative.Trans2QuikLibrary.TransactionReplyCallback;
 
 /**

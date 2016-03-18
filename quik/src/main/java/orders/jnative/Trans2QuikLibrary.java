@@ -73,7 +73,6 @@ public interface Trans2QuikLibrary extends StdCallLibrary {
                 int dwTransId,
                 double dOrderNum,
                 String lpcstrTransactionReplyMessage
-                //NativeLong transReplyDescriptor
         );
     }
 

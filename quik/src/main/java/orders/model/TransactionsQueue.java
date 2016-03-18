@@ -9,31 +9,44 @@ import java.util.*;
  */
 public class TransactionsQueue {
 
-	@Getter
-	private List<Transaction> transactions;
+    private List<Transaction> transactions;
 
-	public TransactionsQueue() {
-		transactions = new ArrayList<>();
-	}
+    public TransactionsQueue() {
+        transactions = new ArrayList<>();
+    }
 
-	public Transaction findBy(Integer id) throws TransactionNotFound {
-		for (Transaction transaction : transactions)
-			if (transaction.hasId(id))
-				return transaction;
+    public Transaction findBy(Integer id) throws TransactionNotFound {
+        for (Transaction transaction : transactions)
+            if (transaction.hasId(id))
+                return transaction;
 
-		throw new TransactionNotFound(id);
-	}
+        throw new TransactionNotFound(id);
+    }
 
-	public void add(Transaction transaction) {
-		transactions.add(transaction);
-	}
+    public void add(Transaction transaction) {
+        transactions.add(transaction);
+    }
 
-	public boolean hasUnfinished() {
+    public boolean hasUnfinished() {
 
-		for (Transaction transaction : transactions)
-			if (!transaction.isFinished())
-				return true;
+        for (Transaction transaction : transactions)
+            if (!transaction.isFinished())
+                return true;
 
-		return false;
-	}
+        return false;
+    }
+
+    public void finalizeOrders() {
+        transactions.forEach(Transaction::finalizeOrder);
+    }
+
+    public List<Transaction> getUnfinished() {
+        List<Transaction> response = new ArrayList<>();
+
+        for (Transaction transaction : transactions)
+            if (!transaction.isFinished())
+                response.add(transaction);
+
+        return response;
+    }
 }
