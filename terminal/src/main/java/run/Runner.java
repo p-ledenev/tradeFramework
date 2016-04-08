@@ -1,29 +1,37 @@
 package run;
 
-import iterators.*;
+import iterators.CacheCandlesIterator;
 import model.*;
 import settings.*;
+import terminals.ITerminalGatewaysFactory;
+import tools.Log;
 
 /**
  * Created by ledenev.p on 01.04.2015.
  */
 public class Runner {
 
-    //public static String dataPath = "d:/Projects/Alfa/java/v1.0/tradeFramework/terminal/data/";
-    public static String dataPath = "./";
+	//public static String dataPath = "d:/Projects/Alfa/java/v1.0/tradeFramework/terminal/data/";
+	public static String dataPath = "./";
 
-    public static void main(String[] args) throws Throwable {
+	public static void main(String[] args) throws Throwable {
 
-        AlfaGateway gateway = AlfaSettings.createGateway();
-        gateway.readPassword();
+		try {
+			run();
+		} catch (Throwable e) {
+			Log.error(e);
+		}
+	}
 
-        ICandlesIterator iterator = new CacheCandlesIterator(new AlfaCandlesIterator(gateway));
-        IOrdersExecutor ordersExecutor = new AlfaOrdersExecutor(gateway);
+	private static void run() throws Throwable {
+		ITerminalGatewaysFactory gatewaysFactory = new QuikGatewaysFactory();
 
-        PortfoliosInitializer initializer = new PortfoliosInitializer();
+		PortfoliosInitializer initializer = new PortfoliosInitializer();
 
-        ICandlesIterator candlesIterator = new CacheCandlesIterator(iterator);
-        Trader trader = new Trader(candlesIterator, ordersExecutor, initializer);
-        trader.trade();
-    }
+		ICandlesIterator candlesIterator = new CacheCandlesIterator(gatewaysFactory.getCandleIterator());
+		IOrdersExecutor ordersExecutor = gatewaysFactory.getOrderExecutor();
+
+		Trader trader = new Trader(candlesIterator, ordersExecutor, initializer);
+		trader.trade();
+	}
 }

@@ -1,8 +1,8 @@
 package model;
 
-import lombok.*;
+import lombok.Data;
 import org.joda.time.*;
-import tools.*;
+import tools.Log;
 
 import java.util.*;
 
@@ -13,126 +13,147 @@ import java.util.*;
 @Data
 public class Portfolio implements IMoneyStateSupport {
 
-    private CandlesStorage candlesStorage;
-    private List<Machine> machines;
-    private String security;
-    private String title;
-    private int lot;
+	private CandlesStorage candlesStorage;
+	private Boolean intradayTrading;
+	private List<Machine> machines;
+	private String security;
+	private String title;
+	private int lot;
 
-    public Portfolio(String title, String security, int lot, CandlesStorage candlesStorage) {
-        this.title = title;
-        this.security = security;
+	public Portfolio(String title, String security, int lot, CandlesStorage candlesStorage) {
+		this.title = title;
+		this.security = security;
 
-        this.lot = lot;
-        this.candlesStorage = candlesStorage;
+		this.lot = lot;
+		this.candlesStorage = candlesStorage;
+		this.intradayTrading = false;
 
-        machines = new ArrayList<Machine>();
-    }
+		machines = new ArrayList<>();
+	}
 
-    public Portfolio(String title, String security, CandlesStorage candlesStorage) {
-        this(title, security, 100, candlesStorage);
-    }
+	public Portfolio(String title, String security, CandlesStorage candlesStorage) {
+		this(title, security, 100, candlesStorage);
+	}
 
-    public void addMachine(Machine machine) {
-        machines.add(machine);
-    }
+	public void addMachine(Machine machine) {
+		machines.add(machine);
+	}
 
-    public void addOrderTo(List<Order> orders, List<Candle> candles) throws Throwable {
+	public void addOrderTo(final List<Order> orders, List<Candle> candles) throws Throwable {
+		if (candles.isEmpty())
+			return;
 
-        if (candlesStorage.validateTimeSequence(candles))
-            candlesStorage.add(candles);
+		candlesStorage.addOnlyNew(candles);
 
-        for (Machine machine : machines)
-            machine.addOrderTo(orders);
-    }
+		boolean closePositions = candles.get(candles.size() - 1).hasLastTimeWithIn(
+				LocalTime.parse("18:40"),
+				LocalTime.parse("19:01"));
 
-    public String printStrategy() {
-        return machines.get(0).getDecisionStrategyName();
-    }
+		if (closePositions && intradayTrading) {
+			machines.forEach(machine -> machine.addClosePositionOrderTo(orders));
+		} else {
+			machines.forEach(machine -> machine.addOrderTo(orders));
+		}
+	}
 
-    public MoneyState getCurrentState() {
-        return new MoneyState(getLatestTime(), computeCurrentMoney());
-    }
+	public String printStrategy() {
+		return machines.get(0).getDecisionStrategyName();
+	}
 
-    private double computeCurrentMoney() {
-        double currentMoney = 0;
-        for (Machine machine : machines)
-            currentMoney += machine.getCurrentMoney();
+	public MoneyState getCurrentState() {
+		return new MoneyState(getLatestTime(), computeCurrentMoney());
+	}
 
-        return currentMoney / machines.size();
-    }
+	private double computeCurrentMoney() {
+		double currentMoney = 0;
+		for (Machine machine : machines)
+			currentMoney += machine.getCurrentMoney();
 
-    private DateTime getLatestTime() {
-        DateTime date = machines.get(0).getPositionDate();
+		return currentMoney / machines.size();
+	}
 
-        for (Machine machine : machines)
-            if (date.isBefore(machine.getPositionDate()))
-                date = machine.getPositionDate();
+	private DateTime getLatestTime() {
+		DateTime date = machines.get(0).getPositionDate();
 
-        return date;
-    }
+		for (Machine machine : machines)
+			if (date.isBefore(machine.getPositionDate()))
+				date = machine.getPositionDate();
 
-    public int countMachines() {
-        return machines.size();
-    }
+		return date;
+	}
 
-    public int computeInitialCandlesSize() {
-        int size = 0;
-        for (Machine machine : machines)
-            if (size < machine.getInitialStorageSize())
-                size = machine.getInitialStorageSize();
+	public int countMachines() {
+		return machines.size();
+	}
 
-        return size;
-    }
+	public int computeInitialCandlesSize() {
+		int size = 0;
+		for (Machine machine : machines)
+			if (size < machine.getInitialStorageSize())
+				size = machine.getInitialStorageSize();
 
-    public int computeStorageSizeFor(List<Candle> candles) {
-        return candlesStorage.computeStorageSizeFor(candles);
-    }
+		return size;
+	}
 
-    public Candle getLastCandle() {
-        return candlesStorage.last();
-    }
+	public int computeStorageSizeFor(List<Candle> candles) {
+		return candlesStorage.computeStorageSizeFor(candles);
+	}
 
-    public String getDecisonStrategyName() {
-        return machines.get(0).getDecisionStrategyName();
-    }
+	public Candle getLastCandle() {
+		return candlesStorage.last();
+	}
 
-    public void printBlockedMachines() {
-        for (Machine machine : machines)
-            if (machine.isBlocked())
-                Log.info(title + " " + machine.getDepth() + " is blocked");
-    }
+	public String getDecisonStrategyName() {
+		return machines.get(0).getDecisionStrategyName();
+	}
 
-    public boolean hasSecurity(String security) {
-        return this.security.equals(security);
-    }
+	public void printBlockedMachines() {
+		for (Machine machine : machines)
+			if (machine.isBlocked())
+				Log.info("WARNING! " + title + " " + machine.getDepth() + " is blocked");
+	}
 
-    public int getSignVolume() {
-        int volume = 0;
-        for (Machine machine : machines)
-            volume += machine.getSignVolume();
+	public boolean hasSecurity(String security) {
+		return this.security.equals(security);
+	}
 
-        return volume;
-    }
+	public int getSignVolume() {
+		int volume = 0;
+		for (Machine machine : machines)
+			volume += machine.getSignVolume();
 
-    public Machine getMachine(int i) {
-        return machines.get(i);
-    }
+		return volume;
+	}
 
-    public Double getSieveParam() {
-        return machines.get(0).getDecisionStrategy().getSieveParam();
-    }
+	public Machine getMachine(int i) {
+		return machines.get(i);
+	}
 
-    public Integer getFillingGapsNumber() {
-        return machines.get(0).getDecisionStrategy().getFillingGapsNumber();
-    }
+	public Double getSieveParam() {
+		return machines.get(0).getDecisionStrategy().getSieveParam();
+	}
 
-    public String getDescription() {
-        return getDecisonStrategyName() + " " + getSecurity() + " " + getSieveParam() + " " + getFillingGapsNumber();
-    }
+	public Integer getFillingGapsNumber() {
+		return machines.get(0).getDecisionStrategy().getFillingGapsNumber();
+	}
 
-    @Override
-    public void finalize() {
-        Log.info(this.getClass().getSimpleName() + " finalized");
-    }
+	public String getDescription() {
+		return getDecisonStrategyName() + " " + getSecurity() + " " + getSieveParam() + " " + getFillingGapsNumber()
+				+ (intradayTrading ? " intraday" : "");
+	}
+
+	@Override
+	public void finalize() {
+		Log.info(this.getClass().getSimpleName() + " finalized");
+	}
+
+	public int getMaxDepth() {
+		int maxDepth = 0;
+
+		for (Machine machine : machines)
+			if (machine.getDepth() > maxDepth)
+				maxDepth = machine.getDepth();
+
+		return maxDepth;
+	}
 }

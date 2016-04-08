@@ -7,7 +7,6 @@ import org.joda.time.*;
 import settings.*;
 import tools.*;
 
-import java.time.LocalTime;
 import java.util.*;
 
 /**
@@ -17,7 +16,13 @@ import java.util.*;
 @AllArgsConstructor
 public class Trader {
 
-	public static LocalTime tradeTo = LocalTime.of(23, 50);
+	public static LocalTime tradeFrom = new LocalTime(10, 4);
+	public static LocalTime tradeTo = new LocalTime(23, 48);
+
+	public static LocalTime clearingFrom = new LocalTime(18, 43);
+	public static LocalTime clearingTo = new LocalTime(19, 4);
+
+	public static int beginOperationSecond = 45;
 
 	private ICandlesIterator candlesIterator;
 	private IOrdersExecutor executor;
@@ -25,12 +30,14 @@ public class Trader {
 
 	public void trade() throws Throwable {
 
+		Log.info("Hello!");
+
+		if (!isTradeTime())
+			suspendProcessing();
+
 		IPortfolioCandlesIterator iterator = new PortfolioCandlesInitializer(candlesIterator);
 
-		Log.disableDebug();
 		process(iterator);
-		Log.enableDebug();
-
 		suspendProcessing();
 
 		iterator = new PortfolioCandlesIterator(candlesIterator);
@@ -48,18 +55,24 @@ public class Trader {
 			portfolio.addOrderTo(orders, candles);
 		}
 
-		Log.info("Orders to execute");
+		if (orders.size() > 0)
+			Log.info("Orders to execute");
 		orders.forEach(Order::print);
 
 		List<Order> opposites = findOppositeOrdersIn(orders);
 
-		Log.info("\nOpposites orders");
+		if (opposites.size() > 0)
+			Log.info("Opposites orders");
 		opposites.forEach(Order::print);
 
 		orders = removeExecuted(orders);
 		executor.execute(orders);
 
 		boolean needSubmitTradeData = opposites.size() > 0;
+
+		for (Order order : opposites)
+			order.applyToMachine();
+
 		for (Order order : orders) {
 			order.applyToMachine();
 
@@ -86,9 +99,15 @@ public class Trader {
 
 		Set<String> securities = extractSecurities();
 		for (String security : securities) {
-			int volume = computeVolumeFor(security);
 
-			executor.checkVolumeFor(security, volume);
+			int portfoliosVolume = computeVolumeFor(security);
+			int terminalVolume = executor.loadVolumeFor(security);
+
+			if (portfoliosVolume == terminalVolume)
+				continue;
+
+			Log.info("WARNING! For security " + security + " Terminal has " +
+					terminalVolume + ", but portfolios have " + portfoliosVolume);
 		}
 	}
 
@@ -135,51 +154,67 @@ public class Trader {
 	}
 
 	private List<Order> removeExecuted(List<Order> orders) {
+
+		List<Order> ordersToRemove = new ArrayList<>();
+
 		for (Order order : orders)
 			if (order.isExecuted())
-				orders.remove(order);
+				ordersToRemove.add(order);
+
+		ordersToRemove.forEach(orders::remove);
 
 		return orders;
 	}
 
 	private void suspendProcessing() throws Throwable {
 
-		DateTime date = DateTime.now();
+		DateTime nowDate = DateTime.now();
 
-		DateTime tradeBegin = new DateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), 10, 4, 50);
-		DateTime tradeEnd = new DateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), tradeTo.getHour(), tradeTo.getMinute(), 0);
+		DateTime tradeBegin = nowDate.withTime(tradeFrom);
+		DateTime tradeEnd = nowDate.withTime(tradeTo);
 
-		DateTime tradePauseBegin = new DateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), 18, 45, 0);
-		DateTime tradePauseEnd = new DateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), 19, 0, 0);
+		DateTime clearingBegin = nowDate.withTime(clearingFrom);
+		DateTime clearingEnd = nowDate.withTime(clearingTo);
 
-		Period rclock = new Period(0, 0, 0, 0);
-		Period postfix = new Period(10, 4, 50, 0);
-		Period prefix = new Period(23 - date.getHourOfDay(), 59 - date.getMinuteOfHour(), 59 - date.getSecondOfMinute(), 0);
+		DateTime wakeUpTime = nowDate.withSecondOfMinute(beginOperationSecond);
+		if (nowDate.getSecondOfMinute() > 43)
+			wakeUpTime = wakeUpTime.plusMinutes(1);
 
-		boolean weekend = (date.getDayOfWeek() == DateTimeConstants.SATURDAY || date.getDayOfWeek() == DateTimeConstants.SUNDAY);
+		if (nowDate.isAfter(clearingBegin) && nowDate.isBefore(clearingEnd))
+			wakeUpTime = clearingEnd.withSecondOfMinute(beginOperationSecond);
 
-		if (date.getDayOfWeek() == DateTimeConstants.SATURDAY)
-			rclock = new Period(24, 0, 0, 0);
+		if (nowDate.isBefore(tradeBegin))
+			wakeUpTime = tradeBegin.withSecondOfMinute(beginOperationSecond);
 
-		if (date.compareTo(tradeBegin) >= 0 && date.compareTo(tradeEnd) <= 0 && !weekend) {
-			postfix = new Period(0, 0, 0, 0);
-
-			int upSeconds = 50;
-			int delta = (date.getSecondOfMinute() >= upSeconds) ? 60 - date.getSecondOfMinute() : -date.getSecondOfMinute();
-			prefix = new Period(0, 0, upSeconds + delta, 0);
+		if (nowDate.isAfter(tradeEnd)) {
+			int days = (nowDate.getDayOfWeek() == DateTimeConstants.FRIDAY) ? 3 : 1;
+			wakeUpTime = tradeBegin.plusDays(days).withSecondOfMinute(beginOperationSecond);
 		}
 
-		if (date.compareTo(tradePauseBegin) >= 0 && date.compareTo(tradePauseEnd) <= 0) {
-			prefix = new Period(0, 61 - date.getMinuteOfHour(), 0, 0);
-		}
+		if (nowDate.getDayOfWeek() == DateTimeConstants.SATURDAY)
+			wakeUpTime = tradeBegin.plusDays(2).withSecondOfMinute(beginOperationSecond);
 
-		if (date.compareTo(tradeBegin) < 0) {
-			prefix = new Period(0, 0, 0, 0);
-			postfix = new Period(10 - date.getHourOfDay(), 04 - date.getMinuteOfHour(), 50 - date.getSecondOfMinute(), 0);
-		}
+		if (nowDate.getDayOfWeek() == DateTimeConstants.SUNDAY)
+			wakeUpTime = tradeBegin.plusDays(1).withSecondOfMinute(beginOperationSecond);
 
-		Log.info("wake up " + Format.asString(date.plus(rclock).plus(prefix).plus(postfix)));
+		Log.info("wake up " + Format.asString(wakeUpTime));
 
-		Thread.sleep(rclock.plus(prefix).plus(postfix).toStandardDuration().getMillis());
+		Thread.sleep(wakeUpTime.getMillis() - nowDate.getMillis());
+	}
+
+	private boolean isTradeTime() {
+		DateTime nowDate = DateTime.now();
+
+		DateTime tradeBegin = nowDate.withTime(tradeFrom);
+		DateTime tradeEnd = nowDate.withTime(tradeTo);
+
+		if (nowDate.isBefore(tradeBegin) || nowDate.isAfter(tradeEnd))
+			return false;
+
+		if (nowDate.getDayOfWeek() == DateTimeConstants.SATURDAY ||
+				nowDate.getDayOfWeek() == DateTimeConstants.SUNDAY)
+			return false;
+
+		return true;
 	}
 }

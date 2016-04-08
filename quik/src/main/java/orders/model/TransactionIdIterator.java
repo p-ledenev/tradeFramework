@@ -16,7 +16,7 @@ public class TransactionIdIterator {
 
     private static TransactionIdIterator iterator;
 
-    private static String filePath = "f:\\tradeFramework\\quik\\data\\";
+    public static String filePath = "f:\\tradeFramework\\quik\\data\\";
     private static String fileName = "currentTransactionId.txt";
 
     private Integer value;

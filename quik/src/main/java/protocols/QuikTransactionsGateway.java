@@ -17,9 +17,11 @@ import java.util.List;
 @Setter
 public class QuikTransactionsGateway {
 
+	private static int ordersSubmissionPeriodSeconds = 30;
+
 	private TransactionsQueue queue;
 
-	private QuikCandlesGateway candlesGateway;
+	private QuikDataGateway dataGateway;
 
 	@Getter
 	private volatile ResponseCode connectionStatus;
@@ -46,18 +48,25 @@ public class QuikTransactionsGateway {
 	}
 
 	public void submitTransactionsBy(List<Order> orders) throws Throwable {
-		for (Order order : orders)
+
+		int delayMillis = ordersSubmissionPeriodSeconds * 1000 / orders.size();
+
+		for (Order order : orders) {
 			submitTransactionBy(order);
+			Thread.sleep(delayMillis);
+		}
 	}
 
-	public void drop(Transaction transaction)  {
+	public void drop(Transaction transaction) {
 		Transaction droppedTransaction = KillOrderTransaction.by(transaction);
 		submit(droppedTransaction);
 	}
 
 	public void submitTransactionBy(Order order) throws Throwable {
 
-		double value = candlesGateway.loadLastValueFor(order.getSecurity());
+		double value = dataGateway.loadLastValueFor(order.getSecurity());
+		value += (order.isBuy() ? 0.002 : -0.002) * value;
+
 		Transaction transaction = new NewOrderTransaction(order, classCode, value, account);
 
 		submit(transaction);
@@ -108,9 +117,8 @@ public class QuikTransactionsGateway {
 		execute(request);
 	}
 
-	// TODO might be moved to CandlesGateway
-	public int loadSecurityVolume(String security) {
-		return 0;
+	public int loadVolumeFor(String security) throws Throwable {
+		return dataGateway.loadVolumeFor(security);
 	}
 
 	public void connect() throws Throwable {
@@ -145,15 +153,15 @@ public class QuikTransactionsGateway {
 	}
 
 	public void dropUnfinishedTransactions() throws Throwable {
-        queue.getUnfinished().forEach(transaction -> drop(transaction));
+		queue.getUnfinished().forEach(transaction -> drop(transaction));
 	}
 
 	public void finalizeOrders() {
 		queue.finalizeOrders();
 	}
 
-	// TODO possible memory leak if callback (which has reference on queue) never be invoked?
+	// should not create new instance here because of the threads references
 	public void cleanOrdersQueue() {
-		queue = new TransactionsQueue();
+		queue.clean();
 	}
 }

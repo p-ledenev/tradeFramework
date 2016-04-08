@@ -1,7 +1,6 @@
 package model;
 
-import exceptions.*;
-import tools.*;
+import tools.Log;
 
 import java.util.*;
 
@@ -41,18 +40,8 @@ public class AlfaOrdersExecutor implements IOrdersExecutor {
 	}
 
 	@Override
-	public void checkVolumeFor(String security, int volume) {
-
-		try {
-			int alfaVolume = gateway.loadSecurityVolume(security);
-			if (alfaVolume == volume)
-				return;
-
-			Log.info("For security " + security + " Alfa Terminal has " + alfaVolume + ", but portfolios have " + volume);
-
-		} catch (AlfaGatewayFailure e) {
-			Log.info(e.getMessage());
-		}
+	public int loadVolumeFor(String security) throws Throwable {
+		return gateway.loadSecurityVolume(security);
 	}
 
 	private boolean hasOrdersToProcess(List<AlfaOrder> alfaOrders) {

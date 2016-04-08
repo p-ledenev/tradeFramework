@@ -1,7 +1,7 @@
 package model;
 
-import exceptions.*;
-import lombok.*;
+import exceptions.PositionAlreadySetFailure;
+import lombok.Data;
 import tools.*;
 
 /**
@@ -11,123 +11,120 @@ import tools.*;
 @Data
 public class Order {
 
-    private Position newPosition;
-    private Machine machine;
-    private OrderStatus status;
+	private Position newPosition;
+	private Machine machine;
+	private OrderStatus status;
 
-    public Order(Machine machine) {
-        this.machine = machine;
-    }
+	public Order() {
+		status = OrderStatus.newest;
+	}
 
-    public Order(Position newPosition, Machine machine) {
-        this(machine);
-        this.newPosition = newPosition;
-    }
+	public Order(Machine machine) {
+		this();
+		this.machine = machine;
+	}
 
-    public void executed() {
-        status = OrderStatus.executed;
-    }
+	public Order(Position newPosition, Machine machine) {
+		this(machine);
+		this.newPosition = newPosition;
+	}
 
-    public Candle getLastCandle() {
-        return machine.getLastCandle();
-    }
+	public void executed() {
+		status = OrderStatus.executed;
+	}
 
-    public String getPortfolioTitle() {
-        return machine.getPortfolio().getTitle();
-    }
+	public Candle getLastCandle() {
+		return machine.getLastCandle();
+	}
 
-    public boolean hasSameSecurity(Order order) {
-        return getSecurity().equals(order.getSecurity());
-    }
+	public boolean hasSameSecurity(Order order) {
+		return getSecurity().equals(order.getSecurity());
+	}
 
-    public String getSecurity() {
-        return machine.getSecurity();
-    }
+	public String getSecurity() {
+		return machine.getSecurity();
+	}
 
-    public void setValue(double value) {
-        newPosition.setValue(value);
-    }
+	public void setValue(double value) {
+		newPosition.setValue(value);
+	}
 
-    public double getValue() {
-        return newPosition.getValue();
-    }
+	public double getValue() {
+		return newPosition.getValue();
+	}
 
-    public void print() {
-        Log.info(toString());
-    }
+	public void print() {
+		Log.info(toString());
+	}
 
-    public int getVolume() {
-        return machine.getPositionVolume() + newPosition.getVolume();
-    }
+	public int getVolume() {
+		return machine.getPositionVolume() + newPosition.getVolume();
+	}
 
-    public Direction getDirection() {
+	public Direction getDirection() {
 
-        if (machine.getPosition().isNeutral())
-            return newPosition.getDirection();
+		if (machine.getPosition().isNeutral())
+			return newPosition.getDirection();
 
-        return machine.getPositionDirection().opposite();
-    }
+		return machine.getPositionDirection().opposite();
+	}
 
-    public boolean isBuy() {
-        return Direction.Buy.equals(getDirection());
-    }
+	public boolean isBuy() {
+		return Direction.Buy.equals(getDirection());
+	}
 
-    public boolean isSell() {
-        return Direction.Sell.equals(getDirection());
-    }
+	public boolean isSell() {
+		return Direction.Sell.equals(getDirection());
+	}
 
-    public boolean isNewest() {
-        return OrderStatus.newest.equals(status);
-    }
+	public boolean isNewest() {
+		return OrderStatus.newest.equals(status);
+	}
 
-    public boolean isEmpty() {
-        return Direction.Neutral.equals(getDirection()) || getVolume() == 0;
-    }
+	public boolean hasOppositeDirectionTo(Order order) {
+		return getDirection().isOppositeTo(order.getDirection());
+	}
 
-    public boolean hasOppositeDirectionTo(Order order) {
-        return getDirection().isOppositeTo(order.getDirection());
-    }
+	public void applyToMachine() throws PositionAlreadySetFailure {
+		if (isExecuted())
+			machine.apply(newPosition);
+	}
 
-    public void applyToMachine() throws PositionAlreadySetFailure {
-        if (isExecuted())
-            machine.apply(newPosition);
-    }
+	@Override
+	public String toString() {
+		return Format.asString(newPosition.getDate()) + " " + machine.printDecisionStrategy() + " " + machine.getDepth() + " " +
+				newPosition.getDirection() + " " + getValue() + " " + getVolume() + " " + (isExecuted() ? "executed" : "not executed");
+	}
 
-    @Override
-    public String toString() {
-        return Format.asString(newPosition.getDate()) + " " + machine.printDecisionStrategy() + " " + machine.getDepth() + " " +
-                newPosition.getDirection() + " " + getValue() + " " + getVolume() + " " + (isExecuted() ? "executed" : "not executed");
-    }
+	public void block() {
+		machine.block();
+		status = OrderStatus.blocked;
+	}
 
-    public void block() {
-        machine.block();
-        status = OrderStatus.blocked;
-    }
+	public void unblock() {
+		machine.unblock();
+	}
 
-    public void unblock() {
-        machine.unblock();
-    }
+	public boolean hasSameVolume(Order order) {
+		return getVolume() == order.getVolume();
+	}
 
-    public boolean hasSameVolume(Order order) {
-        return getVolume() == order.getVolume();
-    }
+	public boolean isExecuted() {
+		return OrderStatus.executed.equals(status);
+	}
 
-    public boolean isExecuted() {
-        return OrderStatus.executed.equals(status);
-    }
+	public boolean isProcessed() {
+		return !OrderStatus.newest.equals(status);
+	}
 
-    public boolean isProcessed() {
-        return !OrderStatus.newest.equals(status);
-    }
+	public boolean isOppositeTo(Order order) {
+		return hasSameSecurity(order)
+				&& hasOppositeDirectionTo(order)
+				&& hasSameVolume(order)
+				&& isNewest() && order.isNewest();
+	}
 
-    public boolean isOppositeTo(Order order) {
-        return hasSameSecurity(order)
-                && hasOppositeDirectionTo(order)
-                && hasSameVolume(order)
-                && isNewest() && order.isNewest();
-    }
-
-    public boolean hasVolume(int volume) {
-        return getVolume() == volume;
-    }
+	public boolean hasVolume(int volume) {
+		return getVolume() == volume;
+	}
 }

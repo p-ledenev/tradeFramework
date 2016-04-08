@@ -12,37 +12,39 @@ import org.joda.time.*;
 @Data
 public class ConciseFormatMachineBuilder {
 
-    private int depth;
-    private boolean isBlocked;
-    private Direction direction;
+	private int depth;
+	private boolean isBlocked;
+	private Direction direction;
 
-    @Getter
-    private Machine machine;
+	@Getter
+	private Machine machine;
 
-    public ConciseFormatMachineBuilder(String line) throws Throwable {
-        String[] params = line.split(";");
+	public ConciseFormatMachineBuilder(String line) throws Throwable {
+		String[] params = line.split(";");
 
-        depth = Integer.parseInt(params[0]);
-        isBlocked = params[2].equals("1") ? true : false;
-        direction = Direction.getBy(params[1]);
-    }
+		depth = Integer.parseInt(params[0]);
+		isBlocked = params[2].equals("1") ? true : false;
+		direction = Direction.getBy(params[1]);
+	}
 
-    public ConciseFormatMachineBuilder(Machine machine) {
-        this.machine = machine;
-    }
+	public ConciseFormatMachineBuilder(Machine machine) {
+		this.machine = machine;
+	}
 
-    public void build(Portfolio portfolio, DecisionStrategy decisionStrategy, double commission) {
+	public void build(Portfolio portfolio, DecisionStrategy decisionStrategy, double commission) {
 
-        machine = Machine.with(portfolio, decisionStrategy, commission, depth);
+		machine = Machine.with(portfolio, decisionStrategy, commission, depth);
 
-        Candle candle = Candle.empty(new DateTime());
-        Position position = Position.opening(direction, 1, candle);
+		Candle candle = Candle.empty(new DateTime());
 
-        machine.setPosition(position);
-    }
+		int volume = direction.isActive() ? 1 : 0;
+		Position position = Position.opening(direction, volume, candle);
 
-    public String serialize() {
-        return machine.getDepth() + ";" + machine.getPositionDirection().getName() + ";" +
-                (machine.isBlocked() ? "1" : "0");
-    }
+		machine.setPosition(position);
+	}
+
+	public String serialize() {
+		return machine.getDepth() + ";" + machine.getPositionDirection().getName() + ";" +
+				(machine.isBlocked() ? "1" : "0");
+	}
 }

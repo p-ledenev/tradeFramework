@@ -16,7 +16,7 @@ import static org.mockito.Mockito.*;
 public class RealRequestTest {
 
     private QuikTransactionsGateway gateway;
-    QuikCandlesGateway candlesGateway;
+    QuikDataGateway candlesGateway;
 
     @Before
     public void setUp() throws Throwable {
@@ -25,12 +25,11 @@ public class RealRequestTest {
 
         gateway.setClassCode("SPBFUT");
         gateway.setAccount("SPBFUT002Y6");
-        //gateway.setClientCode("");
 
         gateway.setPathToQuik("c:\\Program Files\\QUIK\\Quik\\");
 
-        candlesGateway = mock(QuikCandlesGateway.class);
-        gateway.setCandlesGateway(candlesGateway);
+        candlesGateway = mock(QuikDataGateway.class);
+        gateway.setDataGateway(candlesGateway);
     }
 
     @Test

@@ -13,9 +13,17 @@
     <packaging>jar</packaging>
 
     <dependencies>
+        <!--
         <dependency>
             <groupId>trade</groupId>
             <artifactId>alfa</artifactId>
+            <version>1.0</version>
+        </dependency>
+        -->
+
+        <dependency>
+            <groupId>trade</groupId>
+            <artifactId>quik</artifactId>
             <version>1.0</version>
         </dependency>
 

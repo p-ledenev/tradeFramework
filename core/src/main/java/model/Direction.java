@@ -52,5 +52,7 @@ public enum Direction {
 		throw new UnsupportedDirection(name);
 	}
 
-
+	public boolean isActive() {
+		return equals(Buy) || equals(Sell);
+	}
 }

@@ -1,8 +1,8 @@
 package model;
 
-import lombok.*;
-import siftStrategies.*;
-import tools.*;
+import lombok.Data;
+import siftStrategies.ISiftCandlesStrategy;
+import tools.Log;
 
 import java.util.*;
 
@@ -12,129 +12,132 @@ import java.util.*;
 @Data
 public class CandlesStorage {
 
-    protected List<Candle> candles;
-    protected ISiftCandlesStrategy siftStrategy;
+	protected List<Candle> candles;
+	protected ISiftCandlesStrategy siftStrategy;
 
-    public CandlesStorage() {
-        candles = new ArrayList<Candle>();
-    }
+	public CandlesStorage() {
+		candles = new ArrayList<Candle>();
+	}
 
-    public CandlesStorage(ISiftCandlesStrategy siftStrategy, List<Candle> candles) {
-        this.siftStrategy = siftStrategy;
-        this.candles = candles;
-    }
+	public CandlesStorage(ISiftCandlesStrategy siftStrategy, List<Candle> candles) {
+		this.siftStrategy = siftStrategy;
+		this.candles = candles;
+	}
 
-    public CandlesStorage(ISiftCandlesStrategy siftStrategy) {
-        this(siftStrategy, new ArrayList<Candle>());
-    }
+	public CandlesStorage(ISiftCandlesStrategy siftStrategy) {
+		this(siftStrategy, new ArrayList<Candle>());
+	}
 
 
-    public boolean add(List<Candle> newCandles) {
+	public boolean add(List<Candle> newCandles) {
 
-        List<Candle> sifted = siftStrategy.sift(newCandles);
+		List<Candle> sifted = siftStrategy.sift(newCandles);
 
-        if (Log.isDebugEnabled())
-            for (Candle candle : sifted)
-                Log.debug("Added to candle storage (" + getSieveParam() + ", " +
-                        getFillingGapsNumber() + ") " + candle.print());
+		for (Candle candle : sifted)
+			Log.info("Added to candle storage (" + getSieveParam() + ", " +
+					getFillingGapsNumber() + ") " + candle.print());
 
-        candles.addAll(sifted);
+		candles.addAll(sifted);
 
-        return sifted.size() > 0;
-    }
+		return sifted.size() > 0;
+	}
 
-    public int size() {
-        return candles.size();
-    }
+	public void addOnlyNew(List<Candle> newCandles) {
 
-    public boolean lessThan(int size) {
-        return size() < size;
-    }
+		List<Candle> onlyNew = new ArrayList<>();
 
-    public Candle last() {
+		for (Candle candle : newCandles)
+			if (last().before(candle))
+				onlyNew.add(candle);
 
-        if (candles.size() == 0)
-            return Candle.empty();
+		add(onlyNew);
+	}
 
-        return candles.get(candles.size() - 1);
-    }
+	public int size() {
+		return candles.size();
+	}
 
-    public Candle get(int index) {
-        return candles.get(index);
-    }
+	public boolean lessThan(int size) {
+		return size() < size;
+	}
 
-    public int computeStorageSizeFor(List<Candle> candles) {
-        return siftStrategy.sift(candles).size();
-    }
+	public Candle last() {
 
-    public boolean validateTimeSequence(List<Candle> newCandles) {
-        if (newCandles.size() == 0)
-            return true;
+		if (candles.size() == 0)
+			return Candle.empty();
 
-        return last().before(newCandles.get(0));
-    }
+		return candles.get(candles.size() - 1);
+	}
 
-    public List<Candle> last(int depth) {
+	public Candle get(int index) {
+		return candles.get(index);
+	}
 
-        List<Candle> range = new ArrayList<Candle>();
-        int size = candles.size();
+	public int computeStorageSizeFor(List<Candle> candles) {
+		return siftStrategy.sift(candles).size();
+	}
 
-        if (size < depth)
-            return range;
+	public List<Candle> last(int depth) {
 
-        for (int i = 0; i < depth; i++)
-            range.add(candles.get(size - depth + i));
+		List<Candle> range = new ArrayList<Candle>();
+		int size = candles.size();
 
-        return range;
-    }
+		if (size < depth)
+			return range;
 
-    public int findIndexFor(Candle candle) {
+		for (int i = 0; i < depth; i++)
+			range.add(candles.get(size - depth + i));
 
-        int index = (candles.size() - 1) / 2;
-        int section = candles.size();
-        while (!candle.hasSameDate(candles.get(index))) {
+		return range;
+	}
 
-            int newIndex = 0;
-            section /= 2;
-            if (candle.before(candles.get(index))) {
-                newIndex = index - section / 2;
-                index = newIndex == index ? newIndex - 1 : newIndex;
+	public int findIndexFor(Candle candle) {
 
-            } else {
-                newIndex = index + section / 2;
-                index = newIndex == index ? newIndex + 1 : newIndex;
-            }
+		int index = (candles.size() - 1) / 2;
+		int section = candles.size();
+		while (!candle.hasSameDate(candles.get(index))) {
 
-            if (index < 0 || index >= candles.size())
-                return -1;
-        }
+			int newIndex = 0;
+			section /= 2;
+			if (candle.before(candles.get(index))) {
+				newIndex = index - section / 2;
+				index = newIndex == index ? newIndex - 1 : newIndex;
 
-        return index;
-    }
+			} else {
+				newIndex = index + section / 2;
+				index = newIndex == index ? newIndex + 1 : newIndex;
+			}
 
-    public List<Candle> getAfter(Candle candle, int depth) {
+			if (index < 0 || index >= candles.size())
+				return -1;
+		}
 
-        int index = findIndexFor(candle);
-        if (index < 0)
-            return new ArrayList<Candle>();
+		return index;
+	}
 
-        List<Candle> response = new ArrayList<Candle>();
-        int length = candles.size() > index + depth ? index + depth : candles.size() - 1;
-        for (int i = index + 1; i < length + 1; i++)
-            response.add(candles.get(i));
+	public List<Candle> getAfter(Candle candle, int depth) {
 
-        return response;
-    }
+		int index = findIndexFor(candle);
+		if (index < 0)
+			return new ArrayList<Candle>();
 
-    public Candle backTo(int depth) {
-        return last(depth).get(0);
-    }
+		List<Candle> response = new ArrayList<Candle>();
+		int length = candles.size() > index + depth ? index + depth : candles.size() - 1;
+		for (int i = index + 1; i < length + 1; i++)
+			response.add(candles.get(i));
 
-    public Double getSieveParam() {
-        return siftStrategy.getSieveParam();
-    }
+		return response;
+	}
 
-    public Integer getFillingGapsNumber() {
-        return siftStrategy.getFillingGapsNumber();
-    }
+	public Candle backTo(int depth) {
+		return last(depth).get(0);
+	}
+
+	public Double getSieveParam() {
+		return siftStrategy.getSieveParam();
+	}
+
+	public Integer getFillingGapsNumber() {
+		return siftStrategy.getFillingGapsNumber();
+	}
 }

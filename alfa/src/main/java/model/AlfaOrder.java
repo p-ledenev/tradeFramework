@@ -62,20 +62,6 @@ public class AlfaOrder {
         return order.toString();
     }
 
-    public boolean allowExecution() {
-        if (shouldBeBlocked() || isExecutionSucceed())
-            return false;
-
-        if (isMaxCheckAttemptsExceeded())
-            return false;
-
-        return true;
-    }
-
-    public boolean isNewest() {
-        return status == AlfaOrderStatus.newest;
-    }
-
     public boolean isSubmissionSucceed() {
         return status == AlfaOrderStatus.submissionSucceed;
     }
@@ -91,10 +77,6 @@ public class AlfaOrder {
     public void executed() {
         order.executed();
         status = AlfaOrderStatus.executionSucceed;
-    }
-
-    public void blockSubmission() {
-        status = AlfaOrderStatus.submissionBlocked;
     }
 
     public boolean shouldBeDeleted() {
@@ -169,18 +151,6 @@ public class AlfaOrder {
             return false;
 
         return true;
-    }
-
-    public void executedWith(double value) {
-        order.setValue(value);
-        executed();
-    }
-
-    public boolean isOppositeTo(AlfaOrder alfaOrder) {
-        return order.hasSameSecurity(alfaOrder.getOrder()) &&
-                order.hasOppositeDirectionTo(alfaOrder.getOrder()) &&
-                isNewest() && alfaOrder.isNewest()
-                && order.hasSameVolume(alfaOrder.getOrder());
     }
 
     public void dropIfNecessary() {

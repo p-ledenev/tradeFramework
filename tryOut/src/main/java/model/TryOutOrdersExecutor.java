@@ -26,7 +26,7 @@ public class TryOutOrdersExecutor implements IOrdersExecutor {
 		}
 	}
 
-	public void checkVolumeFor(String security, int volume) throws Throwable {
-
+	public int loadVolumeFor(String security) throws Throwable {
+		return 0;
 	}
 }

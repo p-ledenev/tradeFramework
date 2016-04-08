@@ -9,5 +9,5 @@ public interface IOrdersExecutor {
 
     void execute(List<Order> orders) throws Throwable;
 
-    void checkVolumeFor(String security, int volume) throws Throwable;
+    int loadVolumeFor(String security) throws Throwable;
 }

@@ -3,11 +3,9 @@ package orders.callbacks;
 import com.sun.jna.NativeLong;
 import lombok.AllArgsConstructor;
 import orders.dictionary.ResponseCode;
-import orders.model.*;
 import orders.jnative.Trans2QuikLibrary;
+import orders.model.*;
 import tools.Log;
-
-import java.nio.charset.Charset;
 
 /**
  * Created by dlede on 07.03.2016.
@@ -16,37 +14,38 @@ import java.nio.charset.Charset;
 @AllArgsConstructor
 public class TransactionReplyCallback implements Trans2QuikLibrary.TransactionReplyCallback {
 
-    private TransactionsQueue queue;
+	private TransactionsQueue queue;
 
-    @Override
-    public void callback(NativeLong resultCode,
-                         NativeLong extendedErrorCode,
-                         NativeLong replyCode,
-                         int transactionId,
-                         double orderNumber,
-                         String replyMessage) {
-        //NativeLong tradeDescriptor) {
+	@Override
+	public void callback(NativeLong resultCode,
+						 NativeLong extendedErrorCode,
+						 NativeLong replyCode,
+						 int transactionId,
+						 double orderNumber,
+						 String replyMessage) {
 
-        Log.debug("Order submission callback received for transactionId " + transactionId +
-                " with status " + ResponseCode.getBy(resultCode.longValue()) +
-                "; replyCode " + replyCode.longValue() + "; orderNumber " + Double.valueOf(orderNumber).longValue() +
-                "; replyMessage " + replyMessage);
+		Log.debug("Order submission callback received for transactionId " + transactionId +
+				" with status " + ResponseCode.getBy(resultCode.longValue()) +
+				"; replyCode " + replyCode.longValue() + "; orderNumber " + Double.valueOf(orderNumber).longValue() +
+				"; replyMessage " + replyMessage);
 
+		Log.info("Order submission callback received for transactionId " + transactionId +
+				" with status " + ResponseCode.getBy(resultCode.longValue()));
 
-        try {
-            Transaction transaction = queue.findBy(transactionId);
+		try {
+			Transaction transaction = queue.findBy(transactionId);
 
-            if (ResponseCode.isSucceed(resultCode.longValue()) && orderNumber != 0.) {
-                transaction.submissionSucceed(Double.valueOf(orderNumber).longValue());
-                return;
-            }
+			if (ResponseCode.isSucceed(resultCode.longValue()) && orderNumber != 0.) {
+				transaction.submissionSucceed(Double.valueOf(orderNumber).longValue());
+				return;
+			}
 
-            Log.error("Submission failed with message " + replyMessage);
+			Log.error("Submission failed with message " + replyMessage);
 
-            transaction.submissionFailed();
+			transaction.submissionFailed();
 
-        } catch (TransactionNotFound e) {
-            Log.error("", e);
-        }
-    }
+		} catch (TransactionNotFound e) {
+			Log.debug(e.getMessage());
+		}
+	}
 }

@@ -3,32 +3,43 @@ package orders.callbacks;
 import com.sun.jna.NativeLong;
 import orders.dictionary.ResponseCode;
 import orders.jnative.Trans2QuikLibrary;
+import org.joda.time.*;
 import protocols.QuikTransactionsGateway;
 import tools.Log;
 
 /**
- * Created by dlede on 07.03.2016.
+ * Created by pledenev on 07.03.2016.
  */
 public class ConnectionStatusCallback implements Trans2QuikLibrary.ConnectionStatusCallback {
 
-    private QuikTransactionsGateway gateway;
+	private QuikTransactionsGateway gateway;
 
-    public ConnectionStatusCallback(QuikTransactionsGateway gateway) {
-        this.gateway = gateway;
-    }
+	public ConnectionStatusCallback(QuikTransactionsGateway gateway) {
+		this.gateway = gateway;
+	}
 
-    @Override
-    public void callback(NativeLong eventCode, NativeLong extendedErrorCode, String errorMessage) {
-        Log.info("Dll connection status callback received event " + ResponseCode.getBy(eventCode.longValue()));
+	@Override
+	public void callback(NativeLong eventCode, NativeLong extendedErrorCode, String errorMessage) {
 
-        gateway.setConnectionStatus(ResponseCode.getBy(eventCode.longValue()));
+		if (DateTime.now().getDayOfWeek() == DateTimeConstants.SATURDAY ||
+				DateTime.now().getDayOfWeek() == DateTimeConstants.SUNDAY)
+			return;
 
-        if (ResponseCode.isDllDisconnected(eventCode.longValue())) {
-            try {
-                gateway.connect();
-            } catch (Throwable e) {
-                Log.error("", e);
-            }
-        }
-    }
+		Log.debug("ConnectionStatusCallback"
+				+ " eventCode: " + ResponseCode.getBy(eventCode.longValue())
+				+ "; extendedErrorCode: " + extendedErrorCode.longValue()
+				+ "; errorMessage: " + errorMessage);
+
+		Log.info("Dll connection status callback received. Event " + ResponseCode.getBy(eventCode.longValue()));
+
+		gateway.setConnectionStatus(ResponseCode.getBy(eventCode.longValue()));
+
+		if (ResponseCode.isDllDisconnected(eventCode.longValue())) {
+			try {
+				gateway.connect();
+			} catch (Throwable e) {
+				Log.error(e);
+			}
+		}
+	}
 }

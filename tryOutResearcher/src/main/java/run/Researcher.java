@@ -13,24 +13,35 @@ public class Researcher {
 
 	//public static String settingPath = "d:/Projects/Alfa/java/tradeFramework/tryOutResearcher/data/";
 	public static String settingPath = "./";
+	public static String paramsFile = "params.researcher.txt";
 
 	public static void main(String[] args) throws Throwable {
 
 		List<InitialSettings> settingsList = Runner.readSettings(settingPath, "settings.researcher.txt");
 
+		List<Double> fillGaps = GapParamsReader.read(settingPath + "/" + paramsFile).buildParams();
+		List<Double> sieveParams = SieveParamsReader.read(settingPath + "/" + paramsFile).buildParams();
+
 		for (InitialSettings settings : settingsList) {
 
-			ResearcherDataWriter researcherDataWriter = new ResearcherDataWriter(settings.getStrategyName(), getFillGapsNumbers().size(), getSieveParams().size());
+			ResearcherDataWriter researcherDataWriter = new ResearcherDataWriter(
+					settings.getStrategyName(),
+					settings.getSecurity(),
+					settings.isIntradayTrading(),
+					fillGaps.size(),
+					sieveParams.size());
 
-			for (Double sieveParam : getSieveParams()) {
-				for (Integer gapsNumber : getFillGapsNumbers()) {
+			for (Double sieveParam : sieveParams) {
+				for (Double doubleGapsNumber : fillGaps) {
 
+					int gapsNumber = doubleGapsNumber.intValue();
 					List<ResearchResult> yearResults = new ArrayList<>();
 
 					for (String year : settings.getYears()) {
 
 						List<TryOutCandle> candles = DataSourceFactory.createDataSource().readCandlesFrom(
-								settingPath + IDataSource.sourceFolder + "/" + year + "/" + settings.getSecurity() + "_" + settings.getTimeFrame() + ".txt");
+								settingPath + IDataSource.sourceFolder + "/" + year +
+										"/" + settings.getSecurity() + "_" + settings.getTimeFrame() + ".txt");
 
 						IOrdersExecutor ordersExecutor = new TryOutOrdersExecutor(Integer.parseInt(year));
 
@@ -45,7 +56,12 @@ public class Researcher {
 						double loss = tradeDataCollector.computeMaxLossesPercent();
 						double profit = tradeDataCollector.computeEndPeriodMoneyPercent();
 
-						yearResults.add(new ResearchResult(sieveParam, gapsNumber, profit, loss, profit / loss));
+						yearResults.add(new ResearchResult(
+								sieveParam,
+								gapsNumber,
+								profit,
+								loss,
+								profit / loss));
 					}
 
 					yearResults = removeMaxProfitYear(yearResults);
@@ -85,25 +101,11 @@ public class Researcher {
 		}
 
 		int size = results.size();
-		return new ResearchResult(sieveParam, gapsNumber, averageProfit / size, averageLosses / size, averageCoefficient / size);
-	}
-
-	private static List<Double> getSieveParams() {
-		List<Double> sieveParams = new ArrayList<>();
-
-		for (double param = 0.01; param < 0.142; param += 0.002)
-			sieveParams.add(param);
-
-		return sieveParams;
-	}
-
-	private static List<Integer> getFillGapsNumbers() {
-
-		List<Integer> gapsNumbers = new ArrayList<>();
-
-		for (int i = 1; i < 31; i++)
-			gapsNumbers.add(i);
-
-		return gapsNumbers;
+		return new ResearchResult(
+				sieveParam,
+				gapsNumber,
+				averageProfit / size,
+				averageLosses / size,
+				averageCoefficient / size);
 	}
 }

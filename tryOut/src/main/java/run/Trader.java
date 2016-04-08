@@ -49,7 +49,7 @@ public class Trader implements Runnable {
         try {
             trade();
         } catch (Throwable e) {
-            Log.error("", e);
+            Log.error(e);
         }
     }
 

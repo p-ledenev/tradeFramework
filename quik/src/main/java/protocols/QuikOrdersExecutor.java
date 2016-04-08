@@ -12,6 +12,9 @@ public class QuikOrdersExecutor implements IOrdersExecutor {
 	private QuikTransactionsGateway gateway;
 
 	public QuikOrdersExecutor(QuikTransactionsGateway gateway) throws Throwable {
+
+		System.setProperty("jna.encoding", "cp1251");
+
 		this.gateway = gateway;
 
 		gateway.connect();
@@ -21,13 +24,16 @@ public class QuikOrdersExecutor implements IOrdersExecutor {
 	@Override
 	public void execute(List<Order> orders) throws Throwable {
 
+		if (orders.size() <= 0)
+			return;
+
 		gateway.submitTransactionsBy(orders);
 
-		Thread.sleep(20 * 1000);
+		Thread.sleep(5 * 1000);
 
 		if (gateway.hasUnfinishedTransactions()) {
 			gateway.dropUnfinishedTransactions();
-			Thread.sleep(10 * 1000);
+			Thread.sleep(5 * 1000);
 		}
 
 		gateway.finalizeOrders();
@@ -35,7 +41,7 @@ public class QuikOrdersExecutor implements IOrdersExecutor {
 	}
 
 	@Override
-	public void checkVolumeFor(String security, int volume) throws Throwable {
-
+	public int loadVolumeFor(String security) throws Throwable {
+		return gateway.loadVolumeFor(security);
 	}
 }

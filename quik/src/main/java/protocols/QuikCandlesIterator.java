@@ -14,10 +14,10 @@ import java.util.List;
 @AllArgsConstructor
 public class QuikCandlesIterator implements ICandlesIterator {
 
-	private QuikCandlesGateway gateway;
+	private QuikDataGateway gateway;
 
 	@Override
-	public List<Candle> getNextCandlesFor(String security, DateTime dateFrom, DateTime dateTo) throws Throwable {
+	public List<Candle> getCandlesInclusiveFor(String security, DateTime dateFrom, DateTime dateTo) throws Throwable {
 		return gateway.loadMarketData(security, dateFrom, dateTo);
 	}
 }

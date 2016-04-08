@@ -15,7 +15,7 @@ public class AlfaCandlesIterator implements ICandlesIterator {
 
     private AlfaGateway gateway;
 
-    public List<Candle> getNextCandlesFor(String security, DateTime dateFrom, DateTime dateTo) throws Throwable {
+    public List<Candle> getCandlesInclusiveFor(String security, DateTime dateFrom, DateTime dateTo) throws Throwable {
         Log.info("Alfa candle iterator " + security + ". Loading candles for " + Format.asString(dateFrom) + " - " + Format.asString(dateTo));
 
         List<Candle> candles = gateway.loadMarketData(security, dateFrom, dateTo);

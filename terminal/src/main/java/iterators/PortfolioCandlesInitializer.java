@@ -13,24 +13,26 @@ import java.util.*;
 @AllArgsConstructor
 public class PortfolioCandlesInitializer implements IPortfolioCandlesIterator {
 
-    private ICandlesIterator iterator;
+	private ICandlesIterator iterator;
 
-    public List<Candle> getNextCandlesFor(Portfolio portfolio) throws Throwable {
+	public List<Candle> getNextCandlesFor(Portfolio portfolio) throws Throwable {
 
-        int requiredSize = portfolio.computeInitialCandlesSize();
-        List<Candle> candles = new ArrayList<Candle>();
+		int requiredSize = portfolio.computeInitialCandlesSize();
+		List<Candle> candles = new ArrayList<Candle>();
 
-        DateTime dateTo = DateTime.now();
-        DateTime dateFrom = dateTo.minusDays(1);
+		int maxDepth = portfolio.getMaxDepth();
 
-        int siftedSize = 0;
-        while (siftedSize < requiredSize) {
-            candles = iterator.getNextCandlesFor(portfolio.getSecurity(), dateFrom, dateTo);
+		DateTime dateTo = DateTime.now().withSecondOfMinute(0).minusMinutes(1);
+		DateTime dateFrom = dateTo.minusMinutes(maxDepth * 5);
 
-            siftedSize = portfolio.computeStorageSizeFor(candles);
-            dateFrom = dateFrom.minusDays(1);
-        }
+		int siftedSize = 0;
+		while (siftedSize < requiredSize) {
+			candles = iterator.getCandlesInclusiveFor(portfolio.getSecurity(), dateFrom, dateTo);
 
-        return candles;
-    }
+			siftedSize = portfolio.computeStorageSizeFor(candles);
+			dateFrom = dateFrom.minusMinutes(maxDepth);
+		}
+
+		return candles;
+	}
 }

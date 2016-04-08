@@ -16,13 +16,13 @@ public class CacheCandlesIterator implements ICandlesIterator {
         this.iterator = iterator;
     }
 
-    public List<Candle> getNextCandlesFor(String security, DateTime dateFrom, DateTime dateTo) throws Throwable {
+    public List<Candle> getCandlesInclusiveFor(String security, DateTime dateFrom, DateTime dateTo) throws Throwable {
 
         List<Candle> candles;
         if (CandlesCache.hasRelevantDataFor(security, dateFrom, dateTo)) {
             candles = CandlesCache.getCandles(security);
         } else {
-            candles = iterator.getNextCandlesFor(security, dateFrom, dateTo);
+            candles = iterator.getCandlesInclusiveFor(security, dateFrom, dateTo);
             CandlesCache.addCandles(security, candles);
         }
 

@@ -13,14 +13,13 @@ import java.util.*;
 @AllArgsConstructor
 public class PortfolioCandlesIterator implements IPortfolioCandlesIterator {
 
-    private ICandlesIterator iterator;
+	private ICandlesIterator iterator;
 
-    public List<Candle> getNextCandlesFor(Portfolio portfolio) throws Throwable {
-        DateTime dateFrom = portfolio.getLastCandle().getDate();
+	public List<Candle> getNextCandlesFor(Portfolio portfolio) throws Throwable {
 
-        DateTime now = DateTime.now();
-        DateTime dateTo = new DateTime(now.getYear(), now.getMonthOfYear(), now.getDayOfMonth(), now.getHourOfDay(), now.getMinuteOfHour());
+		DateTime dateFrom = portfolio.getLastCandle().getDate().plusMinutes(1).withSecondOfMinute(0);
+		DateTime dateTo = DateTime.now().minusMinutes(1).withSecondOfMinute(0);
 
-        return iterator.getNextCandlesFor(portfolio.getSecurity(), dateFrom, dateTo);
-    }
+		return iterator.getCandlesInclusiveFor(portfolio.getSecurity(), dateFrom, dateTo);
+	}
 }

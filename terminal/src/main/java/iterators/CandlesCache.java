@@ -13,7 +13,7 @@ public class CandlesCache {
     public static Map<String, List<Candle>> candlesMap;
 
     static {
-        candlesMap = new HashMap<String, List<Candle>>();
+        candlesMap = new HashMap<>();
     }
 
     public static void addCandles(String security, List<Candle> candles) {
@@ -24,7 +24,7 @@ public class CandlesCache {
         List<Candle> candles = candlesMap.get(security);
 
         if (candles == null)
-            return new ArrayList<Candle>();
+            return new ArrayList<>();
 
         return candles;
     }

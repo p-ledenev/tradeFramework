@@ -16,10 +16,14 @@ public class ResearcherDataWriter {
 	private DataWriterStrategy writerStrategy;
 	private ResearcherDataCollector dataCollector;
 	private String strategyName;
+	private String security;
+	private Boolean intraday;
 
-	public ResearcherDataWriter(String strategyName, int xPoints, int yPoints) throws Throwable {
+	public ResearcherDataWriter(String strategyName, String security, Boolean intraday, int xPoints, int yPoints) throws Throwable {
 
 		this.strategyName = strategyName;
+		this.security = security;
+		this.intraday = intraday;
 
 		dataCollector = new ResearcherDataCollector();
 		writerStrategy = DataWriterStrategyFactory.create(strategyName, xPoints, yPoints);
@@ -62,6 +66,7 @@ public class ResearcherDataWriter {
 	}
 
 	private String getFileName() {
-		return resultPath + "/" + strategyName + "_field_params." + writerStrategy.getFileExtension();
+		return resultPath + "/" + strategyName + "_" + security + (intraday ? "_intraday" : "") +
+				"_field_params." + writerStrategy.getFileExtension();
 	}
 }

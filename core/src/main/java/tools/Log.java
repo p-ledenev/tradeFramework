@@ -1,59 +1,31 @@
 package tools;
 
-import org.apache.log4j.*;
+import org.apache.log4j.Logger;
 
-import javax.annotation.concurrent.*;
-import java.lang.management.*;
+import javax.annotation.concurrent.NotThreadSafe;
 
 @NotThreadSafe
 public class Log {
 
-    private static final Logger logger = Logger.getLogger(Log.class);
+	private static final Logger logger = Logger.getLogger(Log.class);
 
-    public static void hello(){
-        logger.info("Hello!!!");
-        printJavaRuntimeInfo();
-    }
+	public static void debug(String message) {
+		logger.debug(message);
+	}
 
-    public static Logger getLogger() {
-        return logger;
-    }
+	public static void info(String message) {
+		logger.info(message);
+	}
 
-    public static void trace(String message) {
-        getLogger().trace(message);
-    }
+	public static void error(String message, Throwable exc) {
+		logger.error(message, exc);
+	}
 
-    public static void debug(String message) {
-        getLogger().debug(message);
-    }
+	public static void error(Throwable exc) {
+		logger.error("", exc);
+	}
 
-    public static void info(String message) {
-        getLogger().info(message);
-    }
-
-    public static void error(String message, Throwable exc) {
-        getLogger().error(message, exc);
-    }
-
-    public static void error(String message) {
-        getLogger().error(message);
-    }
-
-    public static boolean isDebugEnabled() {
-        return getLogger().isDebugEnabled();
-    }
-
-    public static void printJavaRuntimeInfo() {
-        RuntimeMXBean bean = ManagementFactory.getRuntimeMXBean();
-        info(bean.getInputArguments().toString());
-
-    }
-
-    public static void enableDebug() {
-        getLogger().setLevel(Level.DEBUG);
-    }
-
-    public static void disableDebug() {
-        getLogger().setLevel(Level.INFO);
-    }
+	public static void error(String message) {
+		logger.error(message);
+	}
 }

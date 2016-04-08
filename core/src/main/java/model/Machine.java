@@ -69,14 +69,13 @@ public class Machine implements IMoneyStateSupport {
 		return "depth; " + portfolio.printStrategy();
 	}
 
-	public void addOrderTo(List<Order> orders) throws Throwable {
+	public void addOrderTo(List<Order> orders) {
+		if (isBlocked)
+			return;
 
 		Position newPosition = decisionStrategy.computeNewPositionFor(depth, computeVolume());
 
 		if (position.hasSameDirectionAs(newPosition) || newPosition.isHold())
-			return;
-
-		if (isBlocked)
 			return;
 
 		if (profitStrategy.shouldTakeProfit(portfolio.getCandlesStorage(), position))
@@ -89,6 +88,14 @@ public class Machine implements IMoneyStateSupport {
 //            return;
 //        }
 
+		orders.add(new Order(newPosition, this));
+	}
+
+	public void addClosePositionOrderTo(List<Order> orders) {
+		if (isBlocked || position.isNeutral())
+			return;
+
+		Position newPosition = Position.closing(portfolio.getLastCandle());
 		orders.add(new Order(newPosition, this));
 	}
 
@@ -129,10 +136,6 @@ public class Machine implements IMoneyStateSupport {
 
 	public int getPositionVolume() {
 		return position.getVolume();
-	}
-
-	public String getPortfolioTitle() {
-		return portfolio.getTitle();
 	}
 
 	public String getSecurity() {

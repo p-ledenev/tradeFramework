@@ -1,1 +1,1 @@
-usd~&~1min~&~MaxMinNeuronTrainingStrategy~&~0.25~&~0.022~&~7;~&~2010;~&~50;
+usd~&~1min~&~AveragingStrategy~&~0.25~&~0.022~&~7;~&~2015;~&~50~&~intraday

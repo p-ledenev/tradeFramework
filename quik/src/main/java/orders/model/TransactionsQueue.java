@@ -1,7 +1,5 @@
 package orders.model;
 
-import lombok.Getter;
-
 import java.util.*;
 
 /**
@@ -9,44 +7,49 @@ import java.util.*;
  */
 public class TransactionsQueue {
 
-    private List<Transaction> transactions;
+	private List<Transaction> transactions;
 
-    public TransactionsQueue() {
-        transactions = new ArrayList<>();
-    }
+	public TransactionsQueue() {
+		transactions = new ArrayList<>();
+	}
 
-    public Transaction findBy(Integer id) throws TransactionNotFound {
-        for (Transaction transaction : transactions)
-            if (transaction.hasId(id))
-                return transaction;
+	public Transaction findBy(Integer id) throws TransactionNotFound {
 
-        throw new TransactionNotFound(id);
-    }
+		for (Transaction transaction : transactions)
+			if (transaction.hasId(id))
+				return transaction;
 
-    public void add(Transaction transaction) {
-        transactions.add(transaction);
-    }
+		throw new TransactionNotFound(id);
+	}
 
-    public boolean hasUnfinished() {
+	public void add(Transaction transaction) {
+		transactions.add(transaction);
+	}
 
-        for (Transaction transaction : transactions)
-            if (!transaction.isFinished())
-                return true;
+	public void clean() {
+		transactions = new ArrayList<>();
+	}
 
-        return false;
-    }
+	public boolean hasUnfinished() {
 
-    public void finalizeOrders() {
-        transactions.forEach(Transaction::finalizeOrder);
-    }
+		for (Transaction transaction : transactions)
+			if (!transaction.isFinished())
+				return true;
 
-    public List<Transaction> getUnfinished() {
-        List<Transaction> response = new ArrayList<>();
+		return false;
+	}
 
-        for (Transaction transaction : transactions)
-            if (!transaction.isFinished())
-                response.add(transaction);
+	public void finalizeOrders() {
+		transactions.forEach(Transaction::finalizeOrder);
+	}
 
-        return response;
-    }
+	public List<Transaction> getUnfinished() {
+		List<Transaction> response = new ArrayList<>();
+
+		for (Transaction transaction : transactions)
+			if (!transaction.isFinished())
+				response.add(transaction);
+
+		return response;
+	}
 }
