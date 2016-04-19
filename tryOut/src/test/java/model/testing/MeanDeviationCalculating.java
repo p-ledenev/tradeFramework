@@ -18,7 +18,7 @@ public class MeanDeviationCalculating {
 
     @Before
     public void setUp() throws Throwable {
-        years = new Integer[]{2015};
+        years = new Integer[]{2016};
     }
 
     @Test

@@ -4,7 +4,6 @@ import iterators.CacheCandlesIterator;
 import model.*;
 import settings.*;
 import terminals.ITerminalGatewaysFactory;
-import tools.Log;
 
 /**
  * Created by ledenev.p on 01.04.2015.
@@ -16,14 +15,6 @@ public class Runner {
 
 	public static void main(String[] args) throws Throwable {
 
-		try {
-			run();
-		} catch (Throwable e) {
-			Log.error(e);
-		}
-	}
-
-	private static void run() throws Throwable {
 		ITerminalGatewaysFactory gatewaysFactory = new QuikGatewaysFactory();
 
 		PortfoliosInitializer initializer = new PortfoliosInitializer();

@@ -19,8 +19,11 @@ public class Trader {
 	public static LocalTime tradeFrom = new LocalTime(10, 4);
 	public static LocalTime tradeTo = new LocalTime(23, 48);
 
-	public static LocalTime clearingFrom = new LocalTime(18, 43);
-	public static LocalTime clearingTo = new LocalTime(19, 4);
+	public static LocalTime mainClearingFrom = new LocalTime(18, 43);
+	public static LocalTime mainClearingTo = new LocalTime(19, 4);
+
+	public static LocalTime dayClearingFrom = new LocalTime(13, 58);
+	public static LocalTime dayClearingTo = new LocalTime(14, 5);
 
 	public static int beginOperationSecond = 45;
 
@@ -28,7 +31,7 @@ public class Trader {
 	private IOrdersExecutor executor;
 	private PortfoliosInitializer initializer;
 
-	public void trade() throws Throwable {
+	public void trade() throws InterruptedException {
 
 		Log.info("Hello!");
 
@@ -37,12 +40,22 @@ public class Trader {
 
 		IPortfolioCandlesIterator iterator = new PortfolioCandlesInitializer(candlesIterator);
 
-		process(iterator);
+		try {
+			process(iterator);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+
 		suspendProcessing();
 
 		iterator = new PortfolioCandlesIterator(candlesIterator);
 		while (true) {
-			process(iterator);
+			try {
+				process(iterator);
+			} catch (Throwable e) {
+				Log.error(e);
+			}
+
 			suspendProcessing();
 		}
 	}
@@ -166,22 +179,28 @@ public class Trader {
 		return orders;
 	}
 
-	private void suspendProcessing() throws Throwable {
+	private void suspendProcessing() throws InterruptedException {
 
 		DateTime nowDate = DateTime.now();
 
 		DateTime tradeBegin = nowDate.withTime(tradeFrom);
 		DateTime tradeEnd = nowDate.withTime(tradeTo);
 
-		DateTime clearingBegin = nowDate.withTime(clearingFrom);
-		DateTime clearingEnd = nowDate.withTime(clearingTo);
+		DateTime mainClearingBegin = nowDate.withTime(mainClearingFrom);
+		DateTime mainClearingEnd = nowDate.withTime(mainClearingTo);
+
+		DateTime dayClearingBegin = nowDate.withTime(dayClearingFrom);
+		DateTime dayClearingEnd = nowDate.withTime(dayClearingTo);
 
 		DateTime wakeUpTime = nowDate.withSecondOfMinute(beginOperationSecond);
 		if (nowDate.getSecondOfMinute() > 43)
 			wakeUpTime = wakeUpTime.plusMinutes(1);
 
-		if (nowDate.isAfter(clearingBegin) && nowDate.isBefore(clearingEnd))
-			wakeUpTime = clearingEnd.withSecondOfMinute(beginOperationSecond);
+		if (nowDate.isAfter(mainClearingBegin) && nowDate.isBefore(mainClearingEnd))
+			wakeUpTime = mainClearingEnd.withSecondOfMinute(beginOperationSecond);
+
+		if (nowDate.isAfter(dayClearingBegin) && nowDate.isBefore(dayClearingEnd))
+			wakeUpTime = dayClearingEnd.withSecondOfMinute(beginOperationSecond);
 
 		if (nowDate.isBefore(tradeBegin))
 			wakeUpTime = tradeBegin.withSecondOfMinute(beginOperationSecond);

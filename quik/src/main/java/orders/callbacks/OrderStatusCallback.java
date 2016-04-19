@@ -43,10 +43,6 @@ public class OrderStatusCallback implements Trans2QuikLibrary.OrderStatusCallbac
 		if (mode.longValue() == 1L || mode.longValue() == 2L)
 			return;
 
-		Log.info("Order status callback received for transactionId " +
-				transactionId +
-				" with status " + OrderStatus.getBy(status.longValue()));
-
 		try {
 			Transaction transaction = queue.findBy(transactionId);
 

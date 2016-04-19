@@ -78,8 +78,7 @@ public class InitialSettings {
 		ISiftCandlesStrategy siftStrategy = SiftCandlesStrategyFactory.createSiftStrategy(sieveParam, fillingGapsNumber);
 		CandlesStorage candlesStorage = new TryOutCandlesStorage(siftStrategy);
 
-		Portfolio portfolio = new Portfolio(strategyName, security, candlesStorage);
-		portfolio.setIntradayTrading(intradayTrading);
+		Portfolio portfolio = new Portfolio(strategyName, security, intradayTrading, candlesStorage);
 
 		for (int depth : depths) {
 			DecisionStrategy decisionStrategy = DecisionStrategy.createFor(strategyName, candlesStorage);

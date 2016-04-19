@@ -13,26 +13,29 @@ import java.util.*;
 @Data
 public class Portfolio implements IMoneyStateSupport {
 
+	public static LocalTime intradayCloseDayPositionTime = new LocalTime(18, 33);
+	public static LocalTime intradayOpenEveningPositionTime = new LocalTime(19, 1);
+
 	private CandlesStorage candlesStorage;
-	private Boolean intradayTrading;
+	private boolean intradayTrading;
 	private List<Machine> machines;
 	private String security;
 	private String title;
 	private int lot;
 
-	public Portfolio(String title, String security, int lot, CandlesStorage candlesStorage) {
+	public Portfolio(String title, String security, int lot, boolean isIntraday, CandlesStorage candlesStorage) {
 		this.title = title;
 		this.security = security;
 
 		this.lot = lot;
 		this.candlesStorage = candlesStorage;
-		this.intradayTrading = false;
+		this.intradayTrading = isIntraday;
 
 		machines = new ArrayList<>();
 	}
 
-	public Portfolio(String title, String security, CandlesStorage candlesStorage) {
-		this(title, security, 100, candlesStorage);
+	public Portfolio(String title, String security, boolean isIntraday, CandlesStorage candlesStorage) {
+		this(title, security, 100, isIntraday, candlesStorage);
 	}
 
 	public void addMachine(Machine machine) {
@@ -45,11 +48,10 @@ public class Portfolio implements IMoneyStateSupport {
 
 		candlesStorage.addOnlyNew(candles);
 
-		boolean closePositions = candles.get(candles.size() - 1).hasLastTimeWithIn(
-				LocalTime.parse("18:40"),
-				LocalTime.parse("19:01"));
+		Candle last = candles.get(candles.size() - 1);
+		boolean dayClosePositionTime = last.hasLastTimeWithIn(intradayCloseDayPositionTime, intradayOpenEveningPositionTime);
 
-		if (closePositions && intradayTrading) {
+		if (dayClosePositionTime && intradayTrading) {
 			machines.forEach(machine -> machine.addClosePositionOrderTo(orders));
 		} else {
 			machines.forEach(machine -> machine.addOrderTo(orders));
@@ -139,12 +141,7 @@ public class Portfolio implements IMoneyStateSupport {
 
 	public String getDescription() {
 		return getDecisonStrategyName() + " " + getSecurity() + " " + getSieveParam() + " " + getFillingGapsNumber()
-				+ (intradayTrading ? " intraday" : "");
-	}
-
-	@Override
-	public void finalize() {
-		Log.info(this.getClass().getSimpleName() + " finalized");
+				+ (intradayTrading ? " intraday" : " continuous");
 	}
 
 	public int getMaxDepth() {

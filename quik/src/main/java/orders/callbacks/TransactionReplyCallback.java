@@ -29,9 +29,6 @@ public class TransactionReplyCallback implements Trans2QuikLibrary.TransactionRe
 				"; replyCode " + replyCode.longValue() + "; orderNumber " + Double.valueOf(orderNumber).longValue() +
 				"; replyMessage " + replyMessage);
 
-		Log.info("Order submission callback received for transactionId " + transactionId +
-				" with status " + ResponseCode.getBy(resultCode.longValue()));
-
 		try {
 			Transaction transaction = queue.findBy(transactionId);
 

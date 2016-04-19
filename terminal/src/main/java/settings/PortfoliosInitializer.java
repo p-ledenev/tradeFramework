@@ -18,7 +18,7 @@ public class PortfoliosInitializer {
     private DateTime lastUpdate;
 
     public PortfoliosInitializer() throws Throwable {
-        builders = new ArrayList<IPortfolioBuilder>();
+        builders = new ArrayList<>();
         lastUpdate = DateTime.now();
         initialize();
     }

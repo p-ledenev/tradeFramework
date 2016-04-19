@@ -17,7 +17,7 @@ public class SubmitOrderRequest extends QuikRequest {
     @Override
     protected NativeLong executeNativeRequest() throws Throwable {
 
-        Log.info("Transaction submitted " + transaction.buildQuikString());
+		Log.info("Transaction submitted " + transaction.buildQuikString());
 
         return library.TRANS2QUIK_SEND_ASYNC_TRANSACTION(
                 transaction.buildQuikString(),

@@ -34,7 +34,7 @@ public class CandlesStorage {
 		List<Candle> sifted = siftStrategy.sift(newCandles);
 
 		for (Candle candle : sifted)
-			Log.info("Added to candle storage (" + getSieveParam() + ", " +
+			Log.debug("Added to candle storage (" + getSieveParam() + ", " +
 					getFillingGapsNumber() + ") " + candle.print());
 
 		candles.addAll(sifted);

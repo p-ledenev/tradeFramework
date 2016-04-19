@@ -10,62 +10,69 @@ import siftStrategies.*;
  */
 public class FullFormatPortfolioBuilder implements IPortfolioBuilder {
 
-    private String security;
-    private String title;
-    private String decisionStrategyName;
-    private int lot;
-    private double sieveParam;
-    private int fillingGapsNumber;
-    private double commission;
+	private String security;
+	private String title;
+	private String decisionStrategyName;
+	private int lot;
+	private double sieveParam;
+	private int fillingGapsNumber;
+	private double commission;
+	private boolean intradayTrading;
 
-    @Getter
-    private Portfolio portfolio;
+	@Getter
+	private Portfolio portfolio;
 
-    private void init(String line) {
+	private void init(String line) {
 
-        String[] params = line.split("\\t");
+		String[] params = line.split("\\t");
 
-        security = params[0];
-        title = params[1];
-        decisionStrategyName = params[2];
-        lot = Integer.parseInt(params[3]);
-        sieveParam = Double.parseDouble(params[4]);
-        fillingGapsNumber = Integer.parseInt(params[5]);
-        commission = Double.parseDouble(params[6]);
-    }
+		security = params[0];
+		title = params[1];
+		decisionStrategyName = params[2];
+		lot = Integer.parseInt(params[3]);
+		sieveParam = Double.parseDouble(params[4]);
+		fillingGapsNumber = Integer.parseInt(params[5]);
+		commission = Double.parseDouble(params[6]);
+		intradayTrading = false;
+	}
 
-    public void build(String line) {
-        init(line);
+	public void build(String line) {
+		init(line);
 
-        ISiftCandlesStrategy siftStrategy = SiftCandlesStrategyFactory.createSiftStrategy(sieveParam, fillingGapsNumber);
-        portfolio = new Portfolio(title, security, lot, new CandlesStorage(siftStrategy));
-    }
+		ISiftCandlesStrategy siftStrategy = SiftCandlesStrategyFactory.createSiftStrategy(sieveParam, fillingGapsNumber);
+		portfolio = new Portfolio(
+				title,
+				security,
+				lot,
+				intradayTrading,
+				new CandlesStorage(siftStrategy));
+	}
 
-    public void addMachine(String line) throws Throwable {
+	public void addMachine(String line) throws Throwable {
 
-        DecisionStrategy decisionStrategy = DecisionStrategy.createFor(decisionStrategyName, portfolio.getCandlesStorage());
+		DecisionStrategy decisionStrategy = DecisionStrategy.createFor(decisionStrategyName, portfolio.getCandlesStorage());
 
-        FullFormatMachineBuilder builder = new FullFormatMachineBuilder(line);
-        builder.build(portfolio, decisionStrategy, commission);
+		FullFormatMachineBuilder builder = new FullFormatMachineBuilder(line);
+		builder.build(portfolio, decisionStrategy, commission);
 
-        portfolio.addMachine(builder.getMachine());
-    }
+		portfolio.addMachine(builder.getMachine());
+	}
 
-    public String serialize() {
-        String result = security + "\t" + title + "\t" + decisionStrategyName + "\t" + lot +
-                "\t" + sieveParam + "\t" + fillingGapsNumber + "\t" + commission + "\n";
+	public String serialize() {
+		String result = security + "\t" + title + "\t" + decisionStrategyName + "\t" + lot +
+				"\t" + sieveParam + "\t" + fillingGapsNumber + "\t" + commission + "\n";
 
-        for (Machine machine : portfolio.getMachines()) {
-            FullFormatMachineBuilder builder = new FullFormatMachineBuilder(machine);
-            result += builder.serialize() + "\n";
-        }
+		for (Machine machine : portfolio.getMachines()) {
+			FullFormatMachineBuilder builder = new FullFormatMachineBuilder(machine);
+			result += builder.serialize() + "\n";
+		}
 
-        return result;
-    }
+		return result;
+	}
 
-    public boolean isMachineBlocked(String line) throws Throwable {
-        FullFormatMachineBuilder builder = new FullFormatMachineBuilder(line);
+	public boolean isMachineBlocked(String line) throws Throwable {
+		FullFormatMachineBuilder builder = new FullFormatMachineBuilder(line);
 
-        return builder.isBlocked();
-    }
+		return builder.isBlocked();
+	}
 }

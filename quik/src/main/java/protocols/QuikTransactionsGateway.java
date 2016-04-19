@@ -17,8 +17,6 @@ import java.util.List;
 @Setter
 public class QuikTransactionsGateway {
 
-	private static int ordersSubmissionPeriodSeconds = 30;
-
 	private TransactionsQueue queue;
 
 	private QuikDataGateway dataGateway;
@@ -34,6 +32,7 @@ public class QuikTransactionsGateway {
 
 	private String classCode;
 	private String account;
+	private int orderSubmissionDelayMillis;
 
 	private String pathToQuik;
 
@@ -48,16 +47,16 @@ public class QuikTransactionsGateway {
 	}
 
 	public void submitTransactionsBy(List<Order> orders) throws Throwable {
-
-		int delayMillis = ordersSubmissionPeriodSeconds * 1000 / orders.size();
-
 		for (Order order : orders) {
 			submitTransactionBy(order);
-			Thread.sleep(delayMillis);
+			Thread.sleep(orderSubmissionDelayMillis);
 		}
 	}
 
 	public void drop(Transaction transaction) {
+		if (!transaction.isSubmissionSucceed())
+			return;
+
 		Transaction droppedTransaction = KillOrderTransaction.by(transaction);
 		submit(droppedTransaction);
 	}

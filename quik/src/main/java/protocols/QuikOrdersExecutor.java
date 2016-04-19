@@ -29,7 +29,7 @@ public class QuikOrdersExecutor implements IOrdersExecutor {
 
 		gateway.submitTransactionsBy(orders);
 
-		Thread.sleep(5 * 1000);
+		Thread.sleep(15 * 1000);
 
 		if (gateway.hasUnfinishedTransactions()) {
 			gateway.dropUnfinishedTransactions();

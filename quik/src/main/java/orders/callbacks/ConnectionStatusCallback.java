@@ -30,8 +30,6 @@ public class ConnectionStatusCallback implements Trans2QuikLibrary.ConnectionSta
 				+ "; extendedErrorCode: " + extendedErrorCode.longValue()
 				+ "; errorMessage: " + errorMessage);
 
-		Log.info("Dll connection status callback received. Event " + ResponseCode.getBy(eventCode.longValue()));
-
 		gateway.setConnectionStatus(ResponseCode.getBy(eventCode.longValue()));
 
 		if (ResponseCode.isDllDisconnected(eventCode.longValue())) {

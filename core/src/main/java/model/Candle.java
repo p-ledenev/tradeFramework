@@ -99,8 +99,8 @@ public class Candle implements IAveragingSupport, IApproximationSupport, Cloneab
 		return date.getDayOfYear();
 	}
 
-	public int getDateMonth() {
-		return date.getMonthOfYear();
+	public int getDateMinutes() {
+		return date.getMinuteOfHour();
 	}
 
 	public boolean hasYearAs(int year) {

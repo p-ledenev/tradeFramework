@@ -25,7 +25,7 @@ public class ConciseFormatMachineBuilderTest {
             @Override
             public BufferedReader getReader() throws FileNotFoundException {
 
-                String content = "USD-9.15;AveragingStrategy;0.0145;1\n" +
+                String content = "USD-9.15;AveragingStrategy;0.0145;1;intraday\n" +
                         "50;N;0\n" +
                         "75;N;0\n" +
                         "150;N;0\n" +
@@ -34,7 +34,7 @@ public class ConciseFormatMachineBuilderTest {
                         "150;N;0\n" +
                         "125;N;0\n" +
                         "\n" +
-                        "USD-9.15;ApproximationStrategy;0.0145;27\n" +
+                        "USD-9.15;ApproximationStrategy;0.0145;27;continuous\n" +
                         "250;N;0\n" +
                         "275;N;0\n" +
                         "275;N;0";

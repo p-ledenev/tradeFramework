@@ -8,98 +8,92 @@ import org.joda.time.*;
  */
 
 @Data
-public class Position implements Cloneable {
+@AllArgsConstructor
+public abstract class Position implements Cloneable {
 
-    private Candle candle;
-    private Direction direction;
-    private int volume;
+	private Candle candle;
 
-    public static Position begining() {
-        return new Position(Direction.Neutral, 0, Candle.empty());
-    }
+	public static Position begining() {
+		return new NeutralPosition(Candle.empty());
+	}
 
-    public static Position closing(Candle candle) {
-        return new Position(Direction.Neutral, 0, candle);
-    }
+	public static Position closing(Candle candle) {
+		return new NeutralPosition(candle);
+	}
 
-    public static Position opening(Direction direction, int volume, Candle candle) {
-        return new Position(direction, volume, candle);
-    }
+	public static Position opening(Direction direction, int volume, Candle candle) {
+		return new ActivePosition(direction, volume, candle);
+	}
 
-    private Position(Direction direction, int volume, Candle candle) {
-        this.volume = volume;
-        this.direction = direction;
-        this.candle = candle.clone();
-    }
+	public double computeProfit(double value) {
+		return getDirection().getSign() * getVolume() * (value - getValue());
+	}
 
-    public double computeProfit(double value) {
-        return direction.getSign() * volume * (value - getValue());
-    }
+	public boolean hasSameDirectionAs(Position position) {
+		return getDirection().equals(position.getDirection());
+	}
 
-    public boolean hasSameDirectionAs(Position position) {
-        return direction.equals(position.getDirection());
-    }
+	public boolean hasSameDay(Position position) {
+		return candle.getDate().toLocalDate().equals(position.getDate().toLocalDate());
+	}
 
-    public boolean hasSameDay(Position position) {
-        return candle.getDate().toLocalDate().equals(position.getDate().toLocalDate());
-    }
+	public DateTime getDate() {
+		return candle.getDate();
+	}
 
-    public DateTime getDate() {
-        return candle.getDate();
-    }
+	public double getValue() {
+		return candle.getValue();
+	}
 
-    public double getValue() {
-        return candle.getValue();
-    }
+	public int getYear() {
+		return getDate().getYear();
+	}
 
-    public int getYear() {
-        return getDate().getYear();
-    }
+	public boolean isBuy() {
+		return Direction.Buy.equals(getDirection());
+	}
 
-    public boolean isBuy() {
-        return Direction.Buy.equals(direction);
-    }
+	public boolean isSell() {
+		return Direction.Sell.equals(getDirection());
+	}
 
-    public boolean isSell() {
-        return Direction.Sell.equals(direction);
-    }
+	public boolean isHold() {
+		return Direction.Hold.equals(getDirection());
+	}
 
-    public boolean isHold() {
-        return Direction.Hold.equals(direction);
-    }
+	public boolean isNeutral() {
+		return Direction.Neutral.equals(getDirection());
+	}
 
-    public boolean isNeutral() {
-        return Direction.Neutral.equals(direction);
-    }
+	public boolean equalTo(Position position) {
+		if (position == null)
+			return false;
 
-    public boolean equalTo(Position position) {
-        if (position == null)
-            return false;
+		if (!this.getClass().equals(position.getClass()))
+			return false;
 
-        return direction.equals(position.getDirection()) && volume == position.getVolume() && getValue() == position.getValue();
-    }
+		return hasEqualParams(position);
+	}
 
-    public void setValue(double value) {
-        candle.setValue(value);
-    }
+	public void setValue(double value) {
+		candle.setValue(value);
+	}
 
-    public void setDate(DateTime date) {
-        candle.setDate(date);
-    }
+	public void setDate(DateTime date) {
+		candle.setDate(date);
+	}
 
-    public int getSignVolume() {
-        return direction.getSign() * volume;
-    }
+	public int getSignVolume() {
+		return getDirection().getSign() * getVolume();
+	}
 
-    public String printCSV() {
-        return candle.printTitleCSV();
-    }
+	public String printCSV() {
+		return candle.printTitleCSV();
+	}
 
-    public void neutral() {
-        direction = Direction.Neutral;
-    }
+	public abstract Direction getDirection();
 
-    public Position copy() throws CloneNotSupportedException {
-        return (Position) this.clone();
-    }
+	public abstract int getVolume();
+
+	protected abstract boolean hasEqualParams(Position position);
 }

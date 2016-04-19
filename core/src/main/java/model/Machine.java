@@ -92,7 +92,7 @@ public class Machine implements IMoneyStateSupport {
 	}
 
 	public void addClosePositionOrderTo(List<Order> orders) {
-		if (isBlocked || position.isNeutral())
+		if (isBlocked || !hasOpenPosition())
 			return;
 
 		Position newPosition = Position.closing(portfolio.getLastCandle());
@@ -164,5 +164,9 @@ public class Machine implements IMoneyStateSupport {
 
 	public int getSignVolume() {
 		return position.getSignVolume();
+	}
+
+	public boolean hasOpenPosition() {
+		return position.isBuy() || position.isSell();
 	}
 }

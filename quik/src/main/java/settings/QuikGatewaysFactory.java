@@ -29,9 +29,14 @@ public class QuikGatewaysFactory implements ITerminalGatewaysFactory {
 		candlesGateway.setPath(properties.getProperty("pathToData"));
 
 		transactionsGateway = new QuikTransactionsGateway();
+
 		transactionsGateway.setAccount(properties.getProperty("account"));
 		transactionsGateway.setClassCode(properties.getProperty("classCode"));
 		transactionsGateway.setPathToQuik(properties.getProperty("pathToQuik"));
+
+		int delayMillis = Integer.parseInt(properties.getProperty("orderSubmissionDelayMillis"));
+		transactionsGateway.setOrderSubmissionDelayMillis(delayMillis);
+
 		transactionsGateway.setDataGateway(candlesGateway);
 	}
 
