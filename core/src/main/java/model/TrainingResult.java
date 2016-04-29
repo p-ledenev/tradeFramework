@@ -91,7 +91,7 @@ public class TrainingResult {
             min = (each < min) ? each : min;
         }
 
-        List<Double> normalizedValues = new ArrayList<Double>();
+        List<Double> normalizedValues = new ArrayList<>();
         for (Double each : values) {
             double normalizedValue = (each - min) * (maxPeriod - minPeriod) / (max - min) + minPeriod;
             normalizedValues.add(normalizedValue);

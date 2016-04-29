@@ -1,8 +1,6 @@
 package model;
 
-import approximationConstructors.*;
-import averageConstructors.*;
-import lombok.*;
+import lombok.Data;
 import org.joda.time.*;
 import tools.*;
 
@@ -11,7 +9,7 @@ import tools.*;
  */
 
 @Data
-public class Candle implements IAveragingSupport, IApproximationSupport, Cloneable {
+public class Candle implements Cloneable {
 
 	protected DateTime date;
 	protected double value;
@@ -34,13 +32,6 @@ public class Candle implements IAveragingSupport, IApproximationSupport, Cloneab
 		return dateMillisecs >= tradeFrom.getMillisOfDay() && dateMillisecs <= tradeTo.getMillisOfDay();
 	}
 
-	public boolean isRelevant(int relevancePeriodMinutes) {
-		long dateMillisecs = date.getMillis();
-		long currentMillisecs = new DateTime().getMillis();
-
-		return (currentMillisecs - dateMillisecs) < relevancePeriodMinutes * 60 * 1000;
-	}
-
 	public String print() {
 		return "date: " + Format.asString(date) + "; value: " + Round.toMoneyAmount(value);
 	}
@@ -61,24 +52,6 @@ public class Candle implements IAveragingSupport, IApproximationSupport, Cloneab
 		return this.value < value;
 	}
 
-	public boolean greaterThan(Candle candle) {
-		return hasValueGreaterThan(candle.getValue());
-	}
-
-	public boolean lessThan(Candle candle) {
-		return hasValueLessThan(candle.getValue());
-	}
-
-	@Override
-	public double getValueForApproximation() {
-		return value;
-	}
-
-	@Override
-	public double getValueForAveraging() {
-		return value;
-	}
-
 	public String printCSV() {
 		return printTitleCSV() + ";" + value;
 	}
@@ -97,10 +70,6 @@ public class Candle implements IAveragingSupport, IApproximationSupport, Cloneab
 
 	public int getDateDay() {
 		return date.getDayOfYear();
-	}
-
-	public int getDateMinutes() {
-		return date.getMinuteOfHour();
 	}
 
 	public boolean hasYearAs(int year) {

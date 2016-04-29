@@ -23,10 +23,10 @@ public class OLSLinearApproximationTest {
     public void shouldApproximate() {
 
         double[] y = {4, 8, 13, 18};
-        ApproximationSupportStub[] values = new ApproximationSupportStub[4];
+        double[] values = new double[4];
 
         for(int i=0; i<values.length; i++)
-            values[i] = new ApproximationSupportStub(y[i]);
+            values[i] = y[i];
 
         Approximation approximation = constructor.approximate(values);
 

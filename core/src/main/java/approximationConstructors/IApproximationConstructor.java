@@ -5,5 +5,5 @@ package approximationConstructors;
  */
 public interface IApproximationConstructor {
 
-    Approximation approximate(IApproximationSupport[] values);
+	Approximation approximate(double[] values);
 }

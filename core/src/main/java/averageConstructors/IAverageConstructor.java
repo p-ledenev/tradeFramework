@@ -5,8 +5,5 @@ package averageConstructors;
  */
 public interface IAverageConstructor {
 
-    /**
-     *
-     */
-    double average(IAveragingSupport[] values);
+	double average(double[] values);
 }

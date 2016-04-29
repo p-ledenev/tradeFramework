@@ -2,8 +2,9 @@ package decisionStrategies.algorithmic;
 
 import approximationConstructors.*;
 import decisionStrategies.*;
-import lombok.*;
+import lombok.Data;
 import model.*;
+import tools.Format;
 
 /**
  * Created by ledenev.p on 05.05.2015.
@@ -13,55 +14,55 @@ import model.*;
 @Strategy(name = "ApproximationStrategy")
 public class ApproximationDecisionStrategy extends DecisionStrategy {
 
-    private IApproximationConstructor constructor;
-    private Approximation ap;
+	private IApproximationConstructor constructor;
+	private Approximation ap;
 
-    public ApproximationDecisionStrategy() {
-        constructor = new LinearApproximationConstructor();
-    }
+	public ApproximationDecisionStrategy() {
+		constructor = new LinearApproximationConstructor();
+	}
 
-    @Override
-    protected Direction computeOrderDirection(Candle[] candles) {
+	@Override
+	protected Direction computeOrderDirection(Candle[] candles) {
 
-        if (candlesStorage.size() < candles.length)
-            return Direction.Neutral;
+		if (candlesStorage.size() < candles.length)
+			return Direction.Neutral;
 
-        ap = constructor.approximate(candles);
+		ap = constructor.approximate(Format.toDoubleArray(candles));
 
-        double highestDegreeParam = ap.getHighestDegreeParameter();
+		double highestDegreeParam = ap.getHighestDegreeParameter();
 
-        if (highestDegreeParam > 0)
-            return Direction.Buy;
+		if (highestDegreeParam > 0)
+			return Direction.Buy;
 
-        if (highestDegreeParam < 0)
-            return Direction.Sell;
+		if (highestDegreeParam < 0)
+			return Direction.Sell;
 
-        return Direction.Neutral;
-    }
+		return Direction.Neutral;
+	}
 
-    @Override
-    public String[] getStateParamsHeader() {
-        return new String[]{
-                "k", "kx+b", "approximatedValue"
-        };
-    }
+	@Override
+	public String[] getStateParamsHeader() {
+		return new String[]{
+				"k", "kx+b", "approximatedValue"
+		};
+	}
 
-    @Override
-    protected String[] collectCurrentStateParams() {
-        return new String[]{
-                Double.toString(ap.getHighestDegreeParameter()),
-                ap.printPowerFunction(),
-                Double.toString(ap.computeApproximatedValue())
-        };
-    }
+	@Override
+	protected String[] collectCurrentStateParams() {
+		return new String[]{
+				Double.toString(ap.getHighestDegreeParameter()),
+				ap.printPowerFunction(),
+				Double.toString(ap.computeApproximatedValue())
+		};
+	}
 
-    @Override
-    public int getInitialStorageSizeFor(int depth) {
-        return depth + 2;
-    }
+	@Override
+	public int getInitialStorageSizeFor(int depth) {
+		return depth + 2;
+	}
 
-    @Override
-    public boolean hasCurrentState() {
-        return ap != null;
-    }
+	@Override
+	public boolean hasCurrentState() {
+		return ap != null;
+	}
 }

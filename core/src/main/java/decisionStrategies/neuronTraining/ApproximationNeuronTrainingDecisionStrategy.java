@@ -3,6 +3,7 @@ package decisionStrategies.neuronTraining;
 import approximationConstructors.*;
 import decisionStrategies.*;
 import model.*;
+import tools.Format;
 
 import java.util.*;
 
@@ -13,44 +14,44 @@ import java.util.*;
 @Strategy(name = "ApproximationNeuronTrainingStrategy")
 public class ApproximationNeuronTrainingDecisionStrategy extends NeuronTrainingDecisionStrategy {
 
-    private IApproximationConstructor constructor;
-    private Approximation ap;
+	private IApproximationConstructor constructor;
+	private Approximation ap;
 
-    public ApproximationNeuronTrainingDecisionStrategy() {
-        constructor = new LinearApproximationConstructor();
-    }
+	public ApproximationNeuronTrainingDecisionStrategy() {
+		constructor = new LinearApproximationConstructor();
+	}
 
-    @Override
-    public String[] getStateParamsHeader() {
-        return new String[]{
-                "k",
-                "approximatedValue"
-        };
-    }
+	@Override
+	public String[] getStateParamsHeader() {
+		return new String[]{
+				"k",
+				"approximatedValue"
+		};
+	}
 
-    @Override
-    protected String[] collectCurrentStateParams() {
-        return new String[]{
-                Double.toString(ap.getHighestDegreeParameter()),
-                Double.toString(ap.computeApproximatedValue())
-        };
-    }
+	@Override
+	protected String[] collectCurrentStateParams() {
+		return new String[]{
+				Double.toString(ap.getHighestDegreeParameter()),
+				Double.toString(ap.computeApproximatedValue())
+		};
+	}
 
-    @Override
-    protected Direction computeDirection(List<Candle> data) {
+	@Override
+	protected Direction computeDirection(List<Candle> data) {
 
-        ap = constructor.approximate(data.toArray(new Candle[data.size()]));
-        double highestDegreeParam = ap.getHighestDegreeParameter();
+		ap = constructor.approximate(Format.toDoubleArray(data));
+		double highestDegreeParam = ap.getHighestDegreeParameter();
 
-        Candle current = candlesStorage.last();
-        Candle future = data.get(data.size() - 1);
+		Candle current = candlesStorage.last();
+		Candle future = data.get(data.size() - 1);
 
-        if (highestDegreeParam > 0)
-            return Direction.Buy;
+		if (highestDegreeParam > 0)
+			return Direction.Buy;
 
-        if (highestDegreeParam < 0)
-            return Direction.Sell;
+		if (highestDegreeParam < 0)
+			return Direction.Sell;
 
-        return Direction.Neutral;
-    }
+		return Direction.Neutral;
+	}
 }

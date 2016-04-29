@@ -6,7 +6,7 @@ package averageConstructors;
 public abstract class AverageConstructor implements IAverageConstructor {
 
     @Override
-    public double average(IAveragingSupport[] values) {
+    public double average(double[] values) {
 
         if (values == null || values.length == 0)
             return 0;
@@ -14,5 +14,5 @@ public abstract class AverageConstructor implements IAverageConstructor {
         return nativeAverage(values);
     }
 
-    protected abstract double nativeAverage(IAveragingSupport[] values);
+    protected abstract double nativeAverage(double[] values);
 }

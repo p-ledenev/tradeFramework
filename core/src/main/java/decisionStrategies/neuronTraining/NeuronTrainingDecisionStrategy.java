@@ -126,7 +126,7 @@ public abstract class NeuronTrainingDecisionStrategy extends DecisionStrategy {
 		List<Candle> pastData = candlesStorage.last(depth);
 		double last = candlesStorage.last().getValue();
 
-		Approximation approximation = ApproximationConstructorFactory.createConstructor().approximate(pastData.toArray(new Candle[pastData.size()]));
+		Approximation approximation = ApproximationConstructorFactory.createConstructor().approximate(Format.toDoubleArray(pastData));
 
 		double derivative = averagingStrategy.getLastAverageDerivative() * 100;
 		double mean = (TrainingResult.mean(pastData) - last) / last;

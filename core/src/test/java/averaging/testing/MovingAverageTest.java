@@ -11,24 +11,24 @@ import static org.junit.Assert.*;
  */
 public class MovingAverageTest {
 
-    MovingAverageConstructor constructor;
+	SimpleAverageConstructor constructor;
 
-    @Before
-    public void setUp() {
-        constructor = new MovingAverageConstructor();
-    }
+	@Before
+	public void setUp() {
+		constructor = new SimpleAverageConstructor();
+	}
 
-    @Test
-    public void shouldAverage() {
+	@Test
+	public void shouldAverage() {
 
-        double[] y = {4, 8, 9, 12};
-        AveragingSupportStub[] values = new AveragingSupportStub[4];
+		double[] y = {4, 8, 9, 12};
+		double[] values = new double[4];
 
-        for (int i = 0; i < values.length; i++)
-            values[i] = new AveragingSupportStub(y[i]);
+		for (int i = 0; i < values.length; i++)
+			values[i] = y[i];
 
-        double result = constructor.average(values);
+		double result = constructor.average(values);
 
-        assertThat(result, is(equalTo(8.25)));
-    }
+		assertThat(result, is(equalTo(8.25)));
+	}
 }
