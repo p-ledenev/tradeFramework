@@ -9,18 +9,18 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>try.out.researcher</artifactId>
+    <artifactId>fourierResearcher</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>trade</groupId>
-            <artifactId>try.out</artifactId>
+            <artifactId>try.out.researcher</artifactId>
             <version>1.0</version>
         </dependency>
     </dependencies>
 
     <build>
-        <finalName>try.out.researcher</finalName>
+        <finalName>fourier.researcher</finalName>
 
         <resources>
             <resource>
@@ -49,9 +49,6 @@
                     </archive>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
-
-
 </project>

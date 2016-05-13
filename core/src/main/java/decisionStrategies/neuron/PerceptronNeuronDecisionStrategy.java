@@ -15,7 +15,7 @@ import java.util.*;
 public class PerceptronNeuronDecisionStrategy extends NeuronDecisionStrategy {
 
     @Override
-    protected Direction computeOrderDirection(Candle[] candles) {
+	public Direction computeOrderDirection(Candle[] candles) {
 
         TrainingResult result = createTrainingSet(candles);
 

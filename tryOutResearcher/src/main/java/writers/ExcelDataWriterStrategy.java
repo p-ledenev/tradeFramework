@@ -1,7 +1,6 @@
 package writers;
 
-import model.ResearchResult;
-import tools.Round;
+import model.IResearchResult;
 
 /**
  * Created by ledenev.p on 28.01.2016.
@@ -14,10 +13,8 @@ public class ExcelDataWriterStrategy implements DataWriterStrategy {
 	}
 
 	@Override
-	public String print(ResearchResult result) throws Throwable {
-		return result.getGapsNumber() + ";" + Round.toSignificant(result.getSieveParam())
-				+ ";" + Round.toMoneyAmount(result.getProfit()) + ";" + Round.toMoneyAmount(result.getLoss())
-				+ ";" + Round.toMoneyAmount(result.getTradeCoefficient());
+	public String print(IResearchResult result) throws Throwable {
+		return result.print(";");
 	}
 
 	@Override

@@ -60,7 +60,7 @@ public abstract class DecisionStrategy {
         return Position.opening(direction, volume, candlesStorage.last());
     }
 
-    protected abstract Direction computeOrderDirection(Candle[] candles);
+    public abstract Direction computeOrderDirection(Candle[] candles);
 
     public String getName() {
         Strategy annotation = this.getClass().getAnnotation(Strategy.class);

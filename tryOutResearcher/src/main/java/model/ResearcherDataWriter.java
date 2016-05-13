@@ -19,19 +19,22 @@ public class ResearcherDataWriter {
 	private String security;
 	private Boolean intraday;
 
-	public ResearcherDataWriter(String strategyName, String security, Boolean intraday, int xPoints, int yPoints) throws Throwable {
+	public ResearcherDataWriter(
+			DataWriterStrategy writerStrategy,
+			String strategyName,
+			String security,
+			Boolean intraday) throws Throwable {
 
 		this.strategyName = strategyName;
 		this.security = security;
 		this.intraday = intraday;
+		this.writerStrategy = writerStrategy;
 
 		dataCollector = new ResearcherDataCollector();
-		writerStrategy = DataWriterStrategyFactory.create(strategyName, xPoints, yPoints);
-
 		clean();
 	}
 
-	public void addResearchResult(ResearchResult result) {
+	public void addResearchResult(IResearchResult result) {
 		dataCollector.add(result);
 	}
 

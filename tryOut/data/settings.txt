@@ -1,1 +1,1 @@
-usd~&~1min~&~AveragingStrategy~&~0.25~&~0.022~&~7;~&~2015;~&~50~&~intraday
+usd~&~1min~&~FourierStrategy~&~0.5~&~0.015~&~10;~&~2015;~&~5~&~continuous

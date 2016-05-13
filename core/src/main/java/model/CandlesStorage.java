@@ -29,6 +29,13 @@ public class CandlesStorage {
 	}
 
 
+	public boolean add(Candle newCandle) {
+		List<Candle> candles = new ArrayList<>();
+		candles.add(newCandle);
+
+		return add(candles);
+	}
+
 	public boolean add(List<Candle> newCandles) {
 
 		List<Candle> sifted = siftStrategy.sift(newCandles);

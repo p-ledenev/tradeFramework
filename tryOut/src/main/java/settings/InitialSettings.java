@@ -74,7 +74,6 @@ public class InitialSettings {
 	}
 
 	public Portfolio initPortfolio(double sieveParam, int fillingGapsNumber) throws Throwable {
-
 		ISiftCandlesStrategy siftStrategy = SiftCandlesStrategyFactory.createSiftStrategy(sieveParam, fillingGapsNumber);
 		CandlesStorage candlesStorage = new TryOutCandlesStorage(siftStrategy);
 

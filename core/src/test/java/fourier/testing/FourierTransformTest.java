@@ -1,6 +1,6 @@
 package fourier.testing;
 
-import fourierConstructors.FourierTransformConstructor;
+import fourierConstructors.*;
 import org.apache.commons.math3.complex.Complex;
 import org.junit.*;
 import tools.Round;
@@ -17,7 +17,10 @@ public class FourierTransformTest {
 
 	@Before
 	public void setUp() {
-		constructor = new FourierTransformConstructor(5);
+		IPackingValueSupplier supplier = new MeanValueSupplier();
+		Pow2Expander expander = new TailPow2Expander(supplier);
+
+		constructor = new FourierTransformConstructor(5, expander);
 	}
 
 	@Test

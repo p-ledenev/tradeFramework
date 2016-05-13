@@ -22,7 +22,7 @@ public class ApproximationDecisionStrategy extends DecisionStrategy {
 	}
 
 	@Override
-	protected Direction computeOrderDirection(Candle[] candles) {
+	public Direction computeOrderDirection(Candle[] candles) {
 
 		if (candlesStorage.size() < candles.length)
 			return Direction.Neutral;

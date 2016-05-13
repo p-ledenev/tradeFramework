@@ -15,9 +15,14 @@ public class FourierDecisionStrategy extends DerivativeDecisionStrategy {
 
 	private IFourierConstructor constructor;
 
+	public FourierDecisionStrategy(int frequency) {
+		super();
+		constructor = FourierConstructorFactory.createConstructor(frequency);
+	}
+
 	public FourierDecisionStrategy() {
 		super();
-		constructor = FourierConstructorFactory.createConstructor(5);
+		constructor = FourierConstructorFactory.createConstructor(1);
 	}
 
 	@Override

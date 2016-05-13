@@ -1,17 +1,18 @@
-package writers;
+package run;
 
 import model.IResearchResult;
+import writers.DataWriterStrategy;
 
 /**
  * Created by ledenev.p on 28.01.2016.
  */
-public class TecplotDataWriterStrategy implements DataWriterStrategy {
+public class FourierTecplotDataWriterStrategy implements DataWriterStrategy {
 
 	private String title;
 	private int xPoints;
 	private int yPoints;
 
-	public TecplotDataWriterStrategy(String title, int xPoints, int yPoints) {
+	public FourierTecplotDataWriterStrategy(String title, int xPoints, int yPoints) {
 		this.title = title;
 		this.xPoints = xPoints;
 		this.yPoints = yPoints;
@@ -20,8 +21,8 @@ public class TecplotDataWriterStrategy implements DataWriterStrategy {
 	@Override
 	public String printHeader() {
 		return "TITLE     = \"Converted Excel Data\"\n" +
-				"VARIABLES = \"gaps\"\n" +
-				"\"sieve\"\n" +
+				"VARIABLES = \"depths\"\n" +
+				"\"frequencies\"\n" +
 				"\"profit\"\n" +
 				"\"losses\"\n" +
 				"\"coefficient\"\n" +

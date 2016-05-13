@@ -25,7 +25,6 @@ public abstract class ResearcherParamsReader {
 		start = Double.parseDouble(params[0]);
 		last = Double.parseDouble(params[1]);
 		amount = Integer.parseInt(params[2]);
-
 	}
 
 	protected abstract int getLineNumber();

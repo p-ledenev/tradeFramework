@@ -26,7 +26,7 @@ public abstract class NeuronTrainingDecisionStrategy extends DecisionStrategy {
 	protected AveragingDecisionStrategy averagingStrategy;
 
 	@Override
-	protected Direction computeOrderDirection(Candle[] candles) {
+	public Direction computeOrderDirection(Candle[] candles) {
 
 		try {
 			TrainingResult result = computeTrainingResult(candles.length);

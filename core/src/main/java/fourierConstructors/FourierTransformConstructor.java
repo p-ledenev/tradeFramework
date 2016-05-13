@@ -11,12 +11,10 @@ import org.apache.commons.math3.complex.Complex;
 public class FourierTransformConstructor implements IFourierConstructor {
 
 	private int frequenciesNumber;
+	private Pow2Expander expander;
 
 	@Override
 	public Complex[] transform(double[] values) {
-
-		IPackingValueSupplier supplier = new MeanValueSupplier();
-		Pow2Expander expander = new TailPow2Expander(supplier);
 
 		Complex[] frequencies = FastFourierTransformer.direct(expander).setInput(values).transform().getResult();
 		Complex[] cutFrequencies = HighFrequenciesCutter.create(frequencies).cutAfter(frequenciesNumber);

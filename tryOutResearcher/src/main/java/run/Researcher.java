@@ -3,6 +3,7 @@ package run;
 import dataSources.*;
 import model.*;
 import settings.*;
+import writers.*;
 
 import java.util.*;
 
@@ -24,12 +25,16 @@ public class Researcher {
 
 		for (InitialSettings settings : settingsList) {
 
-			ResearcherDataWriter researcherDataWriter = new ResearcherDataWriter(
+			DataWriterStrategy writerStrategy = new TecplotDataWriterStrategy(
 					settings.getStrategyName(),
-					settings.getSecurity(),
-					settings.isIntradayTrading(),
 					fillGaps.size(),
 					sieveParams.size());
+
+			ResearcherDataWriter researcherDataWriter = new ResearcherDataWriter(
+					writerStrategy,
+					settings.getStrategyName(),
+					settings.getSecurity(),
+					settings.isIntradayTrading());
 
 			for (Double sieveParam : sieveParams) {
 				for (Double doubleGapsNumber : fillGaps) {

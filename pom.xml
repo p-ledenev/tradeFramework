@@ -17,6 +17,7 @@
         <module>nnTutor</module>
         <module>tryOutResearcher</module>
         <module>quik</module>
+        <module>fourierResearcher</module>
     </modules>
 
     <dependencyManagement>
