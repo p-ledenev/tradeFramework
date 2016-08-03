@@ -41,7 +41,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>run.FourierResearcher</mainClass>
+                            <mainClass>trade.trade.core.model.core.run.Researcher</mainClass>
                         </manifest>
                         <manifestEntries>
                             <Class-Path>.</Class-Path>
